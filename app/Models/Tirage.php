@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Tirage extends Model
+{
+    //
+    protected $fillable = [
+        'oeuvre_id',
+        'numero',
+        'status',
+        'prix',
+        'encadrement',
+        'pret_a_accrocher',
+        'dimensions_id',
+        'commandes_id',
+        'avec_cadre',
+    ];
+
+    public function dimension(){
+        return $this->belongsTo(Dimension::class, 'dimensions_id');
+    }
+
+    public function commande(){
+        return $this->hasOne(Commande::class, 'commandes_id');
+    }
+
+    public function clients(){
+        return $this->belongsToMany(Client::class, 'commande_client', 'tirage_id', 'client_id');
+    }
+
+    public function clientTirages(){
+        return $this->belongsToMany(Client::class, 'client_tirage', 'tirage_id', 'client_id')->withPivot('quantite');
+    }
+
+    public function oeuvre(){
+        return $this->belongsTo(Oeuvre::class, 'oeuvre_id');
+    }
+}
+
