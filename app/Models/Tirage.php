@@ -23,8 +23,8 @@ class Tirage extends Model
         return $this->belongsTo(Dimension::class, 'dimensions_id');
     }
 
-    public function commande(){
-        return $this->hasOne(Commande::class, 'commandes_id');
+    public function commandes(){
+        return $this->hasMany(Commande::class, 'commandes_id');
     }
 
     public function clients(){

@@ -23,6 +23,8 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -108,6 +110,8 @@ Route::get('/compte/favoris/artistes', [CompteController::class, 'favorisArtiste
 
 Route::get('/locale/{locale}', [UtilsController::class, 'changeLocale'])->name('locale.switch');
 Route::get('/devise/{devise}', [UtilsController::class, 'changeDevise'])->name('devise.switch');
+
+
 Route::get('/cookies', function(){
     return view('cookies');
 })->name('cookies'); // à vérifier

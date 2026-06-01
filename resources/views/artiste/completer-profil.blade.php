@@ -2,6 +2,14 @@
     <form method="POST" action="{{ route('artiste.completer-profil.store') }}" enctype="multipart/form-data">
         @csrf
 
+        <!-- Nom d'artiste -->
+        <div>
+            <x-input-label for="nom_d_artiste">Nom d'artiste (optionnel)</x-input-label>
+            <input type="text" name="nom_d_artiste" id="nom_d_artiste" value="{{ old('nom_d_artiste') }}" class="block mt-1 w-full border-radius-10">
+            @error('nom_d_artiste') <span>{{ $message }}</span> @enderror
+        </div>
+
+
         <!-- Bio -->
         <div >
             <x-input-label for="bio">Bio</x-input-label>
@@ -51,6 +59,21 @@
             <input type="text" name="code_postal" id="code_postal" value="{{ old('code_postal') }}">
             @error('code_postal') <span>{{ $message }}</span> @enderror
         </div>
+
+        <!-- Adresse -->
+        <div>
+            <x-input-label for="adresse">Adresse</x-input-label>
+            <input type="text" name="adresse" id="adresse" value="{{ old('adresse') }}">
+            @error('adresse') <span>{{ $message }}</span> @enderror
+        </div>
+
+        <!-- CV -->
+        <div>
+            <x-input-label for="cv">CV (PDF, DOC ou DOCX)</x-input-label>
+            <input type="file" name="cv" id="cv" accept=".pdf,.doc,.docx">
+            @error('cv') <span>{{ $message }}</span> @enderror
+        </div>
+
         <x-primary-button type="submit">Enregistrer mon profil</x-primary-button>
     </form>
 </x-guest-layout>

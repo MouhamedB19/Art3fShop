@@ -23,6 +23,6 @@ class Client extends Model
     }
 
     public function oeuvresFavoris(){
-        return $this->belongsToMany(Oeuvre::class, 'client_oeuvre_favoris', 'client_id', 'oeuvre_id')->withTimestamps();
+        return $this->belongsToMany(Oeuvre::class, 'oeuvre_client', 'client_id', 'oeuvre_id')->withTimestamps();
     }
 }

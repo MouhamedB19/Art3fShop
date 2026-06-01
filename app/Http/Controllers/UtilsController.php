@@ -61,42 +61,42 @@ class UtilsController extends Controller
     }
 
     public function changeLocale($locale)
-{
-    // Vérifie que la locale est supportée
-    if (in_array($locale, ['fr', 'en'])) {
-        session(['locale' => $locale]);
-        app()->setLocale($locale);
+    {
+        // Vérifie que la locale est supportée
+        if (in_array($locale, ['fr', 'en'])) {
+            session(['locale' => $locale]);
+            app()->setLocale($locale);
+        }
+
+        return redirect()->back();
     }
 
-    return redirect()->back();
-}
-
-public function changeDevise($devise)
-{
-    if (in_array($devise, ['EUR', 'GBP', 'USD', 'CHF'])) {
-        session(['devise' => $devise]);
+    public function changeDevise($devise)
+    {
+        if (in_array($devise, ['EUR', 'GBP', 'USD', 'CHF'])) {
+            session(['devise' => $devise]);
+        }
+    
+        return redirect()->back();
     }
-
-    return redirect()->back();
-}
-
-public function newsletterSubscribe(Request $request)
-{
-    $request->validate([
-        'email' => 'required|email|unique:newsletter_subscribers,email'
-    ]);
-
-    NewsletterSubscriber::create([
-        'user_id' => Auth::id(),
-        'email'      => $request->email,
-        'subscribed_at' => now(),
-    ]);
-
-    // Si appel AJAX (depuis le footer)
-    if ($request->expectsJson()) {
-        return response()->json(['success' => true]);
+    
+    public function newsletterSubscribe(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|unique:newsletter_subscribers,email'
+        ]);
+    
+        NewsletterSubscriber::create([
+            'user_id' => Auth::id(),
+            'email'      => $request->email,
+            'subscribed_at' => now(),
+        ]);
+    
+        // Si appel AJAX (depuis le footer)
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true]);
+        }
+    
+        return redirect()->back()->with('success', 'Merci pour votre inscription !');
     }
-
-    return redirect()->back()->with('success', 'Merci pour votre inscription !');
-}
 }

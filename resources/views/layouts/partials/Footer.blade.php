@@ -60,20 +60,7 @@
                                        focus:outline-none focus:ring-2 focus:ring-[#E8490F] focus:border-transparent
                                        transition-all"
                             >
-                            <button
-                                type="submit"
-                                :disabled="loading"
-                                class="px-5 py-2.5 bg-[#E8490F] hover:bg-orange-600 text-white text-sm
-                                       font-bold rounded-lg transition-colors disabled:opacity-60 shrink-0
-                                       flex items-center gap-2"
-                            >
-                                <svg x-show="loading" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-                                </svg>
-                                <span x-show="!loading">S'inscrire</span>
-                                <span x-show="loading">...</span>
-                            </button>
+                            <x-button-art3f label="S'inscrire" />
                         </div>
                     </template>
                     <template x-if="success">
@@ -115,10 +102,7 @@
                         [route('contact'),            'Contact'],
                     ] as [$url, $label])
                         <li>
-                            <a href="{{ $url }}"
-                               class="text-sm text-gray-400 hover:text-white transition-colors">
-                                {{ $label }}
-                            </a>
+                            <x-lien-art3f :href="$url" :label="$label" />
                         </li>
                     @endforeach
                 </ul>
@@ -187,10 +171,7 @@
                         [route('oeuvre-sur-mesure'),   'Votre œuvre sur mesure'],
                     ] as [$url, $label])
                         <li>
-                            <a href="{{ $url }}"
-                               class="text-sm text-gray-400 hover:text-white transition-colors">
-                                {{ $label }}
-                            </a>
+                            <x-lien-art3f :href="$url" :label="$label" />
                         </li>
                     @endforeach
                     <li>
@@ -237,10 +218,7 @@
 
                     {{-- Formulaire de contact --}}
                     <li>
-                        <a href="{{ route('contact') }}"
-                           class="text-sm text-gray-400 hover:text-white transition-colors">
-                            Formulaire de contact
-                        </a>
+                        <x-lien-art3f :href="route('contact')" label="Formulaire de contact" />
                     </li>
 
                     {{-- Chat --}}
@@ -265,16 +243,10 @@
                 </p>
                 <ul class="space-y-2.5">
                     <li>
-                        <a href="{{ route('artiste.compte') }}"
-                           class="text-sm text-gray-400 hover:text-white transition-colors">
-                            Accès à votre compte
-                        </a>
+                        <x-lien-art3f :href="route('artiste.compte')" label="Espace exposant" />
                     </li>
                     <li>
-                        <a href="https://aide.art3f.com"
-                           class="text-sm text-gray-400 hover:text-white transition-colors">
-                            FAQ artistes
-                        </a>
+                        <x-lien-art3f :href="'https://aide.art3f.com'" label="FAQ artistes" />
                     </li>
                 </ul>
 

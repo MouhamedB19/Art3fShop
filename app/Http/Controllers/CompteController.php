@@ -12,17 +12,19 @@ class CompteController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->isArtiste()) {
+        if ($user->estArtiste()) {
             return view('artiste.index', [  // → resources/views/artiste/index.blade.php
                 'oeuvres' => $user->artiste->oeuvres()->latest()->take(5)->get(),
-                'ventes'  => $user->artiste->ventes()->latest()->take(5)->get(),
-                'favoris' => $user->favorisOeuvres()->take(5)->get(),
+                //'ventes'  => $user->artiste->ventes()->latest()->take(5)->get(),
+            ]);
+        }
+        else{
+            return view('compte.index', [       // → resources/views/compte/index.blade.php
+                'commandes' => $user->commandes()->latest()->take(5)->get(),
+                'favoris'   => $user->client->oeuvresFavoris()->take(5)->get(),
             ]);
         }
 
-        return view('compte.index', [       // → resources/views/compte/index.blade.php
-            'commandes' => $user->commandes()->latest()->take(5)->get(),
-            'favoris'   => $user->favorisOeuvres()->take(5)->get(),
-        ]);
+        
     }
 }

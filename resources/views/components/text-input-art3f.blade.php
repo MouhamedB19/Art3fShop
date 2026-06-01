@@ -1,0 +1,1 @@
+<input type={{ $type }} placeholder="{{ $message }}" name={{$name}} required class="flex-1 px-4 py-2.5 bg-white/10 border rounded-lg  text-sm placeholder-[#1A1A1A]    focus:outline-none focus:ring-2 focus:ring-[#E8490F] focus:border-transparent  transition-all w-full border-[#1A1A1A] ">

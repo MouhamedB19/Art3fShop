@@ -44,7 +44,11 @@
             <div class="flex items-center gap-4">
                 @auth
                     <span class="text-gray-500">Bonjour,
-                        <span class="font-semibold text-[#1A1A1A]">{{ auth()->user()->prenom }}</span>
+                        @if(Auth::user()->estArtiste() && Auth::user()->artiste->nom_d_artiste)
+                            <span class="font-semibold text-[#1A1A1A]">{{ Auth::user()->artiste->nom_d_artiste }}</span>
+                        @else
+                            <span class="font-semibold text-[#1A1A1A]">{{ Auth::user()->prenom }}</span>
+                        @endif
                     </span>
                     <a href="{{ route('compte.index') }}"
                        class="hover:text-[#E8490F] transition-colors">Mon compte</a>
@@ -74,125 +78,131 @@
                     </a>
                 @endauth
             </div>
-
+            
+            
             {{-- Droite : icônes utilisateur + préférences + aide --}}
             <div class="flex items-center gap-4">
+                @if(Auth::user() && !Auth::user()->estArtiste())
+                    <div class="flex gap-4">
+                        {{-- Œuvres coup de cœur --}}
+                        <a href="{{ route('compte.favoris.oeuvres') }}"
+                           class="flex items-center gap-1 hover:text-[#E8490F] transition-colors group"
+                           title="Mes œuvres coup de cœur">
+                            <svg class="w-4 h-4 group-hover:fill-[#E8490F] transition-all" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312
+                                         2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0
+                                         7.22 9 12 9 12s9-4.78 9-12z"/>
+                            </svg>
+                            @auth
+                                <span class="font-semibold text-[#E8490F]">
+                                    {{ Auth::user()->favoris_oeuvres_count ?? 0 }}
+                                </span>
+                            @endauth
+                        </a>
 
-                {{-- Œuvres coup de cœur --}}
-                <a href="{{ route('compte.favoris.oeuvres') }}"
-                   class="flex items-center gap-1 hover:text-[#E8490F] transition-colors group"
-                   title="Mes œuvres coup de cœur">
-                    <svg class="w-4 h-4 group-hover:fill-[#E8490F] transition-all" fill="none"
-                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312
-                                 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0
-                                 7.22 9 12 9 12s9-4.78 9-12z"/>
-                    </svg>
-                    @auth
-                        <span class="font-semibold text-[#E8490F]">
-                            {{ auth()->user()->favoris_oeuvres_count ?? 0 }}
-                        </span>
-                    @endauth
-                </a>
+                        {{-- Artistes coup de cœur --}}
+                        <a href="{{ route('compte.favoris.artistes') }}"
+                           class="flex items-center gap-1 hover:text-[#E8490F] transition-colors group"
+                           title="Mes artistes coup de cœur">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5
+                                         7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676
+                                         0-5.216-.584-7.499-1.632z"/>
+                            </svg>
+                            @auth
+                                <span class="font-semibold text-[#E8490F]">
+                                    {{ Auth::user()->favoris_artistes_count ?? 0 }}
+                                </span>
+                            @endauth
+                        </a>
 
-                {{-- Artistes coup de cœur --}}
-                <a href="{{ route('compte.favoris.artistes') }}"
-                   class="flex items-center gap-1 hover:text-[#E8490F] transition-colors group"
-                   title="Mes artistes coup de cœur">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5
-                                 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676
-                                 0-5.216-.584-7.499-1.632z"/>
-                    </svg>
-                    @auth
-                        <span class="font-semibold text-[#E8490F]">
-                            {{ auth()->user()->favoris_artistes_count ?? 0 }}
-                        </span>
-                    @endauth
-                </a>
-
-                {{-- Panier --}}
-                <a href="{{ route('panier.index') }}"
-                   class="flex items-center gap-1 hover:text-[#E8490F] transition-colors group"
-                   title="Mon panier">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993
-                                 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0
-                                 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576
-                                 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375
-                                 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
-                    </svg>
-                    @if(session('panier_count', 0) > 0)
-                        <span class="font-semibold text-[#E8490F]">
-                            {{ session('panier_count', 0) }}
-                        </span>
-                    @endif
-                </a>
-
+                        {{-- Panier --}}
+                        <a href="{{ route('panier.index') }}"
+                           class="flex items-center gap-1 hover:text-[#E8490F] transition-colors group"
+                           title="Mon panier">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993
+                                         1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0
+                                         01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576
+                                         0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375
+                                         0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
+                            </svg>
+                            @if(session('panier_count', 0) > 0)
+                                <span class="font-semibold text-[#E8490F]">
+                                    {{ session('panier_count', 0) }}
+                                </span>
+                            @endif
+                        </a>
+                    </div>
+                    <span class="text-gray-200 select-none">|</span>
+                @endif
                 {{-- Séparateur --}}
-                <span class="text-gray-200 select-none">|</span>
+                
+                
 
                 {{-- Langue --}}
-                <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open"
-                            class="flex items-center gap-1 hover:text-[#E8490F] transition-colors font-medium uppercase">
-                        {{ app()->getLocale() }}
-                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-                    </button>
-                    <div x-show="open" @click.outside="open = false"
-                         x-transition
-                         class="absolute right-0 top-full mt-1 bg-white border border-gray-200
-                                rounded shadow-lg z-50 overflow-hidden">
-                        @foreach(['fr' => 'Français', 'en' => 'English'] as $locale => $label)
-                            <a href="{{ route('locale.switch', $locale) }}"
-                               class="block px-4 py-2 text-xs hover:bg-gray-50 hover:text-[#E8490F]
-                                      {{ app()->getLocale() === $locale ? 'font-bold text-[#E8490F]' : '' }}">
-                                {{ $label }}
-                            </a>
-                        @endforeach
+                <div class="flex gap-4">
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open"
+                                class="flex items-center gap-1 hover:text-[#E8490F] transition-colors font-medium uppercase">
+                            {{ app()->getLocale() }}
+                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div x-show="open" @click.outside="open = false"
+                             x-transition
+                             class="absolute right-0 top-full mt-1 bg-white border border-gray-200
+                                    rounded shadow-lg z-50 overflow-hidden">
+                            @foreach(['fr' => 'Français', 'en' => 'English'] as $locale => $label)
+                                <a href="{{ route('locale.switch', $locale) }}"
+                                   class="block px-4 py-2 text-xs hover:bg-gray-50 hover:text-[#E8490F]
+                                          {{ app()->getLocale() === $locale ? 'font-bold text-[#E8490F]' : '' }}">
+                                    {{ $label }}
+                                </a>
+                            @endforeach
+                        </div>
                     </div>
-                </div>
 
-                {{-- Devise --}}
-                <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open"
-                            class="flex items-center gap-1 hover:text-[#E8490F] transition-colors font-medium">
-                        € {{ session('devise', 'EUR') }}
-                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-                    </button>
-                    <div x-show="open" @click.outside="open = false"
-                         x-transition
-                         class="absolute right-0 top-full mt-1 bg-white border border-gray-200
-                                rounded shadow-lg z-50 overflow-hidden">
-                        @foreach(['EUR' => '€ EUR', 'GBP' => '£ GBP', 'USD' => '$ USD', 'CHF' => 'CHF'] as $code => $label)
-                            <a href="{{ route('devise.switch', $code) }}"
-                               class="block px-4 py-2 text-xs hover:bg-gray-50 hover:text-[#E8490F]
-                                      {{ session('devise', 'EUR') === $code ? 'font-bold text-[#E8490F]' : '' }}">
-                                {{ $label }}
-                            </a>
-                        @endforeach
+                    {{-- Devise --}}
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open"
+                                class="flex items-center gap-1 hover:text-[#E8490F] transition-colors font-medium">
+                            € {{ session('devise', 'EUR') }}
+                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div x-show="open" @click.outside="open = false"
+                             x-transition
+                             class="absolute right-0 top-full mt-1 bg-white border border-gray-200
+                                    rounded shadow-lg z-50 overflow-hidden">
+                            @foreach(['EUR' => '€ EUR', 'GBP' => '£ GBP', 'USD' => '$ USD', 'CHF' => 'CHF'] as $code => $label)
+                                <a href="{{ route('devise.switch', $code) }}"
+                                   class="block px-4 py-2 text-xs hover:bg-gray-50 hover:text-[#E8490F]
+                                          {{ session('devise', 'EUR') === $code ? 'font-bold text-[#E8490F]' : '' }}">
+                                    {{ $label }}
+                                </a>
+                            @endforeach
+                        </div>
                     </div>
+
+                    {{-- Aide / FAQ --}}
+                    <a href="{{ route('faq.index') }}"
+                       class="hover:text-[#E8490F] transition-colors"
+                       title="Aide">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172
+                                     2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45
+                                     1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/>
+                        </svg>
+                    </a>
                 </div>
-
-                {{-- Aide / FAQ --}}
-                <a href="{{ route('faq.index') }}"
-                   class="hover:text-[#E8490F] transition-colors"
-                   title="Aide">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172
-                                 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45
-                                 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/>
-                    </svg>
-                </a>
-
             </div>
         </div>
     </div>
@@ -496,7 +506,7 @@
                 @auth
                     <a href="{{ route('compte.index') }}"
                        class="block px-3 py-2 text-sm text-gray-600 hover:text-[#E8490F]">Mon compte</a>
-                       @if(auth()->user()->isArtiste())
+                       @if(auth()->user()->estArtiste())
                             <a href="{{ route('artiste.compte') }}">Mon espace artiste</a>
                        @endif
                 @else

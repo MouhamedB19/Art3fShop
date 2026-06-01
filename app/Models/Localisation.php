@@ -8,6 +8,7 @@ class Localisation extends Model
 {
     protected $fillable = [
         'code_postal',
+        'adresse',
         'ville_id',
     ];
 

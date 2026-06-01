@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Artiste extends Model
 {
     protected $fillable = [
+        'nom_d_artiste',
         'bio',
         'photo',
         'Est_Artiste_Art3f',
         'iban',
+        'CV',
         'user_id',
         'localisations_id',
     ];
@@ -42,5 +44,8 @@ class Artiste extends Model
     public function campagnes(){
         return $this->hasMany(Campagne_pub::class, 'artiste_id');
     }
+
+    
+    
 
 }

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->foreignId('oeuvre_id')->constrained('oeuvres');
             $table->foreignId('client_id')->constrained('clients');
             $table->primary(['oeuvre_id', 'client_id']);
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 

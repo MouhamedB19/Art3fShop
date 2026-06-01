@@ -27,9 +27,12 @@ class ProfilArtisteController extends Controller
     {
         $request->validate([
             'bio'          => ['required', 'string'],
+            'nom_d_artiste' => ['string', 'max:255'],
             'photo'        => ['required', 'image', 'max:2048'],
             'iban'         => ['required', 'string'],
+            'cv'           => ['required', 'file', 'mimes:pdf,doc,docx', 'max:5120'],
             'code_postal'  => ['required', 'string'],
+            'adresse'       => ['required', 'string'],
             'ville_id'     => ['required', 'exists:villes,id'],
         ]);
 
@@ -38,6 +41,7 @@ class ProfilArtisteController extends Controller
         // Cherche ou crée la localisation
         $localisation = Localisation::firstOrCreate([
             'code_postal' => $request->code_postal,
+            'adresse'     => $request->adresse,
             'ville_id'    => $request->ville_id,
         ]);
 
@@ -46,6 +50,8 @@ class ProfilArtisteController extends Controller
             'photo'            => $photo,
             'iban'             => $request->iban,
             'localisations_id' => $localisation->id,
+            'nom_d_artiste'    => $request->nom_d_artiste,
+            'cv'               => $request->file('cv')->store('cvs/artistes', 'public'),
         ]);
 
         return redirect(route('dashboard'));

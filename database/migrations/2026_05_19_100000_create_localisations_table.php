@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('localisations', function (Blueprint $table) {
             $table->id();
             $table->string('code_postal');
+            $table->string('adresse');
             $table->foreignId('ville_id')->constrained('villes')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });

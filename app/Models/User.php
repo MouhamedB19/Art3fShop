@@ -75,4 +75,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(NewsletterSubscriber::class);
     }
+
+    public function commandes(){
+        return $this->hasMany(Commande::class, 'user_id');
+    }
+
 }
