@@ -46,4 +46,11 @@
             </x-primary-button>
         </div>
     </form>
+    <button class="mt-4 w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600" onclick="window.location='{{ route('auth.google') }}'">
+        {{ __('S\'inscrire avec Google') }}
+    </button>
+    <button class="mt-4 w-full bg-blue-600 text-white py-2
+        px-4 rounded-md hover:bg-blue-700" onclick="window.location='{{ route('auth.facebook') }}'">
+        {{ __('S\'inscrire avec Facebook') }}
+    </button>
 </x-guest-layout>

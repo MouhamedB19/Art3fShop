@@ -14,6 +14,13 @@ use App\Http\Controllers\PanierController;
 use App\Http\Controllers\SelectionController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Categorie;
+use App\Http\Controllers\Auth\SocialiteController;
+
+Route::get('/auth/google', [SocialiteController::class, 'redirect'])->name('auth.google');
+Route::get('/auth/google/callback', [SocialiteController::class, 'callback'])->name('auth.google.callback');
+
+Route::get('/auth/facebook', [SocialiteController::class, 'redirectFacebook'])->name('auth.facebook');
+Route::get('/auth/facebook/callback', [SocialiteController::class, 'callbackFacebook'])->name('auth.facebook.callback');
 
 Route::get('/', function () {
     return view('home');
