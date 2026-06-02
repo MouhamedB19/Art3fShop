@@ -48,8 +48,8 @@ class CategorieSeeder extends Seeder
             ['nom_categorie' => 'Lithographie',  'nom_technique' => 'Lithographie',        'id_categorie_parente' => 5],
         ];
     
-        foreach($categories as $c) {
-            Categorie::create($c);
+        foreach($categories as $cat) {
+            Categorie::create($cat);
         }
     }
 }

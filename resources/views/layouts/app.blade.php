@@ -23,6 +23,7 @@
     {{-- Favicon --}}
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
+
     {{-- Vite : Tailwind CSS + Alpine.js --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 

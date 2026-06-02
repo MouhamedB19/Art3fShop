@@ -42,12 +42,60 @@
     </div>
     <button type="submit">Rechercher</button>
 </form>
-@foreach($oeuvres as $oeuvre)
-    <div>
-        <img src="{{ asset('storage/'.$oeuvre->photo_principale) }}" alt="{{ $oeuvre->titre }}">
-        <p>{{ $oeuvre->titre }}</p>
-        <p>{{ $oeuvre->artiste->user->prenom }}  {{ $oeuvre->artiste->user->nom }}</p>
+@if($oeuvres->isEmpty())
+    <p>Aucune œuvre trouvée.</p>
+@else
+    <div class="masonry-grid w-full overflow-hidden" style="position: relative; margin: 0 auto;">
+    
+        <div class="grid-sizer" style="width: 33.333%;"></div>
+        
+        @foreach($oeuvres as $oeuvre)
+            <div class="masonry-item p-3" style="width: 33.333%; float: left; box-sizing: border-box;">
+                <div class="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+
+                    <div class="w-full bg-gray-50 flex items-center justify-center min-h-[200px]">
+                        <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=500" 
+                             class="w-full h-auto block object-contain" 
+                             loading="lazy">
+                    </div>
+
+                    <div class="p-4">
+                        <h3 class="font-bold text-gray-900 text-base">{{ $oeuvre->titre }}</h3>
+                        <p class="text-sm text-gray-500 mt-1">
+                            {{ $oeuvre->artiste->user->prenom }} {{ $oeuvre->artiste->user->nom }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        @endforeach
     </div>
-@endforeach
+@endif
 
 {{ $oeuvres->links() }}
+<script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const grid = document.querySelector('.masonry-grid');
+        
+        if (grid) {
+            // 1. On attend d'abord via la bibliothèque imagesLoaded que TOUTES les images soient prêtes
+            imagesLoaded(grid, function() {
+                
+                // 2. On initialise Masonry SEULEMENT quand les hauteurs réelles sont connues
+                const msnry = new Masonry(grid, {
+                    itemSelector: '.masonry-item',
+                    columnWidth: '.grid-sizer',
+                    percentPosition: true,
+                    horizontalOrder: true // Garde l'alignement de gauche à droite
+                });
+
+                // 3. Forcer un recalcul de sécurité pour éviter le moindre pixel de décalage
+                setTimeout(function() {
+                    msnry.layout();
+                }, 200);
+            });
+        }
+    });
+</script>

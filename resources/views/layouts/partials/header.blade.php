@@ -45,7 +45,7 @@
                 @auth
                     <span class="text-gray-500">Bonjour,
                         @if(Auth::user()->estArtiste() && Auth::user()->artiste->nom_d_artiste)
-                            <span class="font-semibold text-[#1A1A1A]">{{ Auth::user()->artiste->nom_d_artiste }}</span>
+                            <span class="font-semibold text-[#1A1A1A]">{{Auth::user()->prenom}} {{ Auth::user()->artiste->nom_d_artiste }}</span>
                         @else
                             <span class="font-semibold text-[#1A1A1A]">{{ Auth::user()->prenom }}</span>
                         @endif
@@ -138,11 +138,10 @@
                             @endif
                         </a>
                     </div>
+                    
+                    {{-- Séparateur --}}
                     <span class="text-gray-200 select-none">|</span>
                 @endif
-                {{-- Séparateur --}}
-                
-                
 
                 {{-- Langue --}}
                 <div class="flex gap-4">

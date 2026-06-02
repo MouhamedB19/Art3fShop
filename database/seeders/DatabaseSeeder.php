@@ -11,6 +11,7 @@ use Database\Seeders\CategorieSeeder;
 use Database\Seeders\SupportSeeder;
 use Database\Seeders\ThemeSeeder;
 use Database\Seeders\CouleurSeeder;
+use Database\Seeders\OeuvreSeeder;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -26,7 +27,11 @@ class DatabaseSeeder extends Seeder
             SupportSeeder::class,
             ThemeSeeder::class,
             CouleurSeeder::class,
-    ]);
+            UserSeeder::class,
+            ArtisteSeeder::class,
+            OeuvreSeeder::class,
+            
+        ]);
         /*User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',

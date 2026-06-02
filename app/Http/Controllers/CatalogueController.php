@@ -69,4 +69,6 @@ class CatalogueController extends Controller
         })->paginate(12);
         return view('catalogue.theme', compact('oeuvres'));
     }
+
+    
 }
