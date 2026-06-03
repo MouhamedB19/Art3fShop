@@ -23,48 +23,54 @@
 <body class="bg-white text-[#1A1A1A] antialiased">
     @include('layouts.partials.header')
     <form method="GET" action="{{ route('catalogue.index') }}" class="p-4">
-        <div>
-            <input type="text" name="recherche" 
+        <div class="flex justify-center">
+            <input  class="rounded-lg w-1/2" type="text" name="recherche" 
                    placeholder="Artiste, œuvre..." 
                    value="{{ request('recherche') }}">
         </div>
-        <select name="categorie_id">
-            <option value="">Toutes les catégories</option>
-            @foreach($categories as $categorie)
-                <option value="{{ $categorie->id }}" {{ request('categorie_id') == $categorie->id ? 'selected' : '' }}>
-                    {{ $categorie->nom_categorie }}
-                </option>
-            @endforeach
-        </select>
+        <div class='flex gap-4 flex-wrap justify-center my-4'>
+            <select name="categorie_id" class="rounded-lg">
+                <option value="">Toutes les catégories</option>
+                @foreach($categories as $categorie)
+                    <option value="{{ $categorie->id }}" {{ request('categorie_id') == $categorie->id ? 'selected' : '' }}>
+                        {{ $categorie->nom_categorie }}
+                    </option>
+                @endforeach
+            </select>
 
-        <select name="theme_id">
-            <option value="">Tous les thèmes</option>
-            @foreach($themes as $theme)
-                <option value="{{ $theme->id }}" {{ request('theme_id') == $theme->id ? 'selected' : '' }}>
-                    {{ $theme->nom_theme }}
-                </option>
-            @endforeach
-        </select>
-        <select name="couleur_id">
-            <option value="">Toutes les couleurs</option>
-            @foreach($couleurs as $couleur)
-                <option value="{{ $couleur->id }}" {{ request('couleur_id') == $couleur->id ? 'selected' : '' }}>
-                    {{ $couleur->nom_couleur }}
-                </option>
-            @endforeach
-        </select>
-        <select name="orientation">
-            <option value="">Toutes les orientations</option>
-            <option value="portrait" {{ request('orientation') == 'portrait' ? 'selected' : '' }}>Portrait</option>
-            <option value="paysage" {{ request('orientation') == 'paysage' ? 'selected' : '' }}>Paysage</option>
-            <option value="carre" {{ request('orientation') == 'carre' ? 'selected' : '' }}>Carré</option>
-        </select>
-        <div>
-            <label>Année</label>
-            <input type="number" name="annee_min" min="1900" placeholder="De" value="{{ request('annee_min') }}">
-            <input type="number" name="annee_max" placeholder="À" value="{{ request('annee_max') }}">
+            <select name="theme_id" class="rounded-lg">
+                <option value="">Tous les thèmes</option>
+                @foreach($themes as $theme)
+                    <option value="{{ $theme->id }}" {{ request('theme_id') == $theme->id ? 'selected' : '' }}>
+                        {{ $theme->nom_theme }}
+                    </option>
+                @endforeach
+            </select>
+            <select name="couleur_id" class="rounded-lg">
+                <option value="">Toutes les couleurs</option>
+                @foreach($couleurs as $couleur)
+                    <option value="{{ $couleur->id }}" {{ request('couleur_id') == $couleur->id ? 'selected' : '' }}>
+                        {{ $couleur->nom_couleur }}
+                    </option>
+                @endforeach
+            </select>
+            <select name="orientation" class="rounded-lg">
+                <option value="">Toutes les orientations</option>
+                <option value="portrait" {{ request('orientation') == 'portrait' ? 'selected' : '' }}>Portrait</option>
+                <option value="paysage" {{ request('orientation') == 'paysage' ? 'selected' : '' }}>Paysage</option>
+                <option value="carre" {{ request('orientation') == 'carre' ? 'selected' : '' }}>Carré</option>
+            </select>
         </div>
-        <button type="submit">Rechercher</button>
+        <div class="flex gap-4 justify-center align-center">
+            <label>Année</label>
+            <input type="number" class="rounded-lg" name="annee_min" min="1900" placeholder="De" value="{{ request('annee_min') }}">
+            <input type="number" class="rounded-lg" name="annee_max" placeholder="À" value="{{ request('annee_max') }}">
+        </div>
+        <div class="flex gap-4 justify-center align-center my-4">
+            <button type="submit"class="px-5 py-2.5 bg-[#E8490F] hover:bg-orange-600 text-white text-sm        font-bold rounded-lg transition-colors disabled:opacity-60 shrink-0        flex items-center gap-2">
+                Rechercher
+            </button>
+        </div>
     </form>
     @if($oeuvres->isEmpty())
         <p>Aucune œuvre trouvée.</p>
@@ -74,23 +80,7 @@
             <div class="grid-sizer" style="width: 33.333%;"></div>
 
             @foreach($oeuvres as $oeuvre)
-                <div class="masonry-item p-3" style="width: 33.333%; float: left; box-sizing: border-box;">
-                    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-
-                        <div class="w-full bg-gray-50 flex items-center justify-center min-h-[200px]">
-                            <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=500" 
-                                 class="w-full h-auto block object-contain" 
-                                 loading="lazy">
-                        </div>
-
-                        <div class="p-4">
-                            <h3 class="font-bold text-gray-900 text-base">{{ $oeuvre->titre }}</h3>
-                            <p class="text-sm text-gray-500 mt-1">
-                                {{ $oeuvre->artiste->user->prenom }} {{ $oeuvre->artiste->user->nom }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                <x-catalogue-card-art3f artist="{{ $oeuvre->artiste->user->prenom }} {{ $oeuvre->artiste->user->nom }}" title="{{ $oeuvre->titre }}" />
             @endforeach
         </div>
     @endif

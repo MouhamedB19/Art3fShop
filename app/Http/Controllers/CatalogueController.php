@@ -9,7 +9,7 @@ use App\Models\Couleur;
 use App\Models\Support;
 use App\Models\Theme;
 use Illuminate\Http\Request;
-
+use Illuminate\Database\Eloquent\Collection;
 class CatalogueController extends Controller
 {
     public function index(request $request){
@@ -42,18 +42,19 @@ class CatalogueController extends Controller
         }
         if($request->recherche) {
             $query->where('titre', 'LIKE', '%'.$request->recherche.'%')
-                  ->orWhereHas('artiste', function($q) use ($request) {
-                      $q->whereHas('user', function($q2) use ($request) {
-                          $q2->where('nom', 'LIKE', '%'.$request->recherche.'%');
-                      });
-                  });
+                ->orWhereHas('artiste', function($q) use ($request) {
+                    $q->whereHas('user', function($q2) use ($request) {
+                        $q2->where('nom', 'LIKE', '%'.$request->recherche.'%')
+                        ->orWhere('prenom', 'LIKE', '%'.$request->recherche.'%');
+                    });
+                });
         }
+     
         $oeuvres = $query->paginate(12);
         $annee_de_creation = Oeuvre::selectRaw('MIN(annee_de_creation) as min, MAX(annee_de_creation) as max')->first();
         $categories = Categorie::whereNull('id_categorie_parente')->get();
         $themes = Theme::all();
         $couleurs = Couleur::all();
-        $supports = Support::all();
         return view('catalogue.index', compact(
             'oeuvres',
             'annee_de_creation',
@@ -68,6 +69,13 @@ class CatalogueController extends Controller
             $q->where('id', $theme);
         })->paginate(12);
         return view('catalogue.theme', compact('oeuvres'));
+    }
+
+    public function categorie($categorie){
+        $oeuvres = Oeuvre::all();
+        $c = Categorie::where('nom_categorie', $categorie)->first();
+        $oeuvresCategorie = $oeuvres->where('categorie_id', $c->id)->merge($oeuvres->where('id_categorie_parente', $c->id));
+        return view('catalogue.categorie', compact('oeuvresCategorie', 'categorie'));
     }
 
     

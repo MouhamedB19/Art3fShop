@@ -372,11 +372,11 @@
                                 </p>
                                 <ul class="space-y-1 list-none p-0 m-0">
                                     @foreach([
-                                        ['peinture',     'Peinture'],
-                                        ['sculpture',    'Sculpture'],
-                                        ['photographie', 'Photographie'],
-                                        ['edition',      'Édition'],
-                                        ['dessin',       'Dessin'],
+                                        ["peinture",     'Peinture'],
+                                        ["sculpture",    'Sculpture'],
+                                        ["photographie", 'Photographie'],
+                                        ["edition",      'Édition'],
+                                        ["dessin",       'Dessin'],
                                     ] as [$slug, $label])
                                         <li>
                                             <a href="{{ route('catalogue.categorie', $slug) }}"
