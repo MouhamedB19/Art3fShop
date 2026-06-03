@@ -12,6 +12,7 @@ class Oeuvre extends Model
         'photo_principale',
         'orientation',
         'description',
+        'visible',
         'categorie_id',
         'support_id',
         'artiste_id',

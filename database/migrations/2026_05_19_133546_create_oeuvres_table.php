@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('photo_principale');
             $table->enum('orientation', ['portrait', 'paysage', 'carre']); // liste déroulante
             $table->string('description');
+            $table->boolean('visible')->default(true);
             $table->foreignId('categorie_id')->constrained()->onDelete('cascade');
             $table->foreignId('support_id')->constrained('supports')->onDelete('cascade');
             $table->foreignId('artiste_id')->constrained('artistes')->onDelete('cascade');

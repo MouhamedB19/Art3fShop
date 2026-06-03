@@ -49,7 +49,7 @@
     <main>
         @yield('content')
     </main>
-
+    
     {{-- FOOTER --}}
     @include('layouts.partials.Footer')
 
