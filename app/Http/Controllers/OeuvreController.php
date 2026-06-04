@@ -78,7 +78,7 @@ class OeuvreController extends Controller
      * Display the specified resource.
      */
     // OeuvreController.php
-public function show($id)
+    public function show($id)
     {
         $oeuvre = Oeuvre::with([
             'artiste.user',

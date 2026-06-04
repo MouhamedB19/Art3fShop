@@ -1,64 +1,92 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>@yield('title', 'art3f Shop') — Art Contemporain</title>
-    <meta name="description"
-          content="@yield('meta_description', 'art3f Shop — Achetez des œuvres d\'art contemporain de peintres, sculpteurs et photographes professionnels.')">
-
-    {{-- Favicon --}}
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+@extends('layouts.app')
+@include('layouts.partials.header')
 
 
-    {{-- Vite : Tailwind CSS + Alpine.js --}}
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    {{-- Styles supplémentaires poussés par les vues enfants --}}
-    @stack('styles')
-</head>
-
-<body class="bg-white text-[#1A1A1A] antialiased">
-    @include('layouts.partials.header')
-    <h1>Toutes les {{$categorie}}s</h1>
-    <div class="masonry-grid w-full overflow-hidden">
-        <div class="grid-sizer" style="width: 33.333%;"></div>
-
-        @if($oeuvresCategorie->isEmpty())
-            <p>Aucune œuvre trouvée pour cette catégorie.</p>
-        @else
+    @if($tiragesCorrespondants->isEmpty())
+        <h1>Aucune œuvre trouvée pour cette catégorie.</h1>
+    @else
+        <div class="w-full m-4">
+            <h1 class="text-lg font-bold text-[#1A1A1A]">Toutes les {{$categorie}}s</h1>
+        </div>
+        <div class="columns-2 md:columns-3 lg:columns-4 gap-4"> 
             @foreach($tiragesCorrespondants as $tirage)
-                <x-catalogue-card-art3f 
-                    artist="{{ $tirage->oeuvre->artiste->user->prenom }} {{ $tirage->oeuvre->artiste->user->nom }}" 
-                    title="{{ $tirage->oeuvre->titre }}" 
-                    price="{{ $tirage->prix * ($tirage->oeuvre->taux_reduction ? (1 - $tirage->oeuvre->taux_reduction) : 1) }}"
-                />
+                @php
+                    $oeuvre = $tirage->oeuvre;
+                    $isNew = $oeuvre->created_at >= now()->subDays(30);
+                    $vendue = $tirage->vendue;
+                    $prix = $tirage->prix;
+                    $prixAffiche = $oeuvre->taux_reduction ? round($prix * (1 - $oeuvre->taux_reduction), 2) : $prix;
+                @endphp
+                <div class="break-inside-avoid mb-4">
+                        <a href="{{ route('oeuvres.show', $oeuvre->id) }}"
+                           class="block relative group overflow-hidden rounded-xl bg-gray-100">
+
+                            <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=500"
+                                 alt="{{ $oeuvre->titre }}"
+                                 class="w-full h-auto object-contain transition-transform
+                                        duration-500 group-hover:scale-105"
+                                 loading="lazy">
+
+                            @if($isNew && !$vendue)
+                                <span class="absolute top-2 left-2 bg-black text-white
+                                             text-[10px] font-bold px-2 py-0.5 rounded tracking-wider">
+                                    NEW
+                                </span>
+                            @endif
+
+                            @if($oeuvre->taux_reduction && !$vendue)
+                                <span class="absolute top-2 right-2 bg-[#E8490F] text-white
+                                             text-[10px] font-bold px-2 py-0.5 rounded">
+                                    -{{ $oeuvre->taux_reduction * 100 }}%
+                                </span>
+                            @endif
+
+                            @if($vendue)
+                                <div class="absolute inset-0 bg-black/60 flex items-center
+                                            justify-center rounded-xl">
+                                    <span class="text-white font-black text-xl tracking-widest">
+                                        Vendue
+                                    </span>
+                                </div>
+                            @endif
+
+                        </a>
+
+                        <div class="mt-2 px-1">
+                            <p class="text-xs text-gray-500 truncate">
+                                {{ $oeuvre->artiste->nom_d_artiste ?? $oeuvre->artiste->user->nom }}
+                                @if($oeuvre->artiste->Est_Artiste_Art3f)
+                                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#E8490F] ml-1"></span>
+                                @endif
+                            </p>
+                            <p class="text-sm font-semibold text-[#1A1A1A] truncate mt-0.5">
+                                {{ $oeuvre->titre }}
+                            </p>
+                            <p class="text-xs text-gray-400 mt-0.5">
+                                {{ $oeuvre->categorie->nom_categorie }}
+                                @if($tirage?->dimension)
+                                    · {{ $tirage->dimension->hauteur }}×{{ $tirage->dimension->largeur }} cm
+                                @endif
+                            </p>
+                            @if(!$vendue && $tirage)
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-sm font-bold text-[#E8490F]">
+                                        {{ number_format($prixAffiche, 0, ',', ' ') }} €
+                                    </span>
+                                    @if($oeuvre->taux_reduction)
+                                        <span class="text-xs text-gray-400 line-through">
+                                            {{ number_format($prix, 0, ',', ' ') }} €
+                                        </span>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
+                    </div>
             @endforeach
-        @endif
-    </div>
-    @include('layouts.partials.Footer')
+        </div>
+    @endif
+</div>
+@include('layouts.partials.Footer')
 
-    {{-- Scripts supplémentaires poussés par les vues enfants --}}
-    <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
-    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var grid = document.querySelector('.masonry-grid');
-        var msnry = new Masonry(grid, {
-            itemSelector: '.masonry-item',
-            columnWidth: '.grid-sizer',
-            percentPosition: true
-        });
-        imagesLoaded(grid).on('progress', function() {
-            msnry.layout();
-        });
-    });
-</script>
-</body>
+    
 
-
-
-
-</html>

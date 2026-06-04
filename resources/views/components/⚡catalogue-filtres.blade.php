@@ -15,7 +15,7 @@ new class extends Component
     public ?int    $categorie_id  = null;
     public array   $theme_ids     = [];
     public array   $couleur_ids   = [];
-    public ?string $encadrement   = null;
+    public ?boolean $encadrement   = null;
     public int     $prix_min      = 0;
     public int     $prix_max      = 5000;
     public ?string $orientation   = null;
@@ -24,13 +24,6 @@ new class extends Component
     public int     $largeur_min   = 0;
     public int     $largeur_max   = 500;
 
-    public function updatedCategorieId()  { $this->resetPage(); }
-    public function updatedThemeIds()     { $this->resetPage(); }
-    public function updatedCouleurIds()   { $this->resetPage(); }
-    public function updatedEncadrement()  { $this->resetPage(); }
-    public function updatedPrixMin()      { $this->resetPage(); }
-    public function updatedPrixMax()      { $this->resetPage(); }
-    public function updatedOrientation()  { $this->resetPage(); }
 
     public function removeFiltre(string $type, mixed $value = null): void
     {
@@ -66,7 +59,7 @@ new class extends Component
             || $this->prix_max < 5000;
     }
 
-    #[Computed(persist: true)]
+    #[Computed]
     public function oeuvres()
     {
         return Oeuvre::query()
@@ -90,9 +83,10 @@ new class extends Component
             'couleurs'   => Couleur::orderBy('nom_couleur')->get(),
         ];
     }
-}; ?>
+}; 
+?>
 
-{{-- ICI tu colles exactement la vue qu'on a générée (le contenu entre <div> et </div>) --}}
+
 <div>
     {{-- ═══════════════════════════════════════════════════
          BARRE DE FILTRES — sticky sous le header
@@ -123,7 +117,7 @@ new class extends Component
                             Toutes
                         </button>
                         @foreach($categories as $cat)
-                            <button wire:click="$set('categorie_id', {{ $cat->id }})"
+                            <button wire:click="$set('categorie_id', {{ $cat->id }})" @click="open: false"
                                     class="block w-full text-left px-3 py-2 text-sm rounded-lg
                                            hover:bg-orange-50 hover:text-[#E8490F] transition-colors
                                            {{ $categorie_id == $cat->id ? 'font-bold text-[#E8490F]' : '' }}">
@@ -186,7 +180,8 @@ new class extends Component
                                 <input type="checkbox"
                                        wire:model.live="couleur_ids"
                                        value="{{ $couleur->id }}"
-                                       class="rounded border-gray-300 text-[#E8490F] focus:ring-[#E8490F]">
+                                       class="rounded border-gray-300 text-[#E8490F] focus:ring-[#E8490F]"
+                                >
                                 {{ $couleur->nom_couleur }}
                             </label>
                         @endforeach
@@ -213,16 +208,16 @@ new class extends Component
                                        {{ $encadrement === null ? 'font-bold text-[#E8490F]' : '' }}">
                             Peu importe
                         </button>
-                        <button wire:click="$set('encadrement', 'oui')"
+                        <button wire:click="$set('encadrement', true)"
                                 class="block w-full text-left px-3 py-2 text-sm rounded-lg
                                        hover:bg-orange-50 hover:text-[#E8490F] transition-colors
-                                       {{ $encadrement === 'oui' ? 'font-bold text-[#E8490F]' : '' }}">
+                                       {{ $encadrement ? 'font-bold text-[#E8490F]' : '' }}">
                             Encadrée
                         </button>
-                        <button wire:click="$set('encadrement', 'non')"
+                        <button wire:click="$set('encadrement', false)"
                                 class="block w-full text-left px-3 py-2 text-sm rounded-lg
                                        hover:bg-orange-50 hover:text-[#E8490F] transition-colors
-                                       {{ $encadrement === 'non' ? 'font-bold text-[#E8490F]' : '' }}">
+                                       {{ $encadrement ? 'font-bold text-[#E8490F]' : '' }}">
                             Non encadrée
                         </button>
                     </div>
@@ -403,7 +398,7 @@ new class extends Component
                     @endphp
  
                     <div class="break-inside-avoid mb-4">
-                        <a href="{{ route('oeuvre.show', $oeuvre->id) }}"
+                        <a href="{{ route('oeuvres.show', $oeuvre->id) }}"
                            class="block relative group overflow-hidden rounded-xl bg-gray-100">
  
                             <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=500"
