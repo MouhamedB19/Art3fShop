@@ -12,6 +12,9 @@
                             <p class="text-sm text-gray-500 mt-1">
                                 {{ $artist }}
                             </p>
+                            <p class="text-sm font-bold text-[#E8490F]">
+                                {{ $price }} €
+                            </p>
                         </div>
                     </div>
                 </div>

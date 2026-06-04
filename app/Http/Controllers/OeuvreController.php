@@ -77,9 +77,28 @@ class OeuvreController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    // OeuvreController.php
+public function show($id)
     {
-        //
+        $oeuvre = Oeuvre::with([
+            'artiste.user',
+            'artiste.localisation.ville.pays',
+            'categorie',
+            'support',
+            'tirages.dimensions',
+            'themes',
+            'couleurs',
+        ])->findOrFail($id);
+
+        // Autres œuvres du même artiste (pour le bandeau en bas)
+        $autresOeuvres = Oeuvre::where('artiste_id', $oeuvre->artiste_id)
+            ->where('id', '!=', $oeuvre->id)
+            ->where('visible', true)
+            ->with(['tirages', 'artiste.user'])
+            ->take(6)
+            ->get();
+
+        return view('oeuvres.show', compact('oeuvre', 'autresOeuvres'));
     }
 
     /**

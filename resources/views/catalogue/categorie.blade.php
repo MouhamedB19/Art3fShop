@@ -29,8 +29,12 @@
         @if($oeuvresCategorie->isEmpty())
             <p>Aucune œuvre trouvée pour cette catégorie.</p>
         @else
-            @foreach($oeuvresCategorie as $oeuvre)
-                <x-catalogue-card-art3f artist="{{ $oeuvre->artiste->user->prenom }} {{ $oeuvre->artiste->user->nom }}" title="{{ $oeuvre->titre }}" />
+            @foreach($tiragesCorrespondants as $tirage)
+                <x-catalogue-card-art3f 
+                    artist="{{ $tirage->oeuvre->artiste->user->prenom }} {{ $tirage->oeuvre->artiste->user->nom }}" 
+                    title="{{ $tirage->oeuvre->titre }}" 
+                    price="{{ $tirage->prix * ($tirage->oeuvre->taux_reduction ? (1 - $tirage->oeuvre->taux_reduction) : 1) }}"
+                />
             @endforeach
         @endif
     </div>

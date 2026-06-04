@@ -157,7 +157,7 @@ Route::get('/artiste/inscription', [ArtisteController::class,'inscription'])->na
 
 Route::post('/artiste/inscription', [ArtisteController::class,'inscrire'])->name('artiste.inscrire');
 
-
+Route::get('/oeuvres/{id}', [OeuvreController::class, 'show'])->name('oeuvre.show');
 
 
 

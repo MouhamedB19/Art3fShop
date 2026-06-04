@@ -23,6 +23,9 @@ return new class extends Migration
             $table->foreignId('categorie_id')->constrained()->onDelete('cascade');
             $table->foreignId('support_id')->constrained('supports')->onDelete('cascade');
             $table->foreignId('artiste_id')->constrained('artistes')->onDelete('cascade');
+            $table->index('artiste_id');
+            $table->index('categorie_id');
+            $table->index('visible');
             $table->timestamps();
         });
     }

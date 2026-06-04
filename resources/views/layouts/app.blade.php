@@ -26,7 +26,7 @@
 
     {{-- Vite : Tailwind CSS + Alpine.js --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
+    @livewireStyles
     {{-- Styles supplémentaires poussés par les vues enfants --}}
     @stack('styles')
 </head>
@@ -55,6 +55,6 @@
 
     {{-- Scripts supplémentaires poussés par les vues enfants --}}
     @stack('scripts')
-
+    @livewireStyles
 </body>
 </html>

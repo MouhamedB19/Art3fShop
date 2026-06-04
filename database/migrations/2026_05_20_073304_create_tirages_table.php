@@ -24,6 +24,8 @@ return new class extends Migration
             $table->foreignId('dimensions_id')->constrained('dimensions')->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('commandes_id')->nullable()->constrained('commandes')->onDelete('set null')->onUpdate('cascade');
             $table->boolean('avec_cadre')->nullable();
+            $table->index('oeuvre_id');
+            $table->index('dimensions_id');
             $table->timestamps();
         });
     }
