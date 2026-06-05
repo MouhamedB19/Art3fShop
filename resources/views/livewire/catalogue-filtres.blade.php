@@ -1,101 +1,12 @@
-<?php
-
-use Livewire\Component;
-use Livewire\WithPagination;
-use Livewire\Attributes\Computed;
-use App\Models\Oeuvre;
-use App\Models\Categorie;
-use App\Models\Theme;
-use App\Models\Couleur;
-
-new class extends Component
-{
-    use WithPagination;
-
-    public ?int    $categorie_id  = null;
-    public array   $theme_ids     = [];
-    public array   $couleur_ids   = [];
-    public ?boolean $encadrement   = null;
-    public int     $prix_min      = 0;
-    public int     $prix_max      = 5000;
-    public ?string $orientation   = null;
-    public int     $hauteur_min   = 0;
-    public int     $hauteur_max   = 500;
-    public int     $largeur_min   = 0;
-    public int     $largeur_max   = 500;
-
-
-    public function removeFiltre(string $type, mixed $value = null): void
-    {
-        match($type) {
-            'categorie'   => $this->categorie_id = null,
-            'orientation' => $this->orientation  = null,
-            'encadrement' => $this->encadrement  = null,
-            'prix'        => [$this->prix_min = 0, $this->prix_max = 5000],
-            'theme'       => $this->theme_ids   = array_values(array_filter($this->theme_ids,   fn($id) => $id != $value)),
-            'couleur'     => $this->couleur_ids = array_values(array_filter($this->couleur_ids, fn($id) => $id != $value)),
-            default       => null,
-        };
-        $this->resetPage();
-    }
-
-    public function removeAllFiltres(): void
-    {
-        $this->reset(['categorie_id','theme_ids','couleur_ids','encadrement','prix_min','prix_max','orientation','hauteur_min','hauteur_max','largeur_min','largeur_max']);
-        $this->prix_max    = 5000;
-        $this->hauteur_max = 500;
-        $this->largeur_max = 500;
-        $this->resetPage();
-    }
-
-    public function hasFiltresActifs(): bool
-    {
-        return $this->categorie_id !== null
-            || !empty($this->theme_ids)
-            || !empty($this->couleur_ids)
-            || $this->encadrement !== null
-            || $this->orientation !== null
-            || $this->prix_min > 0
-            || $this->prix_max < 5000;
-    }
-
-    #[Computed]
-    public function oeuvres()
-    {
-        return Oeuvre::query()
-            ->where('visible', true)
-            ->when($this->categorie_id, fn($q) =>
-                $q->where('categorie_id', $this->categorie_id)
-            )
-            ->when($this->orientation, fn($q) =>
-                $q->where('orientation', $this->orientation)
-            )
-            ->with(['artiste.user', 'categorie', 'tirages.dimension'])
-            ->latest()
-            ->paginate(18);
-    }
-
-    public function with(): array
-    {
-        return [
-            'categories' => Categorie::whereNull('id_categorie_parente')->get(),
-            'themes'     => Theme::orderBy('nom_theme')->get(),
-            'couleurs'   => Couleur::orderBy('nom_couleur')->get(),
-        ];
-    }
-}; 
-?>
-
-
 <div>
     {{-- ═══════════════════════════════════════════════════
          BARRE DE FILTRES — sticky sous le header
          ═══════════════════════════════════════════════════ --}}
     <div class="bg-white border-b border-gray-200 sticky top-[4rem] z-40">
         <div class="max-w-screen-xl mx-auto px-4 py-3">
- 
+
             <div class="flex flex-wrap items-center gap-3">
- 
+
                 {{-- ── Catégorie ── --}}
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open"
@@ -110,14 +21,14 @@ new class extends Component
                     <div x-show="open" @click.outside="open = false" x-transition
                          class="absolute top-full left-0 mt-1 bg-white border border-gray-200
                                 rounded-xl shadow-xl z-50 p-2 min-w-[200px]">
-                        <button wire:click="$set('categorie_id', null)"
+                        <button wire:click="$set('categorie_id', null)" @click="open = false"
                                 class="block w-full text-left px-3 py-2 text-sm rounded-lg
                                        hover:bg-orange-50 hover:text-[#E8490F] transition-colors
                                        {{ !$categorie_id ? 'font-bold text-[#E8490F]' : '' }}">
                             Toutes
                         </button>
                         @foreach($categories as $cat)
-                            <button wire:click="$set('categorie_id', {{ $cat->id }})" @click="open: false"
+                            <button wire:click="$set('categorie_id', {{ $cat->id }})" @click="open = false"
                                     class="block w-full text-left px-3 py-2 text-sm rounded-lg
                                            hover:bg-orange-50 hover:text-[#E8490F] transition-colors
                                            {{ $categorie_id == $cat->id ? 'font-bold text-[#E8490F]' : '' }}">
@@ -126,7 +37,7 @@ new class extends Component
                         @endforeach
                     </div>
                 </div>
- 
+
                 {{-- ── Thèmes ── --}}
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open"
@@ -159,7 +70,7 @@ new class extends Component
                         @endforeach
                     </div>
                 </div>
- 
+
                 {{-- ── Couleurs ── --}}
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open"
@@ -180,14 +91,13 @@ new class extends Component
                                 <input type="checkbox"
                                        wire:model.live="couleur_ids"
                                        value="{{ $couleur->id }}"
-                                       class="rounded border-gray-300 text-[#E8490F] focus:ring-[#E8490F]"
-                                >
+                                       class="rounded border-gray-300 text-[#E8490F] focus:ring-[#E8490F]">
                                 {{ $couleur->nom_couleur }}
                             </label>
                         @endforeach
                     </div>
                 </div>
- 
+
                 {{-- ── Encadrement ── --}}
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open"
@@ -202,27 +112,27 @@ new class extends Component
                     <div x-show="open" @click.outside="open = false" x-transition
                          class="absolute top-full left-0 mt-1 bg-white border border-gray-200
                                 rounded-xl shadow-xl z-50 p-2 min-w-[170px]">
-                        <button wire:click="$set('encadrement', null)"
+                        <button wire:click="$set('encadrement', null)" @click="open = false"
                                 class="block w-full text-left px-3 py-2 text-sm rounded-lg
                                        hover:bg-orange-50 hover:text-[#E8490F] transition-colors
                                        {{ $encadrement === null ? 'font-bold text-[#E8490F]' : '' }}">
                             Peu importe
                         </button>
-                        <button wire:click="$set('encadrement', true)"
+                        <button wire:click="$set('encadrement', true)" @click="open = false"
                                 class="block w-full text-left px-3 py-2 text-sm rounded-lg
                                        hover:bg-orange-50 hover:text-[#E8490F] transition-colors
-                                       {{ $encadrement ? 'font-bold text-[#E8490F]' : '' }}">
+                                       {{ $encadrement === true ? 'font-bold text-[#E8490F]' : '' }}">
                             Encadrée
                         </button>
-                        <button wire:click="$set('encadrement', false)"
+                        <button wire:click="$set('encadrement', false)" @click="open = false"
                                 class="block w-full text-left px-3 py-2 text-sm rounded-lg
                                        hover:bg-orange-50 hover:text-[#E8490F] transition-colors
-                                       {{ $encadrement ? 'font-bold text-[#E8490F]' : '' }}">
+                                       {{ $encadrement === false ? 'font-bold text-[#E8490F]' : '' }}">
                             Non encadrée
                         </button>
                     </div>
                 </div>
- 
+
                 {{-- ── Prix (double slider) ── --}}
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open"
@@ -240,12 +150,12 @@ new class extends Component
                     <div x-show="open" @click.outside="open = false" x-transition
                          class="absolute top-full left-0 mt-1 bg-white border border-gray-200
                                 rounded-xl shadow-xl z-50 p-4 w-72">
- 
+
                         <p class="text-xs text-gray-500 mb-4 flex justify-between">
                             <span>Prix</span>
                             <strong class="text-[#E8490F]">{{ $prix_min }} € — {{ $prix_max }} €</strong>
                         </p>
- 
+
                         {{-- Double slider --}}
                         <div class="relative h-1.5 mb-6"
                              x-data="{
@@ -281,7 +191,7 @@ new class extends Component
                                           [&::-webkit-slider-thumb]:bg-[#E8490F] [&::-webkit-slider-thumb]:border-2
                                           [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md">
                         </div>
- 
+
                         {{-- Inputs manuels --}}
                         <div class="flex gap-2">
                             <div class="relative flex-1">
@@ -302,7 +212,7 @@ new class extends Component
                         </div>
                     </div>
                 </div>
- 
+
                 {{-- ── Orientation ── --}}
                 <div class="flex items-center gap-1.5">
                     <span class="text-xs text-gray-400 mr-1">Format :</span>
@@ -324,50 +234,50 @@ new class extends Component
                         </button>
                     @endforeach
                 </div>
- 
+
             </div>
- 
+
             {{-- Tags actifs + compteur --}}
             <div class="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-gray-100">
                 <span class="text-xs text-gray-400">
-                    {{ $this->oeuvres->total() }} œuvre{{ $this->oeuvres->total() > 1 ? 's' : '' }}
+                    {{ $oeuvres->total() }} œuvre{{ $oeuvres->total() > 1 ? 's' : '' }}
                 </span>
- 
+
                 @if($categorie_id)
                     <span class="inline-flex items-center gap-1 bg-[#1A1A1A] text-white text-xs px-3 py-1 rounded-full">
                         {{ $categories->find($categorie_id)?->nom_categorie }}
                         <button wire:click="removeFiltre('categorie')" class="hover:text-red-300 ml-0.5">✕</button>
                     </span>
                 @endif
- 
+
                 @foreach($theme_ids as $tid)
                     <span class="inline-flex items-center gap-1 bg-[#1A1A1A] text-white text-xs px-3 py-1 rounded-full">
                         {{ $themes->find($tid)?->nom_theme }}
                         <button wire:click="removeFiltre('theme', {{ $tid }})" class="hover:text-red-300 ml-0.5">✕</button>
                     </span>
                 @endforeach
- 
+
                 @foreach($couleur_ids as $cid)
                     <span class="inline-flex items-center gap-1 bg-[#1A1A1A] text-white text-xs px-3 py-1 rounded-full">
                         {{ $couleurs->find($cid)?->nom_couleur }}
                         <button wire:click="removeFiltre('couleur', {{ $cid }})" class="hover:text-red-300 ml-0.5">✕</button>
                     </span>
                 @endforeach
- 
+
                 @if($orientation)
                     <span class="inline-flex items-center gap-1 bg-[#1A1A1A] text-white text-xs px-3 py-1 rounded-full capitalize">
                         {{ $orientation }}
                         <button wire:click="removeFiltre('orientation')" class="hover:text-red-300 ml-0.5">✕</button>
                     </span>
                 @endif
- 
+
                 @if($prix_min > 0 || $prix_max < 5000)
                     <span class="inline-flex items-center gap-1 bg-[#1A1A1A] text-white text-xs px-3 py-1 rounded-full">
                         {{ $prix_min }} € – {{ $prix_max }} €
                         <button wire:click="removeFiltre('prix')" class="hover:text-red-300 ml-0.5">✕</button>
                     </span>
                 @endif
- 
+
                 @if($this->hasFiltresActifs())
                     <button wire:click="removeAllFiltres"
                             class="text-xs text-red-500 hover:text-red-700 underline ml-1 transition-colors">
@@ -375,18 +285,18 @@ new class extends Component
                     </button>
                 @endif
             </div>
- 
+
         </div>
     </div>
- 
+
     {{-- ═══════════════════════════════════════════════════
          GRILLE MASONRY
          ═══════════════════════════════════════════════════ --}}
     <div class="max-w-screen-xl mx-auto px-4 py-8">
- 
-        @if($this->oeuvres->count() > 0)
+
+        @if($oeuvres->count() > 0)
             <div class="columns-2 md:columns-3 lg:columns-4 gap-4">
-                @foreach($this->oeuvres as $oeuvre)
+                @foreach($oeuvres as $oeuvre)
                     @php
                         $tirage      = $oeuvre->tirages->first();
                         $isNew       = $oeuvre->created_at->diffInDays(now()) <= 30;
@@ -396,31 +306,31 @@ new class extends Component
                             ? $prix * (1 - $oeuvre->taux_reduction)
                             : $prix;
                     @endphp
- 
+
                     <div class="break-inside-avoid mb-4">
                         <a href="{{ route('oeuvres.show', $oeuvre->id) }}"
                            class="block relative group overflow-hidden rounded-xl bg-gray-100">
- 
+
                             <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=500"
                                  alt="{{ $oeuvre->titre }}"
                                  class="w-full h-auto object-contain transition-transform
                                         duration-500 group-hover:scale-105"
                                  loading="lazy">
- 
+
                             @if($isNew && !$vendue)
                                 <span class="absolute top-2 left-2 bg-black text-white
                                              text-[10px] font-bold px-2 py-0.5 rounded tracking-wider">
                                     NEW
                                 </span>
                             @endif
- 
+
                             @if($oeuvre->taux_reduction && !$vendue)
                                 <span class="absolute top-2 right-2 bg-[#E8490F] text-white
                                              text-[10px] font-bold px-2 py-0.5 rounded">
                                     -{{ $oeuvre->taux_reduction * 100 }}%
                                 </span>
                             @endif
- 
+
                             @if($vendue)
                                 <div class="absolute inset-0 bg-black/60 flex items-center
                                             justify-center rounded-xl">
@@ -429,9 +339,9 @@ new class extends Component
                                     </span>
                                 </div>
                             @endif
- 
+
                         </a>
- 
+
                         <div class="mt-2 px-1">
                             <p class="text-xs text-gray-500 truncate">
                                 {{ $oeuvre->artiste->nom_d_artiste ?? $oeuvre->artiste->user->nom }}
@@ -464,11 +374,11 @@ new class extends Component
                     </div>
                 @endforeach
             </div>
- 
+
             <div class="mt-12">
-                {{ $this->oeuvres->links() }}
+                {{ $oeuvres->links() }}
             </div>
- 
+
         @else
             <div class="text-center py-24">
                 <p class="text-xl font-bold text-gray-300">Aucune œuvre trouvée</p>
@@ -480,9 +390,9 @@ new class extends Component
                 </button>
             </div>
         @endif
- 
+
     </div>
- 
+
     {{-- Indicateur de chargement --}}
     <div wire:loading.flex
          class="fixed inset-0 bg-white/60 z-50 items-center justify-center">

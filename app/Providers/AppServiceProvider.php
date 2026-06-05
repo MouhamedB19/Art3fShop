@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-
+use Livewire\Volt\Volt;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -21,5 +21,8 @@ class AppServiceProvider extends ServiceProvider
     {
         // AppServiceProvider.php — dans boot()
         app()->setLocale(session('locale', 'fr'));
+        Volt::mount([
+            resource_path('views/livewire'),
+        ]);
     }
 }

@@ -55,6 +55,6 @@
 
     {{-- Scripts supplémentaires poussés par les vues enfants --}}
     @stack('scripts')
-    @livewireStyles
+    @livewireScripts
 </body>
 </html>
