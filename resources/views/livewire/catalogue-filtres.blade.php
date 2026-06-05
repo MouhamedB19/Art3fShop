@@ -2,14 +2,7 @@
     {{-- ═══════════════════════════════════════════════════
          BARRE DE FILTRES — sticky sous le header
          ═══════════════════════════════════════════════════ --}}
-    @if($categorie?->description_courte)
-        <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-600">
-            <p>{{ Str::limit($categorie->description_courte, 150) }}</p>
-            <a href="#description-complete" class="text-[#E8490F] text-xs font-semibold mt-1 inline-block">
-                Lire la suite →
-            </a>
-        </div>
-    @endif
+    
     <div class="bg-white border-b border-gray-200 sticky top-[4rem] z-40">
         <div class="max-w-screen-xl mx-auto px-4 py-3">
 
