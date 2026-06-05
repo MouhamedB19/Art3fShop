@@ -78,6 +78,7 @@ Route::get('/categorie',[CatalogueController::class, 'index'])->name('catalogue.
 
 Route::get('/catalogue/theme/{theme}', [CatalogueController::class, 'theme'])->name('catalogue.theme');
 Route::get('/catalogue/{categorie}', [CatalogueController::class, 'categorie'])->name('catalogue.categorie');
+
 Route::get('/artistes', [ArtisteController::class, 'index'])->name('artistes.index');
 Route::get('/recherche', [UtilsController::class, 'recherche'])->name('recherche.index');
 Route::get('/api/recherche', [UtilsController::class, 'rechercheApi'])->name('api.recherche');

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nom_categorie');
             $table->string('nom_technique')->nullable();
+            $table->text('description_courte')->nullable();
+            $table->longText('description_longue')->nullable(); 
             $table->foreignId('id_categorie_parente')->nullable()->constrained('categories')->onDelete('cascade')->onUpdate('cascade'); 
             $table->timestamps();
         });

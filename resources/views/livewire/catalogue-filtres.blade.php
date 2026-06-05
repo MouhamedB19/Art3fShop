@@ -2,6 +2,14 @@
     {{-- ═══════════════════════════════════════════════════
          BARRE DE FILTRES — sticky sous le header
          ═══════════════════════════════════════════════════ --}}
+    @if($categorie?->description_courte)
+        <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-600">
+            <p>{{ Str::limit($categorie->description_courte, 150) }}</p>
+            <a href="#description-complete" class="text-[#E8490F] text-xs font-semibold mt-1 inline-block">
+                Lire la suite →
+            </a>
+        </div>
+    @endif
     <div class="bg-white border-b border-gray-200 sticky top-[4rem] z-40">
         <div class="max-w-screen-xl mx-auto px-4 py-3">
 
@@ -268,6 +276,12 @@
                     <span class="inline-flex items-center gap-1 bg-[#1A1A1A] text-white text-xs px-3 py-1 rounded-full capitalize">
                         {{ $orientation }}
                         <button wire:click="removeFiltre('orientation')" class="hover:text-red-300 ml-0.5">✕</button>
+                    </span>
+                @endif
+                @if($encadrement !== null)
+                    <span class="inline-flex items-center gap-1 bg-[#1A1A1A] text-white text-xs px-3 py-1 rounded-full">
+                        {{ $encadrement ? 'encadrée' : 'non encadrée' }}
+                        <button wire:click="removeFiltre('encadrement')" class="hover:text-red-300 ml-0.5">✕</button>
                     </span>
                 @endif
 

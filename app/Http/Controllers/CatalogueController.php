@@ -25,5 +25,22 @@ class CatalogueController extends Controller
         $tiragesCorrespondants = Tirage::whereIn('oeuvre_id', $oeuvresCategorie->pluck('id'))->get();
         return view('catalogue.categorie', compact('oeuvresCategorie', 'categorie', 'tiragesCorrespondants'));
     }
+
+    public function theme($theme)
+    {
+        $t = Theme::where('nom_theme', $theme)->firstOrFail();
+    
+        $oeuvresCorrespondantes = Oeuvre::whereHas('themes', function ($query) use ($t) {
+            $query->where('themes.id', $t->id);
+        })->with('themes')->get();
+    
+        $tiragesCorrespondants = Tirage::whereIn(
+            'oeuvre_id',
+            $oeuvresCorrespondantes->pluck('id')
+        )->get();
+    
+        return view('catalogue.theme', compact('oeuvresCorrespondantes', 'theme', 'tiragesCorrespondants'));
+    }
+    
     
 }

@@ -15,6 +15,7 @@
      BARRE D'INFO (promotions, offres commerciales)
      Contenu géré via config ou variable $promo_message
      ═══════════════════════════════════════════════════════════ --}}
+
 @if(isset($promo_message) || config('art3f.promo_message'))
 <div class="bg-[#1A1A1A] text-white text-xs text-center py-2 px-4">
     <a href="{{ config('art3f.promo_url', '#') }}"
@@ -402,7 +403,7 @@
                                     Thèmes populaires
                                 </p>
                                 <ul class="space-y-1 list-none p-0 m-0">
-                                    @foreach(['Abstrait','Figuratif','Portrait','Nature','Urbain','Pop Art'] as $theme)
+                                    @foreach($themes as $theme)
                                         <li>
                                             <a href="{{ route('catalogue.theme', Str::slug($theme)) }}"
                                                class="text-sm text-gray-700 hover:text-[#E8490F] transition-colors">
