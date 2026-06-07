@@ -295,7 +295,26 @@
 
         </div>
     </div>
-
+    {{-- Bloc texte SEO --}}
+    @if(isset($categorieActive))
+        <div class="max-w-screen-xl mx-auto px-4 pt-6" x-data="readmore = false">
+            <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-600">
+                <p class="font-semibold text-gray-800 mb-1 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-[#E8490F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    {{ $categorieActive->nom_categorie }} en quelques mots
+                </p>
+                <p>{{ Str::limit($categorieActive->description_courte, 180) }}</p>
+                <a href="#description-complete" @click="readmore= true" x-show="!readmore"
+                   class="text-[#E8490F] text-xs font-semibold mt-2 inline-flex items-center gap-1">
+                    Lire la suite →
+                </a>
+                
+            </div>
+        </div>
+    @endif
     {{-- ═══════════════════════════════════════════════════
          GRILLE MASONRY
          ═══════════════════════════════════════════════════ --}}
@@ -408,4 +427,11 @@
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
         </svg>
     </div>
+    @if(isset($categorieActive))
+        <div id="description-complete" class="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-600" 
+        x-show="readmore">
+            {{$categorieActive->description_longue}}
+        </div>
+    @endif
 </div>
+

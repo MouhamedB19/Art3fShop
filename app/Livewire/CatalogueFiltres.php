@@ -97,6 +97,7 @@ class CatalogueFiltres extends Component
             'themes'     => Theme::orderBy('nom_theme')->get(),
             'couleurs'   => Couleur::orderBy('nom_couleur')->get(),
             'oeuvres' => $this->oeuvres,
+            'categorieActive' => $this->categorie_id ? Categorie::find($this->categorie_id) : null,
         ]);
     }
 }

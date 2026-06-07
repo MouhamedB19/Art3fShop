@@ -191,6 +191,8 @@ class DatabaseSeeder extends Seeder
         $peinture_id = DB::table('categories')->insertGetId([
             'nom_categorie'       => 'Peinture',
             'nom_technique'       => null,
+            'description_courte' => 'Œuvres réalisées à l\'aide de pigments appliqués sur une surface.',
+            'description_longue' => 'La peinture est une forme d\'art visuel qui utilise des pigments pour créer des images sur divers supports. Elle peut être réalisée avec différentes techniques telles que l\'huile, l\'acrylique ou l\'aquarelle, offrant une grande variété de styles et d\'expressions artistiques.',
             'id_categorie_parente' => null,
             'created_at'          => now(),
             'updated_at'          => now(),
@@ -199,6 +201,8 @@ class DatabaseSeeder extends Seeder
         $sculpture_id = DB::table('categories')->insertGetId([
             'nom_categorie'       => 'Sculpture',
             'nom_technique'       => null,
+            'description_courte' => 'Œuvres en trois dimensions créées par modelage, taille ou assemblage.',
+            'description_longue' => 'La sculpture est une forme d\'art tridimensionnelle qui consiste à créer des œuvres en modelant, taillant ou assemblant des matériaux tels que le bois, la pierre, le métal ou la résine. Les sculptures peuvent être figuratives ou abstraite.',
             'id_categorie_parente' => null,
             'created_at'          => now(),
             'updated_at'          => now(),
@@ -207,6 +211,8 @@ class DatabaseSeeder extends Seeder
         $photo_id = DB::table('categories')->insertGetId([
             'nom_categorie'       => 'Photographie',
             'nom_technique'       => null,
+            'description_courte' => 'Œuvres créées à l\'aide d\'un appareil photo capturant la lumière.',
+            'description_longue' => 'La photographie est une forme d\'art qui utilise la lumière pour capturer des images à l\'aide d\'un appareil photo.',
             'id_categorie_parente' => null,
             'created_at'          => now(),
             'updated_at'          => now(),
@@ -215,6 +221,8 @@ class DatabaseSeeder extends Seeder
         DB::table('categories')->insertGetId([
             'nom_categorie'       => 'Édition',
             'nom_technique'       => null,
+            'description_courte' => 'Œuvres produites en série limitée à partir d\'une matrice originale.',
+            'description_longue' => 'L\'édition est une forme d\'art qui consiste à produire des œuvres en série limitée à partir d\'une matrice originale, comme une gravure ou une lithographie. Chaque tirage est numéroté et signé par l\'artiste.',
             'id_categorie_parente' => null,
             'created_at'          => now(),
             'updated_at'          => now(),
@@ -223,6 +231,8 @@ class DatabaseSeeder extends Seeder
         DB::table('categories')->insertGetId([
             'nom_categorie'       => 'Dessin',
             'nom_technique'       => null,
+            'description_courte' => 'Œuvres réalisées à l\'aide de crayons, fusains ou encres.',
+            'description_longue' => 'Le dessin est une forme d\'art qui utilise des outils tels que des crayons, des fusains ou des encres pour créer des images sur du papier.',
             'id_categorie_parente' => null,
             'created_at'          => now(),
             'updated_at'          => now(),
