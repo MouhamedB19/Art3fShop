@@ -22,6 +22,7 @@ class CatalogueFiltres extends Component
     public int     $prix_max      = 5000;
     public ?string $orientation   = null;
 
+
     public function removeFiltre(string $type, mixed $value = null): void
     {
         match($type) {
@@ -38,7 +39,7 @@ class CatalogueFiltres extends Component
 
     public function removeAllFiltres(): void
     {
-        $this->reset(['categorie_id', 'theme_ids', 'couleur_ids', 'encadrement', 'prix_min', 'prix_max', 'orientation']);
+        $this->reset(['categorie_id', 'theme_ids', 'couleur_ids', 'encadrement', 'prix_min','largeur','longueur', 'prix_max', 'orientation']);
         $this->prix_max = 5000;
         $this->resetPage();
     }
@@ -85,6 +86,7 @@ class CatalogueFiltres extends Component
                     $q2->whereBetween('prix', [$this->prix_min, $this->prix_max])
                 )
             )
+            
             ->with(['artiste.user', 'categorie', 'tirages.dimension'])
             ->latest()
             ->paginate(18);
