@@ -36,9 +36,6 @@
     {{-- HEADER --}}
     @include('layouts.partials.header')
 
-
-   
-
     {{-- CONTENU PRINCIPAL --}}
     <main>
         @yield('content')

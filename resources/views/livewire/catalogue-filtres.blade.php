@@ -315,7 +315,7 @@
 
     {{-- Bloc texte SEO (forme réduite)--}}
     @if(isset($categorieActive))
-        <div class="max-w-screen-xl mx-auto px-4 pt-6" x-data="readmore = false">
+        <div class="max-w-screen-xl mx-auto px-4 pt-6" x-data="readmore = false" id="description-partielle">
             <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-600">
                 <p class="font-semibold text-gray-800 mb-1 flex items-center gap-2">
                     <svg class="w-4 h-4 text-[#E8490F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -397,7 +397,9 @@
             {{$categorieActive->description_longue}}
             <button @click="readmore = false"
                 class="text-xs text-gray-400 hover:text-gray-600 mt-4 block">
-            Réduire ↑
+                <a href="#description-partielle">
+                    Réduire ↑
+                </a>
         </button>
         </div>
     @endif

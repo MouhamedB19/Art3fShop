@@ -9,6 +9,7 @@ use App\Models\Categorie;
 use App\Models\Couleur;
 use App\Models\Support;
 use App\Models\Theme;
+use App\Models\Tirage;
 use Illuminate\Support\Facades\Auth;
 class OeuvreController extends Controller
 {
@@ -80,16 +81,8 @@ class OeuvreController extends Controller
     // OeuvreController.php
     public function show($id)
     {
-        $oeuvre = Oeuvre::with([
-            'artiste.user',
-            'artiste.localisation.ville.pays',
-            'categorie',
-            'support',
-            'tirages.dimensions',
-            'themes',
-            'couleurs',
-        ])->findOrFail($id);
-
+        
+        $tirage = Tirage::where('id', $id)->with('oeuvre')->firstOrFail();
         // Autres œuvres du même artiste (pour le bandeau en bas)
         $autresOeuvres = Oeuvre::where('artiste_id', $oeuvre->artiste_id)
             ->where('id', '!=', $oeuvre->id)
@@ -98,7 +91,7 @@ class OeuvreController extends Controller
             ->take(6)
             ->get();
 
-        return view('oeuvres.show', compact('oeuvre', 'autresOeuvres'));
+        return view('oeuvres.show', compact('tirage', 'autresOeuvres'));
     }
 
     /**
