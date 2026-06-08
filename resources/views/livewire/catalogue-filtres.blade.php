@@ -2,7 +2,21 @@
     {{-- ═══════════════════════════════════════════════════
          BARRE DE FILTRES — sticky sous le header
          ═══════════════════════════════════════════════════ --}}
-    
+    <nav class="max-w-screen-xl mx-auto px-4 py-3 flex items-center gap-2 text-xs text-gray-500">
+        <a href="{{ route('home') }}" class="hover:text-[#E8490F] transition-colors">Accueil</a>
+        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+        <a href="{{ route('catalogue.index') }}" class="hover:text-[#E8490F] transition-colors">
+            Toutes les œuvres
+        </a>
+        @if($categorieActive)
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            <span class="text-[#1A1A1A] font-medium">{{ $categorieActive->nom_categorie }}</span>
+        @endif
+    </nav>
     <div class="bg-white border-b border-gray-200 sticky top-[4rem] z-40">
         <div class="max-w-screen-xl mx-auto px-4 py-3">
 
@@ -428,9 +442,13 @@
         </svg>
     </div>
     @if(isset($categorieActive))
-        <div id="description-complete" class="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-600" 
+        <div id="description-complete" class="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-600 overflow-hidden mx-4" 
         x-show="readmore">
             {{$categorieActive->description_longue}}
+            <button @click="readmore = false"
+                class="text-xs text-gray-400 hover:text-gray-600 mt-4 block">
+            Réduire ↑
+        </button>
         </div>
     @endif
 </div>

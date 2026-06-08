@@ -23,7 +23,7 @@ class CatalogueController extends Controller
         $c = Categorie::where('nom_categorie', $categorie)->first();
         $oeuvresCategorie = $oeuvres->where('categorie_id', $c->id)->merge($oeuvres->where('id_categorie_parente', $c->id));
         $tiragesCorrespondants = Tirage::whereIn('oeuvre_id', $oeuvresCategorie->pluck('id'))->get();
-        return view('catalogue.categorie', compact('oeuvresCategorie', 'catalogue', 'tiragesCorrespondants'));
+        return view('catalogue.categorie', compact('oeuvresCategorie', 'categorie', 'tiragesCorrespondants'));
     }
 
     public function theme($theme)
