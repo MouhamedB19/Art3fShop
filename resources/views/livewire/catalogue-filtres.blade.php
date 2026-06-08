@@ -2,13 +2,14 @@
     {{-- ═══════════════════════════════════════════════════
          BARRE DE FILTRES — sticky sous le header
          ═══════════════════════════════════════════════════ --}}
+    {{-- Fil d'Ariane --}}
     <nav class="max-w-screen-xl mx-auto px-4 py-3 flex items-center gap-2 text-xs text-gray-500">
         <a href="{{ route('home') }}" class="hover:text-[#E8490F] transition-colors">Accueil</a>
         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
         </svg>
         <a href="{{ route('catalogue.index') }}" class="hover:text-[#E8490F] transition-colors">
-            Toutes les œuvres
+            Catalogue
         </a>
         @if($categorieActive)
             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
