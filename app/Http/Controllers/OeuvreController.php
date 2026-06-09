@@ -84,14 +84,15 @@ class OeuvreController extends Controller
         
         $tirage = Tirage::where('id', $id)->with('oeuvre')->firstOrFail();
         // Autres œuvres du même artiste (pour le bandeau en bas)
-        $autresOeuvres = Oeuvre::where('artiste_id', $oeuvre->artiste_id)
-            ->where('id', '!=', $oeuvre->id)
+        $autresOeuvres = Oeuvre::where('artiste_id', $tirage->oeuvre->artiste_id)
+            ->where('id', '!=', $tirage->oeuvre->id)
             ->where('visible', true)
             ->with(['tirages', 'artiste.user'])
             ->take(6)
             ->get();
+        $nbTirages = Tirage::where('oeuvre_id', $tirage->oeuvre->id)->count();
 
-        return view('oeuvres.show', compact('tirage', 'autresOeuvres'));
+        return view('oeuvres.show', compact('tirage', 'autresOeuvres', 'nbTirages'));
     }
 
     /**

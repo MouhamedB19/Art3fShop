@@ -35,7 +35,13 @@
 
     {{-- HEADER --}}
     @include('layouts.partials.header')
-
+    @hasSection('breadcrumb')
+        <div class="max-w-screen-xl mx-auto px-4 py-3">
+            <nav class="flex items-center gap-2 text-xs text-gray-500">
+                @yield('breadcrumb')
+            </nav>
+        </div>
+    @endif
     {{-- CONTENU PRINCIPAL --}}
     <main>
         @yield('content')
