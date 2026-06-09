@@ -23,39 +23,48 @@ class ArtisteController extends Controller
     }
 
     public function inscription()
-{
-    return view('artiste.inscription');
-}
+    {
+        return view('artiste.inscription');
+    }
 
-public function inscrire(Request $request)
-{
-    $request->validate([
-        'nom'         => 'required|string|max:255',
-        'email'       => 'required|email|unique:users,email',
-        'password'    => 'required|min:8|confirmed',
-        'telephone'   => 'nullable|string|max:20',
-        'site_web'    => 'nullable|url',
-        'biographie'  => 'required|string|min:100',
-        'photo'       => 'required|image|max:5120',
-    ]);
+    public function inscrire(Request $request)
+    {
+        $request->validate([
+            'nom'         => 'required|string|max:255',
+            'email'       => 'required|email|unique:users,email',
+            'password'    => 'required|min:8|confirmed',
+            'telephone'   => 'nullable|string|max:20',
+            'site_web'    => 'nullable|url',
+            'biographie'  => 'required|string|min:100',
+            'photo'       => 'required|image|max:5120',
+        ]);
 
-    $user = User::create([
-        'nom'      => $request->nom,
-        'email'    => $request->email,
-        'password' => bcrypt($request->password),
-        'role'     => 'artiste',
-    ]);
+        $user = User::create([
+            'nom'      => $request->nom,
+            'email'    => $request->email,
+            'password' => bcrypt($request->password),
+            'role'     => 'artiste',
+        ]);
 
-    $user->artiste()->create([
-        'telephone'  => $request->telephone,
-        'site_web'   => $request->site_web,
-        'biographie' => $request->biographie,
-        'photo'      => $request->file('photo')->store('artistes', 'public'),
-    ]);
+        $user->artiste()->create([
+            'telephone'  => $request->telephone,
+            'site_web'   => $request->site_web,
+            'biographie' => $request->biographie,
+            'photo'      => $request->file('photo')->store('artistes', 'public'),
+        ]);
 
-    Auth::login($user);
+        Auth::login($user);
 
-    return redirect()->route('artiste.compte')
-        ->with('success', 'Bienvenue sur art3f Shop !');
-}
+        return redirect()->route('artiste.compte')
+            ->with('success', 'Bienvenue sur art3f Shop !');
+    }
+
+    public function show($id){
+        $artiste = Artiste::with([
+            'user',
+            'localisation.ville.pays',
+            'oeuvres' => fn($q) => $q->where('visible', true)->with(['tirages', 'categorie'])
+        ])->findOrFail($id);
+        return view('artistes.show',compact('artiste'));
+    }
 }

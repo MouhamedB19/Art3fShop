@@ -25,7 +25,7 @@
 @section('content')
 
     @php
-        
+
         $vendue      = $tirage?->status === 'vendu';
         $prix        = $tirage?->prix ?? 0;
         $prixAffiche = $tirage->oeuvre->taux_reduction
@@ -33,34 +33,34 @@
             : $prix;
         $nomArtiste  = $tirage->oeuvre->artiste->nom_d_artiste ?? $tirage->oeuvre->artiste->user->nom;
     @endphp
-    
+
     <div class="max-w-screen-xl mx-auto px-4 py-8"
          x-data="{
              photoActive: '{{ asset('storage/' . $tirage->oeuvre->photo_principale) }}',
              dedicace: false,
              cadeau: false,
          }">
-    
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        
+
             {{-- ═══════════════════════════════════════
                  COLONNE GAUCHE — Galerie photos
                  ═══════════════════════════════════════ --}}
             <div>
-            
+
                 {{-- Photo principale --}}
                 <div class="relative overflow-hidden rounded-2xl bg-gray-50 border border-gray-100">
                     <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=500"
                          alt="{{ $tirage->oeuvre->titre }}"
                          class="w-full h-auto object-contain max-h-[600px]">
-                
+
                     {{-- Badge VENDUE --}}
                     @if($vendue)
                         <div class="absolute inset-0 bg-black/60 flex items-center justify-center rounded-2xl">
                             <span class="text-white font-black text-3xl tracking-widest uppercase">Vendue</span>
                         </div>
                     @endif
-                    
+
                     {{-- Badge promo --}}
                     @if($tirage->oeuvre->taux_reduction && !$vendue)
                         <span class="absolute top-3 left-3 bg-[#E8490F] text-white
@@ -69,7 +69,7 @@
                         </span>
                     @endif
                 </div>
-            
+
                 {{-- Vignettes navigables --}}
                 {{-- Pour le proto : on affiche seulement la photo principale --}}
                 {{-- En V2 : ajouter photos_secondaires à la table oeuvres --}}
@@ -104,14 +104,14 @@
                         </button>
                     </div>
                 </div>
-            
+
             </div>
-        
+
             {{-- ═══════════════════════════════════════
                  COLONNE DROITE — Infos & achat
                  ═══════════════════════════════════════ --}}
             <div class="space-y-6">
-            
+
                 {{-- Prix + coup de cœur --}}
                 <div class="flex items-start justify-between">
                     <div>
@@ -145,7 +145,7 @@
                         </button>
                     @endauth
                 </div>
-            
+
                 {{-- Bouton ajouter au panier --}}
                 @if(!$vendue)
                     <form action="{{ route('panier.index') }}" method="POST">
@@ -160,7 +160,7 @@
                         </button>
                     </form>
                 @endif
-                
+
                 {{-- Partage réseaux sociaux --}}
                 <div class="flex items-center gap-3">
                     <span class="text-xs text-gray-400">Partager :</span>
@@ -177,7 +177,7 @@
                         </a>
                     @endforeach
                 </div>
-            
+
                 {{-- Liens contact --}}
                 <div class="flex items-center gap-4 text-sm">
                     <a href="{{ route('contact') }}?sujet=oeuvre&id={{ $tirage->oeuvre->id }}"
@@ -201,10 +201,10 @@
                         Faire une offre
                     </a>
                 </div>
-            
+
                 {{-- Artiste --}}
                 <div class="flex items-center gap-3 py-4 border-y border-gray-100">
-                    <a href="{{ route('artistes.index', $tirage->oeuvre->artiste->id) }}">
+                    <a href="{{ route('artistes.show', $tirage->oeuvre->artiste->id) }}">
                         @if($tirage->oeuvre->artiste->photo)
                             <img src="https://thispersondoesnotexist.com/"
                                  alt="{{ $nomArtiste }}"
@@ -217,7 +217,7 @@
                         @endif
                     </a>
                     <div>
-                        <a href="{{ route('artistes.index', $tirage->oeuvre->artiste->id) }}"
+                        <a href="{{ route('artistes.show', $tirage->oeuvre->artiste->id) }}"
                            class="font-bold text-[#1A1A1A] hover:text-[#E8490F] transition-colors">
                             {{ $nomArtiste }}
                             @if($tirage->oeuvre->artiste->Est_Artiste_Art3f)
@@ -232,13 +232,13 @@
                         @endif
                     </div>
                 </div>
-            
+
                 {{-- Titre + année --}}
                 <div>
                     <h1 class="text-2xl font-black text-[#1A1A1A]">{{ $tirage->oeuvre->titre }}</h1>
                     <p class="text-sm text-gray-400 mt-1">{{ $tirage->oeuvre->annee_de_creation }}</p>
                 </div>
-            
+
                 {{-- Infos pratiques --}}
                 <div class="bg-gray-50 rounded-xl p-5 space-y-3">
                     <h2 class="text-xs font-bold text-gray-400 uppercase tracking-widest">
@@ -258,7 +258,7 @@
                             <span class="text-sm font-medium text-[#1A1A1A] text-right">{{ $value }}</span>
                         </div>
                     @endforeach
-                    
+
                     {{-- Certificat --}}
                     <div class="flex items-center gap-2 pt-2 border-t border-gray-200">
                         <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -266,7 +266,7 @@
                         </svg>
                         <span class="text-xs text-gray-500">Œuvre originale avec certificat d'authenticité</span>
                     </div>
-                
+
                     {{-- Option encadrement --}}
                     @if($tirage?->encadrement)
                         <div class="pt-2 border-t border-gray-200"
@@ -283,7 +283,7 @@
                         </div>
                     @endif
                 </div>
-            
+
                 {{-- Option dédicace --}}
                 <div x-data="{ dedicace: false }">
                     <label class="flex items-center gap-2 cursor-pointer">
@@ -299,7 +299,7 @@
                                       focus:outline-none focus:ring-2 focus:ring-[#E8490F]">
                     </div>
                 </div>
-            
+
                 {{-- Option cadeau --}}
                 <div x-data="{ cadeau: false }">
                     <label class="flex items-center gap-2 cursor-pointer">
@@ -318,10 +318,10 @@
                         </textarea>
                     </div>
                 </div>
-            
+
             </div>
         </div>
-    
+
         {{-- ═══════════════════════════════════════
              À PROPOS DE CETTE ŒUVRE
              ═══════════════════════════════════════ --}}
@@ -338,13 +338,13 @@
                 <span x-text="expanded ? 'Lire moins ↑' : 'Lire la suite →'"></span>
             </button>
         </div>
-    
+
         {{-- ═══════════════════════════════════════
              BANDEAU ARTISTE
              ═══════════════════════════════════════ --}}
         <div class="mt-16 bg-[#1A1A1A] rounded-2xl overflow-hidden">
             <div class="flex flex-col md:flex-row">
-            
+
                 {{-- Photo artiste --}}
                 <div class="md:w-64 shrink-0">
                     @if($tirage->oeuvre->artiste->photo)
@@ -358,7 +358,7 @@
                         </div>
                     @endif
                 </div>
-            
+
                 {{-- Infos artiste --}}
                 <div class="flex-1 p-8 text-white">
                     <div class="flex items-start justify-between gap-4">
@@ -382,7 +382,7 @@
                             @endif
                         </div>
                         <div class="flex flex-col gap-2 shrink-0">
-                            <a href="{{ route('artistes.index', $tirage->oeuvre->artiste->id) }}"
+                            <a href="{{ route('artistes.show', $tirage->oeuvre->artiste->id) }}"
                                class="px-4 py-2 bg-[#E8490F] hover:bg-orange-600 text-white text-xs
                                       font-bold rounded-lg transition-colors text-center">
                                 Découvrir sa page
@@ -395,7 +395,7 @@
                             @endauth
                         </div>
                     </div>
-                
+
                     {{-- Bio courte --}}
                     @if($tirage->oeuvre->artiste->bio)
                         <p class="text-gray-300 text-sm mt-4 leading-relaxed line-clamp-3">
@@ -404,7 +404,7 @@
                     @endif
                 </div>
             </div>
-        
+
             {{-- Œuvres du même artiste --}}
             @if($autresOeuvres->count() > 0)
                 <div class="border-t border-white/10 p-6">
@@ -443,7 +443,7 @@
                 </div>
             @endif
         </div>
-    
+
     </div>
-    
+
 @endsection

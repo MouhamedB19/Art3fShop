@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Localisation;
 use App\Models\Pays;
-
+use App\Models\Categorie;
 class ProfilArtisteController extends Controller
 {
     public function index()
@@ -17,9 +17,11 @@ class ProfilArtisteController extends Controller
             ->join('villes', 'localisations.ville_id', '=', 'villes.id')
             ->distinct()
             ->get();
+        $categories = Categorie::whereNull('id_categorie_parente')->get();
         return view('artiste.completer-profil', [
             'pays' => $pays,
             'villes' => $villes,
+            'categories' => $categories,
         ]);
     }
 
@@ -34,6 +36,7 @@ class ProfilArtisteController extends Controller
             'code_postal'  => ['required', 'string'],
             'adresse'       => ['required', 'string'],
             'ville_id'     => ['required', 'exists:villes,id'],
+            'categories' => ['required', 'array'],
         ]);
 
         $photo = $request->file('photo')->store('photos/artistes', 'public');
@@ -44,6 +47,8 @@ class ProfilArtisteController extends Controller
             'adresse'     => $request->adresse,
             'ville_id'    => $request->ville_id,
         ]);
+        
+
 
         Auth::user()->artiste->update([
             'bio'              => $request->bio,
@@ -53,7 +58,7 @@ class ProfilArtisteController extends Controller
             'nom_d_artiste'    => $request->nom_d_artiste,
             'cv'               => $request->file('cv')->store('cvs/artistes', 'public'),
         ]);
-
+        Auth::user()->artiste->categories()->attach($request->categories);
         return redirect(route('dashboard'));
     }
 }

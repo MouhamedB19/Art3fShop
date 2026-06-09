@@ -248,6 +248,16 @@ class DatabaseSeeder extends Seeder
             ['nom_categorie' => 'Photo argentique',    'nom_technique' => 'Argentique',          'id_categorie_parente' => $photo_id,     'created_at' => now(), 'updated_at' => now()],
             ['nom_categorie' => 'Photo numérique',     'nom_technique' => 'Numérique',           'id_categorie_parente' => $photo_id,     'created_at' => now(), 'updated_at' => now()],
         ]);
+
+        $categoriesArtistes = [[1,1],[2,2],[3,3],[4,1]];
+        foreach($categoriesArtistes as [$art,$cat])
+        {
+            DB::table('artiste_categorie')->insertGetId([
+                'artiste_id' => $art,
+                'categorie_id' => $cat,
+                
+            ]);
+        }
  
         /*****************************************************************************
          * ***********************Dimensions******************************************
