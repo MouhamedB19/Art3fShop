@@ -247,8 +247,8 @@
                     @foreach([
                         ['Technique',   $tirage->oeuvre->categorie->nom_technique ?? $tirage->oeuvre->categorie->nom_categorie],
                         ['Support',     $tirage->oeuvre->support->nom_support],
-                        ['Dimensions',  $tirage?->dimensions
-                            ? $tirage->dimensions->hauteur . ' × ' . $tirage->dimensions->largeur . ' cm'
+                        ['Dimensions',  $tirage?->dimension()
+                            ? $tirage->dimension->hauteur . ' × ' . $tirage->dimension->largeur . ' cm'
                             : '—'],
                         ['Tirage',      $tirage ? 'N°' . $tirage->numero : '—'],
                         ['Accrochage',  $tirage?->pret_a_accrocher ? 'Prêt à accrocher' : 'Non'],

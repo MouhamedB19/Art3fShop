@@ -101,17 +101,28 @@ new class extends Component
     {
         $actifs = [];
  
-        if ($this->categorie)   $actifs['categorie']   = Categorie::whereSlug($this->categorie)->value('nom') ?? $this->categorie;
-        if ($this->theme)       $actifs['theme']       = Theme::whereSlug($this->theme)->value('nom') ?? $this->theme;
-        if ($this->couleur)     $actifs['couleur']     = Couleur::whereSlug($this->couleur)->value('nom') ?? $this->couleur;
-        if ($this->encadrement !== '') $actifs['encadrement'] = $this->encadrement ? 'Encadré' : 'Non encadré';
-        if ($this->orientation) $actifs['orientation'] = ucfirst($this->orientation);
-        if ($this->prix_min > 0)     $actifs['prix_min']    = 'Min ' . $this->prix_min . ' €';
-        if ($this->prix_max < 5000)  $actifs['prix_max']    = 'Max ' . $this->prix_max . ' €';
-        if ($this->hauteur_min > 0)  $actifs['hauteur_min'] = 'H min ' . $this->hauteur_min . ' cm';
-        if ($this->hauteur_max < 500) $actifs['hauteur_max'] = 'H max ' . $this->hauteur_max . ' cm';
-        if ($this->largeur_min > 0)  $actifs['largeur_min'] = 'L min ' . $this->largeur_min . ' cm';
-        if ($this->largeur_max < 500) $actifs['largeur_max'] = 'L max ' . $this->largeur_max . ' cm';
+        if ($this->categorie)   
+            $actifs['categorie'] = Categorie::whereSlug($this->categorie)->value('nom') ?? $this->categorie;
+        if ($this->theme)       
+            $actifs['theme']  = Theme::whereSlug($this->theme)->value('nom') ?? $this->theme;
+        if ($this->couleur)     
+            $actifs['couleur'] = Couleur::whereSlug($this->couleur)->value('nom') ?? $this->couleur;
+        if ($this->encadrement !== '') 
+            $actifs['encadrement'] = $this->encadrement ? 'Encadré' : 'Non encadré';
+        if ($this->orientation) 
+            $actifs['orientation'] = ucfirst($this->orientation);
+        if ($this->prix_min > 0)     
+            $actifs['prix_min'] = 'Min ' . $this->prix_min . ' €';
+        if ($this->prix_max < 5000)  
+            $actifs['prix_max'] = 'Max ' . $this->prix_max . ' €';
+        if ($this->hauteur_min > 0)  
+            $actifs['hauteur_min'] = 'H min ' . $this->hauteur_min . ' cm';
+        if ($this->hauteur_max < 500) 
+            $actifs['hauteur_max'] = 'H max ' . $this->hauteur_max . ' cm';
+        if ($this->largeur_min > 0)  
+            $actifs['largeur_min'] = 'L min ' . $this->largeur_min . ' cm';
+        if ($this->largeur_max < 500) 
+            $actifs['largeur_max'] = 'L max ' . $this->largeur_max . ' cm';
  
         return $actifs;
     }

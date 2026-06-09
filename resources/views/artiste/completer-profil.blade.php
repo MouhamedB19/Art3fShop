@@ -68,7 +68,9 @@
                 <input type="text" name="adresse" id="adresse" class="w-full" value="{{ old('adresse') }}">
                 @error('adresse') <span>{{ $message }}</span> @enderror
             </div>
-            <div>
+
+            <!-- Categories artistiques -->
+            <div class="my-4">
                 <x-input-label for="categories">
                     Catégorie(s) artistique(s)
                 </x-input-label>
