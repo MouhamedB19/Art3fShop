@@ -183,4 +183,5 @@ new class extends Component
             'oeuvres', 'categories', 'themes', 'couleurs'
         ));
     }
+    
 }

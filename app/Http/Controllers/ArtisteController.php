@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Artiste;
+use App\Models\Tirage;
 use Illuminate\Http\Request;
 
 class ArtisteController extends Controller
@@ -63,8 +64,10 @@ class ArtisteController extends Controller
         $artiste = Artiste::with([
             'user',
             'localisation.ville.pays',
-            'oeuvres' => fn($q) => $q->where('visible', true)->with(['tirages', 'categorie'])
+            'categories',
+            'oeuvres' => fn($q) => $q->where('visible', true)
+                                     ->with(['tirages.dimension', 'categorie'])
         ])->findOrFail($id);
-        return view('artistes.show',compact('artiste'));
+        return view('artiste.show',compact('artiste'));
     }
 }
