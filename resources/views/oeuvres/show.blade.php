@@ -70,17 +70,11 @@
                     @endif
                 </div>
 
-                {{-- Vignettes navigables --}}
+                
                 {{-- Pour le proto : on affiche seulement la photo principale --}}
                 {{-- En V2 : ajouter photos_secondaires à la table oeuvres --}}
                 <div class="flex items-center gap-2 mt-3">
-                    <button @click="photoActive = '{{ asset('storage/' . $tirage->oeuvre->photo_principale) }}'"
-                            class="w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors
-                                   border-[#E8490F]">
-                        <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=500"
-                             alt="{{ $tirage->oeuvre->titre }}"
-                             class="w-full h-full object-cover">
-                    </button>
+                       
                     {{-- Boutons mock-up et AR --}}
                     <div class="flex gap-2 ml-2">
                         <button class="flex flex-col items-center gap-1 px-4 py-2 border border-gray-200
@@ -118,7 +112,11 @@
                         @if(!$vendue)
                             <div class="flex items-baseline gap-3">
                                 <span class="text-3xl font-black text-[#E8490F]">
-                                    {{ number_format($prixAffiche, 0, ',', ' ') }} €
+                                    @if($tirage->oeuvre->avec_cadre === 1)
+                                        {{ number_format($prixAffiche, 0, ',', ' ') }} €
+                                    @else
+                                        {{ number_format($prixAffiche - 150,0,',',' ') }} €
+                                    @endif
                                 </span>
                                 @if($tirage->oeuvre->taux_reduction)
                                     <span class="text-lg text-gray-400 line-through">

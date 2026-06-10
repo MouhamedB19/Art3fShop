@@ -31,5 +31,8 @@ class Localisation extends Model
         return $this->hasMany(Livraison::class);
     }
 
+    public function salon(){
+        return $this->hasMany(Salon::class,'localisation_id');
+    }
     
 }

@@ -13,175 +13,146 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\auth;
 
-new class extends Component
+class ArtistIndex extends Component
 {
-    //
     use WithPagination;
  
-    // ── Artiste courant ──────────────────────────────────────────
-    public Artiste $artiste;
+    // Filtres
+    public string $search = '';
+    public string $letter = '';
+    public array $selectedDomains = [];
+    public array $selectedCountries = [];
+    public array $selectedSalons = [];
+    public string $subscribeEmail = '';
+    public bool $showSubscribeModal = false;
+    public bool $subscribedSuccess = false;
  
-    // ── Filtres (wire:model dans la vue) ────────────────────────
-    public string $categorie   = '';
-    public string $theme       = '';
-    public string $couleur     = '';
-    public string  $encadrement = '';   // '' | '1' | '0'
-    public string $orientation = '';   // '' | 'paysage' | 'portrait' | 'carre'
-    public int    $prix_min    = 0;
-    public int    $prix_max    = 5000;
-    public int    $hauteur_min = 0;
-    public int    $hauteur_max = 500;
-    public int    $largeur_min = 0;
-    public int    $largeur_max = 500;
- 
-    // ── Réinitialiser la pagination quand un filtre change ───────
     protected $queryString = [
-        'categorie', 'theme', 'couleur', 'encadrement',
-        'orientation', 'prix_min', 'prix_max',
-        'hauteur_min', 'hauteur_max', 'largeur_min', 'largeur_max',
+        'search'          => ['except' => ''],
+        'letter'          => ['except' => ''],
+        'selectedDomains' => ['except' => []],
+        'selectedCountries' => ['except' => []],
+        'selectedSalons'  => ['except' => []],
     ];
-    public function supprimerFiltre(string $cle): void
+    public function setLetter(string $letter): void
     {
-        $defaults = [
-            'categorie'   => '', 'theme'       => '',
-            'couleur'     => '', 'encadrement' => '',
-            'orientation' => '',
-            'prix_min'    => 0,  'prix_max'    => 5000,
-            'hauteur_min' => 0,  'hauteur_max' => 500,
-            'largeur_min' => 0,  'largeur_max' => 500,
-        ];
- 
-        if (array_key_exists($cle, $defaults)) {
-            $this->$cle = $defaults[$cle];
-            $this->resetPage();
-        }
-    }
- 
-    // ── Tout réinitialiser ───────────────────────────────────────
-    public function resetFiltres(): void
-    {
-        $this->categorie = $this->theme = $this->couleur =
-        $this->encadrement = $this->orientation = '';
-        $this->prix_min = $this->hauteur_min = $this->largeur_min = 0;
-        $this->prix_max = 5000;
-        $this->hauteur_max = $this->largeur_max = 500;
+        $this->letter = ($this->letter === $letter) ? '' : $letter;
         $this->resetPage();
     }
-
  
-    // ── Coup de cœur (toggle depuis la grille) ───────────────────
-    public function toggleCoeur(int $oeuvreId): void
+    public function clearAllFilters(): void
     {
-        if (! Auth::check()) {
-            $this->emit('redirect-login');
+        $this->reset(['search', 'letter', 'selectedDomains', 'selectedCountries', 'selectedSalons']);
+        $this->resetPage();
+    }
+ 
+    public function toggleFavorite(int $artistId): void
+    {
+        if (! auth()->check()) {
+            $this->dispatch('open-auth-modal');
             return;
         }
  
-        $user = Auth::user();
+        $user = auth()->user();
  
-        if ($user->aimeOeuvre($oeuvreId)) {
-            $user->oeuvresFavoris()->detach($oeuvreId);
+        if ($user->favoriteArtists()->where('artist_id', $artistId)->exists()) {
+            $user->favoriteArtists()->detach($artistId);
         } else {
-            // Max 5 œuvres coup de cœur
-            if ($user->oeuvresFavoris()->count() >= 5) {
-                $this->emit('notify', ['type' => 'warning', 'message' => 'Vous avez atteint la limite de 5 œuvres coup de cœur.']);
+            // Limite : 3 artistes coup de cœur max (cf CDC p.7)
+            if ($user->favoriteArtists()->count() >= 3) {
+                $this->dispatch('notify', type: 'warning', message: 'Vous ne pouvez pas suivre plus de 3 artistes.');
                 return;
             }
-            $user->oeuvresFavoris()->attach($oeuvreId);
+            $user->favoriteArtists()->attach($artistId);
         }
     }
  
-    // ── Liste des filtres actifs pour affichage des tags ────────
-    public function getFiltresActifsProperty(): \Illuminate\Support\Collection
+    public function subscribeToSearch(): void
     {
-        return collect($this->filtresActifsArray());
+        $this->validate([
+            'subscribeEmail' => 'required|email',
+        ]);
+ 
+        \App\Models\SearchSubscription::updateOrCreate(
+            [
+                'email'   => $this->subscribeEmail,
+                'type'    => 'artists',
+                'filters' => json_encode($this->activeFilters()),
+            ]
+        );
+ 
+        $this->subscribedSuccess = true;
+        $this->subscribeEmail    = '';
     }
  
-    private function filtresActifsArray(): array
+    public function activeFilters(): array
     {
-        $actifs = [];
- 
-        if ($this->categorie)   
-            $actifs['categorie'] = Categorie::whereSlug($this->categorie)->value('nom') ?? $this->categorie;
-        if ($this->theme)       
-            $actifs['theme']  = Theme::whereSlug($this->theme)->value('nom') ?? $this->theme;
-        if ($this->couleur)     
-            $actifs['couleur'] = Couleur::whereSlug($this->couleur)->value('nom') ?? $this->couleur;
-        if ($this->encadrement !== '') 
-            $actifs['encadrement'] = $this->encadrement ? 'Encadré' : 'Non encadré';
-        if ($this->orientation) 
-            $actifs['orientation'] = ucfirst($this->orientation);
-        if ($this->prix_min > 0)     
-            $actifs['prix_min'] = 'Min ' . $this->prix_min . ' €';
-        if ($this->prix_max < 5000)  
-            $actifs['prix_max'] = 'Max ' . $this->prix_max . ' €';
-        if ($this->hauteur_min > 0)  
-            $actifs['hauteur_min'] = 'H min ' . $this->hauteur_min . ' cm';
-        if ($this->hauteur_max < 500) 
-            $actifs['hauteur_max'] = 'H max ' . $this->hauteur_max . ' cm';
-        if ($this->largeur_min > 0)  
-            $actifs['largeur_min'] = 'L min ' . $this->largeur_min . ' cm';
-        if ($this->largeur_max < 500) 
-            $actifs['largeur_max'] = 'L max ' . $this->largeur_max . ' cm';
- 
-        return $actifs;
+        return array_filter([
+            'search'    => $this->search,
+            'letter'    => $this->letter,
+            'domains'   => $this->selectedDomains,
+            'countries' => $this->selectedCountries,
+            'salons'    => $this->selectedSalons,
+        ]);
     }
  
-    // ── Render ───────────────────────────────────────────────────
+    public function hasActiveFilters(): bool
+    {
+        return (bool) array_filter($this->activeFilters());
+    }
+ 
     public function render()
     {
-        // Œuvres de cet artiste uniquement, visibles, filtrées
-        $query = $this->artiste
-            ->oeuvres()
-            ->visible()                                   // scope : visible = true
-            ->with(['categorie', 'tags'])
-            ->orderByDesc('created_at');                  // NEW en premier
+        $artists = Artiste::query()
+            ->with(['categories', 'salons', 'featuredArtwork'])
+            ->published()
+            ->when($this->search, fn($q) =>
+                $q->where('pseudonym', 'like', "%{$this->search}%")
+                  ->orWhere('last_name', 'like', "%{$this->search}%")
+            )
+            ->when($this->letter, fn($q) =>
+                $q->where(function ($sub) {
+                    $sub->where('nom_d_artiste', 'like', "{$this->letter}%")
+                        ->orWhere('user.nom', 'like', "{$this->letter}%");
+                })
+            )
+            ->when($this->selectedDomains, fn($q) =>
+                $q->whereIn('category_id', $this->selectedDomains)
+            )
+            ->when($this->selectedCountries, fn($q) =>
+                $q->whereIn('pays', $this->selectedCountries)
+            )
+            ->when($this->selectedSalons, fn($q) =>
+                $q->whereHas('salons', fn($s) =>
+                    $s->whereIn('art_salons.id', $this->selectedSalons)
+                )
+            )
+            ->orderBy('nom_d_artiste')
+            ->paginate(24);
  
-        // --- Filtres ---
-        if ($this->categorie) {
-            $query->whereHas('categorie', fn($q) => $q->where('slug', $this->categorie));
-        }
-        if ($this->theme) {
-            $query->whereHas('tags', fn($q) => $q->where('slug', $this->theme)->where('type', 'theme'));
-        }
-        if ($this->couleur) {
-            $query->whereHas('tags', fn($q) => $q->where('slug', $this->couleur)->where('type', 'couleur'));
-        }
-        if ($this->encadrement !== '') {
-            $query->where('encadrement', (bool) $this->encadrement);
-        }
-        if ($this->orientation) {
-            $query->where('orientation', $this->orientation);
-        }
-        if ($this->prix_min > 0) {
-            $query->where('prix', '>=', $this->prix_min);
-        }
-        if ($this->prix_max < 5000) {
-            $query->where('prix', '<=', $this->prix_max);
-        }
-        if ($this->hauteur_min > 0) {
-            $query->where('hauteur_cm', '>=', $this->hauteur_min);
-        }
-        if ($this->hauteur_max < 500) {
-            $query->where('hauteur_cm', '<=', $this->hauteur_max);
-        }
-        if ($this->largeur_min > 0) {
-            $query->where('largeur_cm', '>=', $this->largeur_min);
-        }
-        if ($this->largeur_max < 500) {
-            $query->where('largeur_cm', '<=', $this->largeur_max);
-        }
+        $featuredArtists = Artiste::query()
+            ->sponsored()
+            ->orderByRaw('RAND()')
+            ->limit(6)
+            ->get();
  
-        $oeuvres = $query->paginate(24);
+        $filterData = [
+            'domains'   => Categorie::orderBy('nom_categorie')->get(['id', 'name']),
+            'countries' => Artiste::published()->distinct()->orderBy('country')->pluck('country'),
+            'salons'    => ArtSalon::orderByDesc('date')->get(['id', 'name', 'city']),
+            'alphabet'  => range('A', 'Z'),
+        ];
  
-        // Listes pour les selects
-        $categories = Categorie::orderBy('nom_categorie')->get();
-        $themes     = Theme::where('type', 'theme')->orderBy('nom_theme')->get();
-        $couleurs   = Couleur::orderBy('nom_couleur')->get();
+        $favoriteArtistIds = auth()->check()
+            ? auth()->user()->favoriteArtists()->pluck('artist_id')->toArray()
+            : [];
  
-        return view('livewire.artiste-galerie-filtres', compact(
-            'oeuvres', 'categories', 'themes', 'couleurs'
-        ));
+        return view('livewire.artistes-filtres', [
+            'artists'          => $artists,
+            'featuredArtists'  => $featuredArtists,
+            'filterData'       => $filterData,
+            'favoriteArtistIds' => $favoriteArtistIds,
+        ]);
     }
-    
-}
+
+} 
