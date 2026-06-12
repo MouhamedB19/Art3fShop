@@ -35,15 +35,7 @@ class DatabaseSeeder extends Seeder
          * ***************************************************************************
          */
         DB::table('users')->insert([
-            [
-                'nom'        => 'Dupont',
-                'prenom'     => 'Jean',
-                'email'      => 'client@art3f.test',
-                'password'   => Hash::make('password'),
-                'role'       => 'acheteur',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+            
             [
                 'nom'        => 'Ba',
                 'prenom'     => 'Mouhamed',

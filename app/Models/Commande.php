@@ -23,5 +23,9 @@ class Commande extends Model
         return $this->belongsToMany(Livraison::class,'commande_livraison','commande_id','livraison_id');
     }
 
+    public function conversation(){
+        return $this->hasOne(Conversation::class);
+    }
+
     
 }

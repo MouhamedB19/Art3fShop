@@ -58,12 +58,12 @@ class User extends Authenticatable
         
     public function estArtiste()
     {
-        return $this->role === 'artiste' && $this->artiste !== null;
+        return $this->role === 'artiste' && $this->artiste() !== null;
     }
 
     public function estClient()
     {
-        return $this->role === 'acheteur' && $this->client !== null;
+        return $this->role === 'acheteur' && $this->client() !== null;
     }
 
     public function estAdmin()
@@ -81,4 +81,15 @@ class User extends Authenticatable
         return $this->hasMany(Commande::class, 'user_id');
     }
 
+    public function messages(){
+        return $this->hasMany(Message::class,'emetteur_id');
+    }
+
+    public function nombreOeuvresFavoris(){
+        return $this->client->oeuvres()->count();
+    }
+
+    public function nombreArtistesFavoris(){
+        return $this->client->artistes()->count();
+    }
 }

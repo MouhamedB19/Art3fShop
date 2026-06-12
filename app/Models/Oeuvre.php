@@ -22,6 +22,9 @@ class Oeuvre extends Model
         return $this->belongsTo(Artiste::class);
     }
     
+    public function clients(){
+        return $this->belongsToMany(Client::class,'oeuvre_client','oeuvre_id','client_id')->withTimestamps();
+    }
     public function categorie(){
         return $this->belongsTo(Categorie::class);
     }

@@ -51,15 +51,12 @@
                             <span class="font-semibold text-[#1A1A1A]">{{ Auth::user()->prenom }}</span>
                         @endif
                     </span>
-                    <a href="{{ route('compte.index') }}"
-                       class="hover:text-[#E8490F] transition-colors">Mon compte</a>
+                    <x-lien-orange-art3f destination="{{ route('compte.index') }}" label="Mon compte"/>
                     @if(auth()->user()->estAdmin())
-                        <a href="{{ route('admin.index') }}"
-                           class="hover:text-[#E8490F] transition-colors">Administration</a>
+                        <x-lien-orange-art3f destination="{{ route('admin.index') }}" label="Administration"/>
                     @endif
                     @if(auth()->user()->estArtiste())
-                        <a href="{{ route('artiste.compte') }}"
-                           class="hover:text-[#E8490F] transition-colors">Espace artiste</a>
+                        <x-lien-orange-art3f destination="{{ route('artiste.compte') }}" label="Mon espace artiste"/>
                     @endif
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
@@ -68,15 +65,9 @@
                         </button>
                     </form>
                 @else
-                    <a href="{{ route('register') }}"
-                       class="hover:text-[#E8490F] transition-colors font-medium">
-                        S'inscrire
-                    </a>
+                    <x-lien-orange-art3f destination="{{ route('register') }}" label="S'inscrire"/>
                     <span class="text-gray-300">|</span>
-                    <a href="{{ route('login') }}"
-                       class="hover:text-[#E8490F] transition-colors">
-                        Se connecter
-                    </a>
+                    <x-lien-orange-art3f destination="{{ route('login') }}" label="Se connecter"/>
                 @endauth
             </div>
             
@@ -85,10 +76,12 @@
             <div class="flex items-center gap-4">
                 @if(Auth::user() && !Auth::user()->estArtiste())
                     <div class="flex gap-4">
+
                         {{-- Œuvres coup de cœur --}}
-                        <a href="{{ route('compte.favoris.oeuvres') }}"
-                           class="flex items-center gap-1 hover:text-[#E8490F] transition-colors group"
-                           title="Mes œuvres coup de cœur">
+                        <x-lien-icone-compteur
+                            :destination="route('compte.favoris.oeuvres')"                  
+                            title="Mes œuvres coup de cœur"                 
+                            :count="Auth::user()->estClient() ? Auth::user()->nombreOeuvresFavoris() : null">
                             <svg class="w-4 h-4 group-hover:fill-[#E8490F] transition-all" fill="none"
                                  viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -96,53 +89,44 @@
                                          2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0
                                          7.22 9 12 9 12s9-4.78 9-12z"/>
                             </svg>
-                            @auth
-                                <span class="font-semibold text-[#E8490F]">
-                                    {{ Auth::user()->favoris_oeuvres_count ?? 0 }}
-                                </span>
-                            @endauth
-                        </a>
+                        </x-lien-icone-compteur> 
 
-                        {{-- Artistes coup de cœur --}}
-                        <a href="{{ route('compte.favoris.artistes') }}"
-                           class="flex items-center gap-1 hover:text-[#E8490F] transition-colors group"
-                           title="Mes artistes coup de cœur">
+                        {{-- Favoris Artistes --}}
+                        <x-lien-icone-compteur
+                            :destination="route('compte.favoris.artistes')"                  
+                            title="Mes artistes coup de cœur"                 
+                            :count="Auth::user()?->estClient() ? Auth::user()?->nombreArtistesFavoris() : null">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                       d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5
                                          7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676
                                          0-5.216-.584-7.499-1.632z"/>
                             </svg>
-                            @auth
-                                <span class="font-semibold text-[#E8490F]">
-                                    {{ Auth::user()->favoris_artistes_count ?? 0 }}
-                                </span>
-                            @endauth
-                        </a>
+                        </x-lien-icone-compteur>                      
 
                         {{-- Panier --}}
-                        <a href="{{ route('panier.index') }}"
-                           class="flex items-center gap-1 hover:text-[#E8490F] transition-colors group"
-                           title="Mon panier">
+                        <x-lien-icone-compteur
+                            :destination="route('panier.index')"                  
+                            title="Mon panier"                 
+                            :count="session('panier_count',0) > 0 ? session('panier_count',0) : null">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round"
-                                      d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993
-                                         1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0
-                                         01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576
-                                         0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375
-                                         0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
+                                    d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993
+                                       1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0
+                                       01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576
+                                       0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375
+                                       0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+                                />
                             </svg>
-                            @if(session('panier_count', 0) > 0)
-                                <span class="font-semibold text-[#E8490F]">
-                                    {{ session('panier_count', 0) }}
-                                </span>
-                            @endif
-                        </a>
+                            
+                        </x-lien-icone-compteur>
                     </div>
+                @endif
+                    
                     
                     {{-- Séparateur --}}
                     <span class="text-gray-200 select-none">|</span>
-                @endif
+               
 
                 {{-- Langue --}}
                 <div class="flex gap-4">
@@ -380,13 +364,10 @@
                                         ["dessin",       'Dessin'],
                                     ] as [$slug, $label])
                                         <li>
-                                            <a href="{{ route('catalogue.categorie', $slug) }}"
-                                               class="flex items-center gap-2 py-1.5 text-sm text-gray-700
-                                                      hover:text-[#E8490F] transition-colors group/item">
-                                                <span class="w-1 h-1 rounded-full bg-gray-300
-                                                             group-hover/item:bg-[#E8490F] transition-colors"></span>
-                                                {{ $label }}
-                                            </a>
+                                            <x-lien-dropdown 
+                                                destination="{{ route('catalogue.categorie', $slug) }}"
+                                                label="{{$label}}"
+                                            />
                                         </li>
                                     @endforeach
                                 </ul>
@@ -405,10 +386,10 @@
                                 <ul class="space-y-1 list-none p-0 m-0">
                                     @foreach($themes as $theme)
                                         <li>
-                                            <a href="{{ route('catalogue.theme', Str::slug($theme)) }}"
-                                               class="text-sm text-gray-700 hover:text-[#E8490F] transition-colors">
-                                                {{ $theme }}
-                                            </a>
+                                            <x-lien-dropdown 
+                                            destination="{{ route('catalogue.theme',Str::slug($theme)) }}"
+                                            label="{{ $theme }}"
+                                            />
                                         </li>
                                     @endforeach
                                 </ul>

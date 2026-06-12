@@ -38,14 +38,14 @@ class Artiste extends Model
     }
 
     public function clients(){
-        return $this->belongsToMany(Client::class);
+        return $this->belongsToMany(Client::class,'artiste_client','artiste_id','client_id');
     }
 
     public function campagnes(){
         return $this->hasMany(Campagne_pub::class, 'artiste_id');
     }
 
-    public function salons(){
-        return $this->belongsToMany(Salon::class);
+    public function conversations(){
+        return $this->hasMany(Conversation::class,'artiste_id');
     }
 }
