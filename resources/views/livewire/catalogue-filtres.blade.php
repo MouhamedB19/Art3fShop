@@ -5,16 +5,12 @@
     {{-- Fil d'Ariane --}}
     <nav class="max-w-screen-xl mx-auto px-4 py-3 flex items-center gap-2 text-xs text-gray-500">
         <a href="{{ route('home') }}" class="hover:text-[#E8490F] transition-colors">Accueil</a>
-        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-        </svg>
-        <a href="{{ route('catalogue.index') }}" class="hover:text-[#E8490F] transition-colors">
+        <x-mini-fleche/>
+        <span class="text-[#1A1A1A] font-medium">
             Catalogue
-        </a>
+        </span>
         @if($categorieActive)
-            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
+            <x-mini-fleche/>
             <span class="text-[#1A1A1A] font-medium">{{ $categorieActive->nom_categorie }}</span>
         @endif
     </nav>
@@ -30,9 +26,7 @@
                                    hover:border-[#E8490F] transition-colors
                                    {{ $categorie_id ? 'border-[#E8490F] bg-orange-50 text-[#E8490F] font-semibold' : 'border-gray-300 text-gray-700' }}">
                         Catégorie
-                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
+                        <x-mini-fleche/>
                     </button>
                     <div x-show="open" @click.outside="open = false" x-transition
                          class="absolute top-full left-0 mt-1 bg-white border border-gray-200
@@ -67,9 +61,7 @@
                                 {{ count($theme_ids) }}
                             </span>
                         @endif
-                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
+                        <x-mini-fleche-dropdown/>
                     </button>
                     <div x-show="open" @click.outside="open = false" x-transition
                          class="absolute top-full left-0 mt-1 bg-white border border-gray-200
@@ -94,9 +86,7 @@
                                    hover:border-[#E8490F] transition-colors
                                    {{ !empty($couleur_ids) ? 'border-[#E8490F] bg-orange-50 text-[#E8490F] font-semibold' : 'border-gray-300 text-gray-700' }}">
                         Couleur
-                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
+                        <x-mini-fleche-dropdown/>
                     </button>
                     <div x-show="open" @click.outside="open = false" x-transition
                          class="absolute top-full left-0 mt-1 bg-white border border-gray-200
@@ -121,9 +111,7 @@
                                    hover:border-[#E8490F] transition-colors
                                    {{ $encadrement !== null ? 'border-[#E8490F] bg-orange-50 text-[#E8490F] font-semibold' : 'border-gray-300 text-gray-700' }}">
                         Encadrement
-                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
+                        <x-mini-fleche-dropdown/>
                     </button>
                     <div x-show="open" @click.outside="open = false" x-transition
                          class="absolute top-full left-0 mt-1 bg-white border border-gray-200
@@ -383,13 +371,7 @@
     </div>
 
     {{-- Indicateur de chargement --}}
-    <div wire:loading.flex
-         class="fixed inset-0 bg-white/60 z-50 items-center justify-center">
-        <svg class="animate-spin w-8 h-8 text-[#E8490F]" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-        </svg>
-    </div>
+    <logo-chargement/>
     @if(isset($categorieActive))
         <div id="description-complete" 
             class="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-600 overflow-hidden mx-4" 

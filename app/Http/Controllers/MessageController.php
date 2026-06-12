@@ -17,9 +17,4 @@ class MessageController extends Controller
         );
     }
 
-    public function update(Message $message){
-        $message->update(
-            ['lu_a' => now()],
-        ); 
-    }
 }

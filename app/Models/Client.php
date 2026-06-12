@@ -27,10 +27,12 @@ class Client extends Model
     }
     
     public function oeuvres(){
-        return $this->belongsToMany(Oeuvre::class, 'oeuvre_client', 'client_id', 'oeuvre_id')->withTimestamps();
+        return $this->belongsToMany(Oeuvre::class, 'oeuvre_client', 'client_id', 'oeuvre_id');
     }
     
     public function artistes(){
-        return $this->belongsToMany(Artiste::class, 'artiste_client', 'artiste_id', 'client_id')->withTimestamps();
+        return $this->belongsToMany(Artiste::class, 'artiste_client', 'artiste_id', 'client_id');
     }
+
+    
 }

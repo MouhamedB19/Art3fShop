@@ -20,11 +20,19 @@ class CompteController extends Controller
         }
         else{
             return view('compte.index', [       // → resources/views/compte/index.blade.php
-                'commandes' => $user->commandes()->latest()->take(5)->get(),
-                'favoris'   => $user->client->oeuvresFavoris()->take(5)->get(),
+                'artistes' => $user->client->artistes()->latest()->take(5)->get(),
+                'oeuvres'   => $user->client->oeuvres()->take(5)->get(),
             ]);
         }
+    }
 
-        
+    public function indexCommandes()
+    {
+        $user = Auth::user();
+        if($user)
+        {
+            $commandes = $user->commandes()->get();
+            return view('compte.commandes',compact('commandes'));
+        }
     }
 }

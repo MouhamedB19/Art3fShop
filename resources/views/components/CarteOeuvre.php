@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-public class CarteOeuvre extends Component{
+class CarteOeuvre extends Component{
     public $oeuvre;
     public $tirage;
     public $prixAffiche;
@@ -25,7 +25,7 @@ public class CarteOeuvre extends Component{
     {
         $this->oeuvre = $oeuvre;
         $this->tirage = $tirage;
-        $this->prix = prix;
+        $this->prix = $prix;
         $this->prixAffiche = $prixAffiche;
         $this->isNew = $isNew;
         $this->vendu = $vendu;

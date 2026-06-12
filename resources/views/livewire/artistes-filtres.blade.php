@@ -245,14 +245,7 @@ new class extends Component
                             @endif
  
                             {{-- Overlay hover --}}
-                            <div class="absolute inset-0 bg-black/50 opacity-0
-                                        group-hover:opacity-100 transition-opacity duration-300
-                                        flex items-center justify-center">
-                                <span class="text-white text-sm font-bold border border-white/50
-                                             px-4 py-2 rounded-lg">
-                                    Découvrir sa page
-                                </span>
-                            </div>
+                            <overlay-hover text="Découvrir sa page"/>
  
                             {{-- Photo de profil --}}
                             <div class="absolute bottom-3 left-3">
@@ -328,14 +321,6 @@ new class extends Component
     </div>
  
     {{-- Indicateur de chargement --}}
-    <div wire:loading.flex
-         class="fixed inset-0 bg-white/60 z-50 items-center justify-center">
-        <svg class="animate-spin w-8 h-8 text-[#E8490F]" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10"
-                    stroke="currentColor" stroke-width="4"/>
-            <path class="opacity-75" fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-        </svg>
-    </div>
+    <logo-chargement/>
  
 </div>
