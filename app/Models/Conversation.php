@@ -23,4 +23,8 @@ class Conversation extends Model
     public function artiste(){
         return $this->belongsTo(Artiste::class);
     }
+
+    public function messages(){
+        return $this->hasMany(Message::class);
+    }
 }

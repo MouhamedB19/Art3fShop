@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Artiste\ProfilArtisteController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Ville;
+use App\Models\Categorie;
+
 use App\Http\Controllers\OeuvreController;
 use App\Http\Controllers\CatalogueController;
 use App\Http\Controllers\ArtisteController;
@@ -14,9 +16,10 @@ use App\Http\Controllers\PanierController;
 use App\Http\Controllers\SelectionController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\MessageController;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Categorie;
 use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\CommandeController;
+
+
 
 Route::get('/auth/google', [SocialiteController::class, 'redirect'])->name('auth.google');
 Route::get('/auth/google/callback', [SocialiteController::class, 'callback'])->name('auth.google.callback');
@@ -155,6 +158,8 @@ Route::get('/designers-interieurs', function(){
 Route::get('/blog', function(){
     return view('pages.blog');
 })->name('blog.index'); 
+
+
 Route::post('/newsletter/subscribe', [UtilsController::class,'newsletterSubscribe'])->name('newsletter.subscribe');
 
 Route::get('/artiste/inscription', [ArtisteController::class,'inscription'])->name('artiste.inscription');
@@ -178,9 +183,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/compte/conversations',[ConversationController::class,'index'])
         ->name('compte.conversations.index');
 
-    Route::get('/compte/commandes',[CompteController::class,'indexCommandes'])
-        ->name('compte.commandes');
-    
+    Route::get('/compte/commandes',[CommandeController::class,'index'])
+        ->name('compte.commandes.index');
+        
+    Route::get('/compte/commandes/{id}',[CommandeController::class,'show'])
+        ->name('compte.commandes.show');
 
 });
 

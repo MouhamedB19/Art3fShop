@@ -305,6 +305,7 @@ new class extends Component
             <div class="mt-12">
                 {{ $this->artistes->links() }}
             </div>
+            
  
         @else
             <div class="text-center py-24">

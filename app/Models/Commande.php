@@ -8,11 +8,15 @@ class Commande extends Model
 {
     protected $fillable = [
         'date_commande',
-        'client_id',
+        'user_id',
+    ];
+
+    protected $casts = [
+        'date_commande' => 'datetime',
     ];
 
     public function client(){
-        return $this->belongsTo(Client::class,'client_id');
+        return $this->belongsTo(Client::class,'user_id');
     }
 
     public function tirages(){

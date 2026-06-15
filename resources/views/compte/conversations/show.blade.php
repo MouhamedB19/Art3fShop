@@ -3,16 +3,15 @@
 @section('title', 'Conversation — Commande #' . $conversation->commande_id)
 
 @section('breadcrumb')
-    <nav class="max-w-screen-xl mx-auto px-4 py-3 flex items-center gap-2 text-xs text-gray-500">
-        <a href="{{route('home')}}" class="hover:text-[#E8490F] transition-colors">Accueil</a>
-        <x-mini-fleche/>
-        <a href="{{ route('compte.conversations.index') }}" class="hover:text-[#E8490F] transition-colors">
-            Mes conversations
-        </a>
-        <x-mini-fleche/>
-        <span class="text-[#1A1A1A] font-medium">Conversation sur la commande N°{{$conversation->commande_id}}</span>
+    <a href="{{route('home')}}" class="hover:text-[#E8490F] transition-colors">Accueil</a>
+    <x-mini-fleche/>
+    <a href="{{ route('compte.conversations.index') }}" class="hover:text-[#E8490F] transition-colors">
+        Mes conversations
+    </a>
+    <x-mini-fleche/>
+    <span class="text-[#1A1A1A] font-medium">Conversation sur la commande N°{{$conversation->commande_id}}</span>
         
-    </nav>
+   
 @endsection
 
 @section('content')

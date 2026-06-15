@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('emetteur_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('conversation_id')->constrained('conversations')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamp('lu_a')->nullable();
+            $table->timestamps();
         });
     }
 

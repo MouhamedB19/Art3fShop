@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Auth;
 class ConversationController extends Controller
 {
     public function show(Conversation $conversation){
-        $conversation->messages()->where('emetteur_id', Auth::id())->whereNull('lu_a')->update('lu_a');
+        $conversation->messages()->where('emetteur_id', Auth::id())->whereNull('lu_a')->update(['lu_a' => now()]);
         $messages = $conversation->messages()->get();
-        return view('conversations.show',compact('conversation','messages'));
+        return view('compte.conversations.show',compact('conversation','messages'));
     }
 
     
@@ -20,7 +20,7 @@ class ConversationController extends Controller
 
         $conversation = Conversation::firstOrCreate(
             ['commande_id' => $commande_id],
-            ['client_id' => Auth::id(), 'artiste_id' => $artiste_id ]
+            ['client_id' => Auth::user()->client->id, 'artiste_id' => $artiste_id ]
         );
         return redirect(route('conversations.show',$conversation->id));
     }

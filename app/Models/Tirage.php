@@ -15,7 +15,7 @@ class Tirage extends Model
         'encadrement',
         'pret_a_accrocher',
         'dimensions_id',
-        'commandes_id',
+        'commande_id',
         'avec_cadre',
     ];
 
@@ -24,7 +24,7 @@ class Tirage extends Model
     }
 
     public function commandes(){
-        return $this->hasMany(Commande::class, 'commandes_id');
+        return $this->hasMany(Commande::class, 'commande_id');
     }
 
     public function clients(){
