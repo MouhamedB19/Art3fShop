@@ -27,9 +27,16 @@ class ConversationController extends Controller
 
     public function index()
     {
-        $conversations = Conversation::where('client_id', Auth::id())
-            ->orWhere('artiste_id', Auth::id())
-            ->with(['messages' => fn($q) => $q->latest()->limit(1)])
+        $conversations = null;
+        if(Auth::user()->estClient())
+        {
+           $conversations = Conversation::where('client_id', Auth::user()->client->id);
+        }
+        else if(Auth::user()->estArtiste())
+        {
+            $conversations = Conversation::where('artiste_id',Auth::user()->artiste->id);
+        }
+        $conversations = $conversations->with(['messages' => fn($q) => $q->latest()->limit(1)])
             ->latest()
             ->get();
 

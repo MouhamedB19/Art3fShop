@@ -23,7 +23,6 @@ class CommandeController extends Controller
                     ->commandes()
                     ->with(['tirages.oeuvre.artiste.user', 'livraisons', 'conversation'])
                     ->findOrFail($id);
-
         return view('compte.commandes.show',compact('commande'));
     }
 }

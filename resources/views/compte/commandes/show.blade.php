@@ -7,7 +7,7 @@
     <x-mini-fleche/>
     <a href="{{ route('compte.index') }}" class="hover:text-[#E8490F]">Mon compte</a>
     <x-mini-fleche/>
-    <a href="{{ route('compte.commandes.index a') }}" class="hover:text-[#E8490F]">Mes commandes</a>
+    <a href="{{ route('compte.commandes.index') }}" class="hover:text-[#E8490F]">Mes commandes</a>
     <x-mini-fleche/>
     <span class="text-[#1A1A1A]">Commande #{{ $commande->id }}</span>
 @endsection
@@ -44,7 +44,7 @@
                     <div class="flex-1 min-w-0">
                         <p class="font-medium text-[#1A1A1A]">{{ $oeuvre->titre }}</p>
                         <p class="text-sm text-gray-500 mt-0.5">
-                            par <span class="font-medium">{{ $oeuvre->artiste->user->name }}</span>
+                            par <span class="font-medium">{{ $oeuvre->artiste->user->nom}} {{ $oeuvre->artiste->user->prenom }}</span>
                         </p>
                         <div class="flex flex-wrap gap-3 mt-3 text-sm text-gray-600">
                             <span>Tirage n°{{ $tirage->numero }}</span>
@@ -92,10 +92,10 @@
                         Voir la conversation
                     </a>
                 @else
-                    
+
                     <form action="{{ route('conversations.store', [$commande->id, $artiste->id]) }}" method="POST">
                         @csrf
-                        dd($artiste)
+                        
                         <button type="submit"
                             class="inline-flex items-center gap-2 bg-[#E8490F] hover:bg-[#cf3e0c] text-white text-sm font-medium px-5 py-3 rounded-xl transition-colors">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">

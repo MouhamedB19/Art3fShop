@@ -21,7 +21,7 @@
     <div class="mb-6">
         <h1 class="text-xl font-semibold">Conversation — Commande #{{ $conversation->commande_id }}</h1>
         <p class="text-sm text-gray-500 mt-1">
-            @if(Auth::id() === $conversation->client_id)
+            @if(Auth::user()->client)
                 Avec <span class="font-medium">
                     @if($conversation->artiste->nom_d_artiste)
                         {{ $conversation->artiste->nom_d_artiste }}
@@ -61,6 +61,7 @@
     </div>
 
     {{-- Formulaire envoi --}}
+    
     <form action="{{ route('messages.store', $conversation) }}" method="POST">
         @csrf
         <div class="flex gap-3 items-end">
@@ -72,7 +73,7 @@
                 required
             ></textarea>
             <button type="submit"
-                class="bg-[#E8490F] hover:bg-[#cf3e0c] text-white text-sm font-medium px-5 py-3 rounded-xl transition-colors">
+                    class="bg-[#E8490F] hover:bg-[#cf3e0c] text-white text-sm font-medium px-5 py-3 rounded-xl transition-colors">
                 Envoyer
             </button>
         </div>

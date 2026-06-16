@@ -20,7 +20,7 @@
 
         @forelse($conversations as $conversation)
             @php
-                $interlocuteur = Auth::id() === $conversation->client_id
+                $interlocuteur = Auth::user()->client
                     ? $conversation->artiste
                     : $conversation->client;
                 $dernierMessage = $conversation->messages->first();
@@ -36,14 +36,14 @@
                 {{-- Avatar --}}
                 <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
                     <span class="text-[#E8490F] font-semibold text-lg uppercase">
-                        {{ substr($interlocuteur->name, 0, 1) }}
+                        {{ substr($interlocuteur->user->nom, 0, 1) }}
                     </span>
                 </div>
 
                 {{-- Contenu --}}
                 <div class="flex-1 min-w-0">
                     <div class="flex items-center justify-between gap-2">
-                        <p class="font-medium truncate">{{ $interlocuteur->name }}</p>
+                        <p class="font-medium truncate">{{ $interlocuteur->user->nom }}</p>
                         @if($dernierMessage)
                             <span class="text-xs text-gray-400 shrink-0">
                                 {{ $dernierMessage->created_at->diffForHumans() }}
