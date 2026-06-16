@@ -5,6 +5,8 @@
 @section('breadcrumb')
     <a href="{{route('home')}}" class="hover:text-[#E8490F] transition-colors">Accueil</a>
     <x-mini-fleche/>
+    <a href="{{ route('compte.index') }}" class="hover:text-[#E8490F] transition-colors">Mon compte</a>
+    <x-mini-fleche/>
     <a href="{{ route('compte.conversations.index') }}" class="hover:text-[#E8490F] transition-colors">
         Mes conversations
     </a>
@@ -16,7 +18,7 @@
 
 @section('content')
 <div class="max-w-screen-md mx-auto px-4 py-10">
-
+    
     {{-- En-tête --}}
     <div class="mb-6">
         <h1 class="text-xl font-semibold">Conversation — Commande #{{ $conversation->commande_id }}</h1>

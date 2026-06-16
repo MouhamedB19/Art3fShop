@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('commande_id')->constrained('commandes')->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('client_id')->constrained('clients')->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('artiste_id')->constrained('artistes')->onDelete('cascade')->onUpdate('cascade');
-            $table->unique('commande_id');
             $table->timestamps();
         });
     }
