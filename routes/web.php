@@ -56,6 +56,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware('artiste')->group(function () {
         Route::get('/artiste/compte', [ArtisteController::class, 'compte'])->name('artiste.compte');
+        Route::get('/oeuvres/index',[OeuvreController::class,'index'])->name('oeuvres.index');
     });
 
     Route::middleware('admin')->group(function () {
@@ -168,6 +169,7 @@ Route::post('/artiste/inscription', [ArtisteController::class,'inscrire'])->name
 
 Route::get('/oeuvres/{id}', [OeuvreController::class, 'show'])->name('oeuvres.show');
 
+Route::post('/oeuvres/create',[OeuvreController::class,'store'])->name('oeuvres.create');
 
 Route::middleware(['auth'])->group(function () {
 

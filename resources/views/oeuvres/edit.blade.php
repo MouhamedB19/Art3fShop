@@ -1,3 +1,4 @@
+@extends('layouts.app')
 @if($errors->any())
     <div>
         <ul>

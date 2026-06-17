@@ -3,154 +3,260 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Oeuvre;
+use App\Models\Tirage;
+use App\Models\Dimension;
 use App\Models\Categorie;
-use App\Models\Couleur;
 use App\Models\Support;
 use App\Models\Theme;
-use App\Models\Tirage;
+use App\Models\Couleur;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
 class OeuvreController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Liste des œuvres de l'artiste connecté.
      */
     public function index()
     {
-        $oeuvres = Oeuvre::where('artiste_id', Auth::user()->artiste->id)->get();
+        $oeuvres = Oeuvre::with(['tirages', 'categorie'])
+            ->where('artiste_id', Auth::user()->artiste->id)
+            ->latest()
+            ->get();
+
         return view('oeuvres.index', compact('oeuvres'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Formulaire de création.
      */
     public function create()
     {
-        $categories = Categorie::whereNull('id_categorie_parente')->get();
-        $couleurs = Couleur::all();
-        $supports = Support::all();
-        $themes = Theme::all();
-        return view('oeuvres.create', compact('categories', 'couleurs', 'supports', 'themes'));
+        $categories = Categorie::orderBy('nom_categorie')->get();
+        $supports   = Support::orderBy('nom_support')->get();
+        $themes     = Theme::orderBy('nom_theme')->get();
+        $couleurs   = Couleur::orderBy('nom_couleur')->get();
+
+        return view('oeuvres.create', compact('categories', 'supports', 'themes', 'couleurs'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Enregistrement de l'œuvre + ses tirages.
      */
     public function store(Request $request)
     {
         $request->validate([
-            'titre'           => ['required', 'string', 'max:255'],
-            'annee_de_creation'  => ['required', 'integer', 'min:1900', 'max:'.date('Y')],
-            'categorie_id'    => ['required', 'exists:categories,id'],
-            'support_id'      => ['required', 'exists:supports,id'],
-            'orientation'     => ['required', 'in:portrait,paysage,carre'],
-            'photo_principale'=> ['required', 'image', 'max:2048'],
-            'description'     => ['required', 'string'],
-            'themes'          => ['required', 'array'],
-            'couleurs'        => ['required', 'array'],
+            'titre'             => 'required|string|max:255',
+            'annee_de_creation' => 'required|integer|min:1900|max:' . date('Y'),
+            'taux_reduction'    => 'nullable|numeric|min:0|max:0.99',
+            'photo_principale'  => 'required|image|mimes:jpeg,png,tiff|max:10240|dimensions:min_width=600,min_height=600',
+            'orientation'       => 'required|in:portrait,paysage,carre',
+            'description'       => 'required|string',
+            'visible'           => 'boolean',
+            'categorie_id'      => 'required|exists:categories,id',
+            'support_id'        => 'required|exists:supports,id',
+            'themes'            => 'nullable|array',
+            'themes.*'          => 'exists:themes,id',
+            'couleurs'          => 'nullable|array',
+            'couleurs.*'        => 'exists:couleurs,id',
+
+            // Tirages
+            'tirages'                     => 'required|array|min:1',
+            'tirages.*.numero'            => 'required|integer|min:1',
+            'tirages.*.prix'              => 'required|numeric|min:0',
+            'tirages.*.status'            => 'required|in:disponible,vendu,reserve',
+            'tirages.*.largeur'           => 'required|numeric|min:1',
+            'tirages.*.hauteur'           => 'required|numeric|min:1',
+            'tirages.*.encadrement'       => 'required|in:0 , 1',
+            'tirages.*.pret_a_accrocher'  => 'nullable|boolean',
+            'tirages.*.avec_cadre'        => 'nullable|boolean',
         ]);
 
-        // Upload photo
-        $photo = $request->file('photo_principale')
-                         ->store('photos/oeuvres', 'public');
+        // 1. Upload photo principale
+        $photoPath = $request->file('photo_principale')->store('oeuvres', 'public');
 
-        // Créer l'oeuvre
+        // 2. Créer l'œuvre
         $oeuvre = Oeuvre::create([
-            'titre'            => $request->titre,
-            'annee_de_creation'   => $request->annee_de_creation,
-            'categorie_id'     => $request->categorie_id,
-            'support_id'       => $request->support_id,
-            'orientation'      => $request->orientation,
-            'photo_principale' => $photo,
-            'description'      => $request->description,
-            'encadrement'      => $request->boolean('encadrement'),
-            'artiste_id'       => Auth::user()->artiste->id,
+            'titre'             => $request->titre,
+            'annee_de_creation' => $request->annee_de_creation,
+            'taux_reduction'    => $request->taux_reduction,
+            'photo_principale'  => $photoPath,
+            'orientation'       => $request->orientation,
+            'description'       => $request->description,
+            'visible'           => $request->boolean('visible', true),
+            'categorie_id'      => $request->categorie_id,
+            'support_id'        => $request->support_id,
+            'artiste_id'        => Auth::user()->artiste->id,
         ]);
 
-        // Lier les thèmes et couleurs
-        $oeuvre->themes()->attach($request->themes);
-        $oeuvre->couleurs()->attach($request->couleurs);
+        // 3. Sync thèmes & couleurs
+        if ($request->has('themes')) {
+            $oeuvre->themes()->sync($request->themes);
+        }
+        if ($request->has('couleurs')) {
+            $oeuvre->couleurs()->sync($request->couleurs);
+        }
 
-        return redirect(route('oeuvres.index'))->with('success', 'Œuvre ajoutée avec succès !');
+        // 4. Créer les tirages
+        foreach ($request->tirages as $tirageData) {
+            // firstOrCreate pour éviter les doublons de dimensions
+            $dimension = Dimension::firstOrCreate([
+                'largeur' => $tirageData['largeur'],
+                'hauteur' => $tirageData['hauteur'],
+            ]);
+
+            Tirage::create([
+                'oeuvre_id'         => $oeuvre->id,
+                'numero'            => $tirageData['numero'],
+                'prix'              => $tirageData['prix'],
+                'status'            => $tirageData['status'],
+                'encadrement'       => (bool) ($tirageData['encadrement'] ?? false),
+                'pret_a_accrocher'  => (bool) ($tirageData['pret_a_accrocher'] ?? false),
+                'avec_cadre'        => (bool) ($tirageData['avec_cadre'] ?? false),
+                'dimensions_id'     => $dimension->id,
+            ]);
+        }
+
+        return redirect()
+            ->route('oeuvres.index')
+            ->with('success', 'Œuvre publiée avec succès !');
     }
 
     /**
-     * Display the specified resource.
+     * Fiche œuvre (vue artiste).
      */
-    // OeuvreController.php
-    public function show($id)
+    public function show(Oeuvre $oeuvre)
     {
-        
-        $tirage = Tirage::where('id', $id)->with('oeuvre')->firstOrFail();
-        // Autres œuvres du même artiste (pour le bandeau en bas)
-        $autresOeuvres = Oeuvre::where('artiste_id', $tirage->oeuvre->artiste_id)
-            ->where('id', '!=', $tirage->oeuvre->id)
-            ->where('visible', true)
-            ->with(['tirages', 'artiste.user'])
-            ->take(6)
-            ->get();
-        $nbTirages = Tirage::where('oeuvre_id', $tirage->oeuvre->id)->count();
+        $this->authorizeOeuvre($oeuvre);
 
-        return view('oeuvres.show', compact('tirage', 'autresOeuvres', 'nbTirages'));
+        $oeuvre->load(['tirages.dimension', 'categorie', 'support', 'themes', 'couleurs']);
+
+        return view('oeuvres.index', compact('oeuvre'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Formulaire d'édition.
      */
     public function edit(Oeuvre $oeuvre)
     {
-        $categories = Categorie::whereNull('id_categorie_parente')->get();
-        $couleurs = Couleur::all();
-        $supports = Support::all();
-        $themes = Theme::all();
-        return view('oeuvres.edit', compact('oeuvre', 'categories', 'couleurs', 'supports', 'themes'));
+        $this->authorizeOeuvre($oeuvre);
+
+        $oeuvre->load(['tirages.dimension', 'themes', 'couleurs']);
+
+        $categories = Categorie::orderBy('nom_categorie')->get();
+        $supports   = Support::orderBy('nom_support')->get();
+        $themes     = Theme::orderBy('nom_theme')->get();
+        $couleurs   = Couleur::orderBy('nom_couleur')->get();
+
+        return view('oeuvres.edit', compact('oeuvre', 'categories', 'supports', 'themes', 'couleurs'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Mise à jour de l'œuvre + ses tirages.
      */
     public function update(Request $request, Oeuvre $oeuvre)
     {
+        $this->authorizeOeuvre($oeuvre);
+
         $request->validate([
-            'titre'            => ['required', 'string', 'max:255'],
-            'categorie_id'     => ['required', 'exists:categories,id'],
-            'support_id'       => ['required', 'exists:supports,id'],
-            'description'      => ['required', 'string'],
-            'themes'           => ['required', 'array'],
-            'couleurs'         => ['required', 'array'],
+            'titre'             => 'required|string|max:255',
+            'annee_de_creation' => 'required|integer|min:1900|max:' . date('Y'),
+            'taux_reduction'    => 'nullable|numeric|min:0|max:0.99',
+            'photo_principale'  => 'nullable|image|mimes:jpeg,png,tiff|max:10240|dimensions:min_width=600,min_height=600',
+            'orientation'       => 'required|in:portrait,paysage,carre',
+            'description'       => 'required|string',
+            'visible'           => 'boolean',
+            'categorie_id'      => 'required|exists:categories,id',
+            'support_id'        => 'required|exists:supports,id',
+            'themes'            => 'nullable|array',
+            'themes.*'          => 'exists:themes,id',
+            'couleurs'          => 'nullable|array',
+            'couleurs.*'        => 'exists:couleurs,id',
+
+            'tirages'                     => 'required|array|min:1',
+            'tirages.*.numero'            => 'required|integer|min:1',
+            'tirages.*.prix'              => 'required|numeric|min:0',
+            'tirages.*.status'            => 'required|in:disponible,vendu,reserve',
+            'tirages.*.largeur'           => 'required|numeric|min:1',
+            'tirages.*.hauteur'           => 'required|numeric|min:1',
+            'tirages.*.encadrement'       => 'required|in:sans,avec',
+            'tirages.*.pret_a_accrocher'  => 'nullable|boolean',
+            'tirages.*.avec_cadre'        => 'nullable|boolean',
         ]);
 
-        // Mise à jour photo si nouvelle photo uploadée
-        if($request->hasFile('photo_principale')) {
-            $photo = $request->file('photo_principale')->store('photos/oeuvres', 'public');
-            $oeuvre->photo_principale = $photo;
+        // 1. Photo principale (optionnelle en update)
+        $photoPath = $oeuvre->photo_principale;
+        if ($request->hasFile('photo_principale')) {
+            Storage::disk('public')->delete($photoPath);
+            $photoPath = $request->file('photo_principale')->store('oeuvres', 'public');
         }
 
+        // 2. Mettre à jour l'œuvre
         $oeuvre->update([
-            'titre'          => $request->titre,
-            'categorie_id'   => $request->categorie_id,
-            'support_id'     => $request->support_id,
-            'orientation'    => $request->orientation,
-            'description'    => $request->description,
-            'encadrement'    => $request->boolean('encadrement'),
+            'titre'             => $request->titre,
+            'annee_de_creation' => $request->annee_de_creation,
+            'taux_reduction'    => $request->taux_reduction,
+            'photo_principale'  => $photoPath,
+            'orientation'       => $request->orientation,
+            'description'       => $request->description,
+            'visible'           => $request->boolean('visible', true),
+            'categorie_id'      => $request->categorie_id,
+            'support_id'        => $request->support_id,
         ]);
 
-        // Sync thèmes et couleurs
-        $oeuvre->themes()->sync($request->themes);
-        $oeuvre->couleurs()->sync($request->couleurs);
+        // 3. Sync thèmes & couleurs
+        $oeuvre->themes()->sync($request->themes ?? []);
+        $oeuvre->couleurs()->sync($request->couleurs ?? []);
 
-        return redirect(route('oeuvres.index'))->with('success', 'Œuvre modifiée avec succès !');
-    }
+        // 4. Recréer les tirages (delete + insert)
+        // On supprime uniquement les tirages non vendus pour ne pas casser l'historique
+        $oeuvre->tirages()->where('status', '!=', 'vendu')->delete();
 
-        /**
-         * Remove the specified resource from storage.
-         */
-        public function destroy(Oeuvre $oeuvre)
-        {
-            $oeuvre->themes()->detach();
-            $oeuvre->couleurs()->detach();
-            $oeuvre->delete();
-            return redirect(route('oeuvres.index'))->with('success', 'Œuvre supprimée avec succès !');
+        foreach ($request->tirages as $tirageData) {
+            $dimension = Dimension::firstOrCreate([
+                'largeur' => $tirageData['largeur'],
+                'hauteur' => $tirageData['hauteur'],
+            ]);
+
+            Tirage::create([
+                'oeuvre_id'         => $oeuvre->id,
+                'numero'            => $tirageData['numero'],
+                'prix'              => $tirageData['prix'],
+                'status'            => $tirageData['status'],
+                'encadrement'       => $tirageData['encadrement'],
+                'pret_a_accrocher'  => (bool) ($tirageData['pret_a_accrocher'] ?? false),
+                'avec_cadre'        => (bool) ($tirageData['avec_cadre'] ?? false),
+                'dimensions_id'     => $dimension->id,
+            ]);
         }
+
+        return redirect()
+            ->route('oeuvres.index')
+            ->with('success', 'Œuvre mise à jour avec succès !');
     }
+
+    /**
+     * Suppression de l'œuvre.
+     */
+    public function destroy(Oeuvre $oeuvre)
+    {
+        $this->authorizeOeuvre($oeuvre);
+
+        Storage::disk('public')->delete($oeuvre->photo_principale);
+        $oeuvre->delete();
+
+        return redirect()
+            ->route('oeuvres.index')
+            ->with('success', 'Œuvre supprimée.');
+    }
+
+    /**
+     * Vérifie que l'artiste connecté est bien propriétaire de l'œuvre.
+     */
+    private function authorizeOeuvre(Oeuvre $oeuvre): void
+    {
+        abort_if($oeuvre->artiste_id !== Auth::user()->artiste->id, 403);
+    }
+}

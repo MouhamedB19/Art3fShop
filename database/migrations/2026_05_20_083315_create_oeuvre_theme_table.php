@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('oeuvre_theme', function (Blueprint $table) {
-            $table->foreignId('oeuvre_id')->constrained('oeuvres');
-            $table->foreignId('theme_id')->constrained('themes');
+            $table->foreignId('oeuvre_id')->constrained('oeuvres')->onDelete("cascade")->onUpdate("cascade");
+            $table->foreignId('theme_id')->constrained('themes')->onDelete("cascade")->onUpdate("cascade");
             $table->primary(['oeuvre_id', 'theme_id']);
         });
     }

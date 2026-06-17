@@ -4,22 +4,22 @@
         <form method="POST" action="{{ route('register') }}">
             @csrf
 
-            <!-- Name -->
+            <!-- Nom -->
             <div class="mt-4">
                 <x-input-label for="name" :value="__('Nom')" />
-                <x-text-input-art3f id="name" class="block mt-1 w-full border" type="text" name="nom" :value="old('nom')" message="Nom" />
+                <x-text-input-art3f id="name" type="text" name="nom" value="{{ old('nom') }}" message="Nom" />
                 <x-input-error :messages="$errors->get('nom')" class="mt-2" />
             </div>
             <!-- Prenom -->
             <div class="mt-4">
                 <x-input-label for="prenom" :value="__('Prenom')" />
-                <x-text-input-art3f id="prenom" class="block mt-1 w-full" type="text" name="prenom" :value="old('prenom')" message="Prénom" autofocus autocomplete="prenom" />
+                <x-text-input-art3f id="prenom" type="text" name="prenom" value="{{ old('prenom') }}" message="Prénom" autofocus autocomplete="prenom" />
                 <x-input-error :messages="$errors->get('prenom')" class="mt-2" />
             </div>
             <!-- Email Address -->
             <div class="mt-4">
                 <x-input-label for="email" :value="__('Email')" />
-                <x-text-input-art3f id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" message="Email" autocomplete="username" />
+                <x-text-input-art3f id="email" type="email" name="email" value="{{ old('email') }}" message="Email" autocomplete="username" />
                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
             </div>
 
@@ -27,9 +27,10 @@
             <div class="mt-4">
                 <x-input-label for="password" :value="__('Mot de passe')" />
 
-                <x-text-input-art3f id="password" message="Mot de passe" class="block mt-1 w-full"
+                <x-text-input-art3f id="password" message="Mot de passe"
                                 type="password"
                                 name="password"
+                                value="{{ old('password') }}"
                                 autocomplete="new-password" />
 
                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
@@ -39,7 +40,7 @@
             <div class="mt-4">
                 <x-input-label for="password_confirmation" :value="__('Confirmer le mot de passe')" />
 
-                <x-text-input-art3f id="password_confirmation" message="Confirmer le mot de passe" class="block mt-1 w-full"
+                <x-text-input-art3f id="password_confirmation" message="Confirmer le mot de passe"
                                 type="password"
                                 name="password_confirmation"/>
 
