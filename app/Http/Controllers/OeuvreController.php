@@ -21,8 +21,11 @@ class OeuvreController extends Controller
      */
     public function index()
     {
+        $artiste = Auth::user()->artiste; 
+        abort_if(is_null($artiste), 403, 'Aucun artiste lié à cet utilisateur');
+
         $oeuvres = Oeuvre::with(['tirages', 'categorie'])
-            ->where('artiste_id', Auth::user()->artiste->id)
+            ->where('artiste_id', $artiste->id)
             ->latest()
             ->get();
 
@@ -181,7 +184,7 @@ class OeuvreController extends Controller
             'tirages.*.status'            => 'required|in:disponible,vendu,reserve',
             'tirages.*.largeur'           => 'required|numeric|min:1',
             'tirages.*.hauteur'           => 'required|numeric|min:1',
-            'tirages.*.encadrement'       => 'required|in:sans,avec',
+            'tirages.*.encadrement'       => 'required|in:0,1',
             'tirages.*.pret_a_accrocher'  => 'nullable|boolean',
             'tirages.*.avec_cadre'        => 'nullable|boolean',
         ]);

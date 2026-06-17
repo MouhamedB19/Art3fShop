@@ -304,8 +304,8 @@
                                     <select :name="tirage.vendu ? '' : 'tirages[' + index + '][encadrement]'"
                                             x-model="tirage.encadrement" :disabled="tirage.vendu"
                                             class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:border-[#E8490F] focus:ring-1 focus:ring-[#E8490F] transition bg-white disabled:bg-gray-50">
-                                        <option value="sans">Sans cadre</option>
-                                        <option value="avec">Avec cadre</option>
+                                        <option value="0">Sans cadre</option>
+                                        <option value="1">Avec cadre</option>
                                     </select>
                                 </div>
 
@@ -339,10 +339,12 @@
                    class="px-5 py-2.5 rounded-lg border border-gray-200 text-sm text-gray-700 hover:bg-gray-50 transition">
                     Annuler
                 </a>
-                <button type="submit"
+                <form action="{{ route('oeuvres.index') }}" method="GET">
+                    <button type="submit"
                         class="px-6 py-2.5 rounded-lg bg-[#E8490F] text-white text-sm font-medium hover:bg-[#c93d0c] transition">
-                    Enregistrer les modifications
-                </button>
+                        Enregistrer les modifications
+                    </button>
+                </form>    
             </div>
 
         </form>
@@ -351,96 +353,98 @@
 
 @push('scripts')
 <script>
-function oeuvreForm() {
-    return {
-        previewUrl: null,
+    function oeuvreForm() {
+        return {
+            previewUrl: null,
 
-        // Tirages chargés depuis PHP (pré-remplis)
-        tirages: @json($oeuvre->tirages->map(fn($t) => [
-            'uid'              => $t->id,
-            'numero'           => $t->numero,
-            'prix'             => $t->prix,
-            'status'           => $t->status,
-            'largeur'          => $t->dimension?->largeur,
-            'hauteur'          => $t->dimension?->hauteur,
-            'encadrement'      => $t->encadrement,
-            'pret_a_accrocher' => (bool) $t->pret_a_accrocher,
-            'avec_cadre'       => (bool) $t->avec_cadre,
-            'vendu'            => $t->status === 'vendu',
-        ])),
+            // Tirages chargés depuis PHP (pré-remplis)
+            tirages: {{ Js::from($oeuvre->tirages->map(function($t) {
+                return [
+                    'uid'              => $t->id,
+                    'numero'           => $t->numero,
+                    'prix'             => $t->prix,
+                    'status'           => $t->status,
+                    'largeur'          => $t->dimension?->largeur,
+                    'hauteur'          => $t->dimension?->hauteur,
+                    'encadrement'      => $t->encadrement,
+                    'pret_a_accrocher' => (bool) $t->pret_a_accrocher,
+                    'avec_cadre'       => (bool) $t->avec_cadre,
+                    'vendu'            => $t->status === 'vendu',
+                ];
+            })) }},
 
-        handleFile(file) {
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = e => this.previewUrl = e.target.result;
-            reader.readAsDataURL(file);
-        },
+            handleFile(file) {
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = e => this.previewUrl = e.target.result;
+                reader.readAsDataURL(file);
+            },
 
-        addTirage() {
-            const editables = this.tirages.filter(t => !t.vendu);
-            const last = editables[editables.length - 1] ?? this.tirages[this.tirages.length - 1];
-            this.tirages.push({
-                uid:              Date.now(),
-                numero:           (last?.numero ?? 0) + 1,
-                prix:             '',
-                status:           'disponible',
-                largeur:          last?.largeur ?? '',
-                hauteur:          last?.hauteur ?? '',
-                encadrement:      last?.encadrement ?? 'sans',
-                pret_a_accrocher: false,
-                avec_cadre:       false,
-                vendu:            false,
-            });
-        },
+            addTirage() {
+                const editables = this.tirages.filter(t => !t.vendu);
+                const last = editables[editables.length - 1] ?? this.tirages[this.tirages.length - 1];
+                this.tirages.push({
+                    uid:              Date.now(),
+                    numero:           (last?.numero ?? 0) + 1,
+                    prix:             '',
+                    status:           'disponible',
+                    largeur:          last?.largeur ?? '',
+                    hauteur:          last?.hauteur ?? '',
+                    encadrement:      last?.encadrement ?? 'sans',
+                    pret_a_accrocher: false,
+                    avec_cadre:       false,
+                    vendu:            false,
+                });
+            },
 
-        removeTirage(index) {
-            this.tirages.splice(index, 1);
+            removeTirage(index) {
+                this.tirages.splice(index, 1);
+            }
         }
     }
-}
-</script>
+    </script>
 
-<script>
-// Logique sous-catégories (reprise de l'existant)
-document.addEventListener('DOMContentLoaded', function () {
-    const parentSelect  = document.getElementById('categorie_parent_id');
-    const sousCatDiv    = document.getElementById('sous-categorie-div');
-    const sousCatSelect = document.getElementById('categorie_id');
-    const currentCatId  = {{ $oeuvre->categorie_id }};
-    const parentId      = {{ $oeuvre->categorie->id_categorie_parente ?? 'null' }};
+    <script>
+    // Logique sous-catégories (reprise de l'existant)
+    document.addEventListener('DOMContentLoaded', function () {
+        const parentSelect  = document.getElementById('categorie_parent_id');
+        const sousCatDiv    = document.getElementById('sous-categorie-div');
+        const sousCatSelect = document.getElementById('categorie_id');
+        const currentCatId  = {{ $oeuvre->categorie_id }};
+        const parentId      = {{ $oeuvre->categorie->id_categorie_parente ?? 'null' }};
 
-    function loadSousCategories(parentId, selectedId) {
-        if (!parentId) { sousCatDiv.style.display = 'none'; return; }
-        fetch(`/categories/${parentId}/sous-categories`)
-            .then(r => r.json())
-            .then(sousCats => {
-                if (sousCats.length === 0) {
-                    sousCatDiv.style.display = 'none';
-                    sousCatSelect.value = parentId;
-                } else {
-                    sousCatDiv.style.display = 'block';
-                    sousCatSelect.innerHTML = '<option value="">-- Choisir --</option>';
-                    sousCats.forEach(sc => {
-                        const opt = document.createElement('option');
-                        opt.value    = sc.id;
-                        opt.text     = sc.nom_categorie;
-                        opt.selected = sc.id == selectedId;
-                        sousCatSelect.appendChild(opt);
-                    });
-                }
-            });
-    }
+        function loadSousCategories(parentId, selectedId) {
+            if (!parentId) { sousCatDiv.style.display = 'none'; return; }
+            fetch(`/categories/${parentId}/sous-categories`)
+                .then(r => r.json())
+                .then(sousCats => {
+                    if (sousCats.length === 0) {
+                        sousCatDiv.style.display = 'none';
+                        sousCatSelect.value = parentId;
+                    } else {
+                        sousCatDiv.style.display = 'block';
+                        sousCatSelect.innerHTML = '<option value="">-- Choisir --</option>';
+                        sousCats.forEach(sc => {
+                            const opt = document.createElement('option');
+                            opt.value    = sc.id;
+                            opt.text     = sc.nom_categorie;
+                            opt.selected = sc.id == selectedId;
+                            sousCatSelect.appendChild(opt);
+                        });
+                    }
+                });
+        }
 
-    // Pré-charger les sous-catégories au chargement
-    if (parentId) {
-        parentSelect.value = parentId;
-        loadSousCategories(parentId, currentCatId);
-    }
+        // Pré-charger les sous-catégories au chargement
+        if (parentId) {
+            parentSelect.value = parentId;
+            loadSousCategories(parentId, currentCatId);
+        }
 
-    parentSelect.addEventListener('change', function () {
-        loadSousCategories(this.value, null);
+        parentSelect.addEventListener('change', function () {
+            loadSousCategories(this.value, null);
+        });
     });
-});
-</script>
+    </script>
 @endpush
 @endsection
