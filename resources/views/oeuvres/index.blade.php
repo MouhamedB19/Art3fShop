@@ -9,7 +9,12 @@
                 {{ session('success') }}
             </div>
         @else
-            <h2>Bienvenue dans votre musée personnel, {{ Auth::user()->prenom }} {{ Auth::user()->nom }}!</h2>
+            <h2>Bienvenue dans votre musée personnel, 
+                @if(Auth::user()->artiste->nom_d_artiste)
+                    {{ Auth::user()->artiste->nom_d_artiste }}
+                @else
+                    {{ Auth::user()->prenom }} {{ Auth::user()->nom }}!</h2>
+                @endif
         @endif
         <h3>Mes oeuvres</h3>
         <ul>

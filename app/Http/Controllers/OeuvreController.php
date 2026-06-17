@@ -149,7 +149,7 @@ class OeuvreController extends Controller
         $supports   = Support::orderBy('nom_support')->get();
         $themes     = Theme::orderBy('nom_theme')->get();
         $couleurs   = Couleur::orderBy('nom_couleur')->get();
-
+        $tiragesOeuvres = $oeuvre->tirages;
         return view('oeuvres.edit', compact('oeuvre', 'categories', 'supports', 'themes', 'couleurs'));
     }
 

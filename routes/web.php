@@ -57,6 +57,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('artiste')->group(function () {
         Route::get('/artiste/compte', [ArtisteController::class, 'compte'])->name('artiste.compte');
         Route::get('/oeuvres/index',[OeuvreController::class,'index'])->name('oeuvres.index');
+        Route::post('/oeuvres/edit/{oeuvre}',[OeuvreController::class,'edit'])->name('oeuvres.edit');
     });
 
     Route::middleware('admin')->group(function () {
