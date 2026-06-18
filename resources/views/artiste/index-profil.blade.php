@@ -27,19 +27,11 @@
         <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10 pb-8 border-b border-gray-100">
             <div class="flex items-center gap-6">
                 {{-- Avatar --}}
-                <div class="w-24 h-24 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex-shrink-0">
-                    @if($user->artiste?->photo)
-                        <img src="{{ Storage::url($user->artiste->photo) }}"
-                             alt="{{ $user->artiste->nom_d_artiste ?? $user->prenom }}"
-                             class="w-full h-full object-cover">
-                    @else
-                        <div class="w-full h-full flex items-center justify-center text-gray-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                            </svg>
-                        </div>
-                    @endif
-                </div>
+                <x-avatar
+                    class="w-24 h-24"
+                    :photo="$user->artiste?->photo"
+                    :alt="$user->artiste?->nom_d_artiste ?? $user->prenom"
+                />
 
                 <div>
                     <p class="text-xs uppercase tracking-widest text-gray-400 mb-0.5">Espace artiste</p>
