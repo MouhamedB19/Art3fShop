@@ -37,7 +37,7 @@ class OeuvreController extends Controller
      */
     public function create()
     {
-        $categories = Categorie::orderBy('nom_categorie')->get();
+        $categories = Categorie::whereNull('id_categorie_parente')->orderBy('nom_categorie')->get();
         $supports   = Support::orderBy('nom_support')->get();
         $themes     = Theme::orderBy('nom_theme')->get();
         $couleurs   = Couleur::orderBy('nom_couleur')->get();
@@ -148,7 +148,7 @@ class OeuvreController extends Controller
 
         $oeuvre->load(['tirages.dimension', 'themes', 'couleurs']);
 
-        $categories = Categorie::orderBy('nom_categorie')->get();
+        $categories = Categorie::whereNull('id_categorie_parente')->orderBy('nom_categorie')->get();
         $supports   = Support::orderBy('nom_support')->get();
         $themes     = Theme::orderBy('nom_theme')->get();
         $couleurs   = Couleur::orderBy('nom_couleur')->get();

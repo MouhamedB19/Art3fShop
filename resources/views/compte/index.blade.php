@@ -78,7 +78,20 @@
                     </div>
                 </div>
             </a>
-
+            @if(Auth::user()->estArtiste())
+                <x-box-links-page destination="{{ route('artiste.edit.profil') }}" label="Modifier votre profil" sublabel="Modifier vos informations">
+                    <svg class="w-6 h-6 text-[#E8490F]"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.5">
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M16.862 4.487a2.25 2.25 0 113.182 3.182L8.25 19.463 3.75 20.25l.787-4.5L16.862 4.487z" />
+                    </svg>
+                </x-box-links-page>
+            @endif
         </div>
     </div>
 @endsection

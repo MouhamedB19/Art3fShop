@@ -76,7 +76,7 @@
                             @endforeach
                         </select>
                     </div>
-
+                    
                     <div>
                         <label class="block text-sm text-gray-700 mb-1.5">Support <span class="text-[#E8490F]">*</span></label>
                         <select name="support_id"
@@ -309,6 +309,7 @@
 
 @push('scripts')
 <script>
+    
 function oeuvreForm() {
     return {
         previewUrl: null,

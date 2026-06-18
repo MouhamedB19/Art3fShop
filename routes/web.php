@@ -58,6 +58,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/artiste/compte', [ArtisteController::class, 'compte'])->name('artiste.compte');
         Route::get('/oeuvres/index',[OeuvreController::class,'index'])->name('oeuvres.index');
         Route::post('/oeuvres/edit/{oeuvre}',[OeuvreController::class,'edit'])->name('oeuvres.edit');
+
+        Route::get('/artiste/edit/profil',[ProfilArtisteController::class,'edit'])->name('artiste.edit.profil');
+        Route::get('/artiste/index/profil',[ProfilArtisteController::class,'show'])->name('artiste.index.profil');
+        Route::put('/artiste/update/profil',[ProfilArtisteController::class,'update'])->name('artiste.update.profil');
     });
 
     Route::middleware('admin')->group(function () {

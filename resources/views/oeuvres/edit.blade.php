@@ -87,6 +87,8 @@
                         <select name="categorie_id" id="categorie_id"
                                 class="w-full rounded-lg border border-gray-200 px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#E8490F] focus:ring-1 focus:ring-[#E8490F] transition bg-white">
                             <option value="">-- Choisir --</option>
+                            
+
                         </select>
                     </div>
 
@@ -414,7 +416,11 @@
         const parentId      = {{ $oeuvre->categorie->id_categorie_parente ?? 'null' }};
 
         function loadSousCategories(parentId, selectedId) {
-            if (!parentId) { sousCatDiv.style.display = 'none'; return; }
+            if (!parentId) 
+            { 
+                sousCatDiv.style.display = 'none'; 
+                return; 
+            }
             fetch(`/categories/${parentId}/sous-categories`)
                 .then(r => r.json())
                 .then(sousCats => {
