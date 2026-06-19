@@ -1,6 +1,6 @@
 <div class="break-inside-avoid mb-4">
 
-    <a href="{{ route('oeuvres.show', $tirage->id) }}"
+    <a href="{{ route('oeuvres.show', $oeuvre) }}"
        class="block relative group overflow-hidden rounded-xl bg-gray-100">
 
         <img

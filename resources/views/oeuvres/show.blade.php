@@ -111,7 +111,7 @@
                     <div>
                         @if(!$vendue)
                             <div class="flex items-baseline gap-3">
-                                <span class="text-3xl font-black text-[#E8490F]">
+                                <span id="prix-text" class="text-3xl font-black text-[#E8490F]">
                                     @if($tirage->oeuvre->avec_cadre === 1)
                                         {{ number_format($prixAffiche, 0, ',', ' ') }} €
                                     @else
@@ -146,7 +146,7 @@
 
                 {{-- Bouton ajouter au panier --}}
                 @if(!$vendue)
-                    <form action="{{ route('panier.index') }}" method="POST">
+                    <form action="{{ route('panier.ajout',$tirage) }}" method="POST">
                         @csrf
                         <input type="hidden" name="tirage_id" value="{{ $tirage->id }}">
                         <input type="hidden" name="avec_cadre" x-bind:value="avecCadre ?? 0">
@@ -256,7 +256,16 @@
                             <span class="text-sm font-medium text-[#1A1A1A] text-right">{{ $value }}</span>
                         </div>
                     @endforeach
-
+                    <div class="flex gap-2 flex-wrap">
+                        @foreach($tousLesTirages as $t)
+                            <a href="{{ route('oeuvres.show.tirage', [$oeuvre, $t]) }}"
+                               class="px-3 py-2 rounded-lg border text-sm
+                                      {{ $t->id === $tirage->id ? 'border-[#E8490F] text-[#E8490F]' : 'border-gray-200 text-gray-600' }}
+                                      {{ $t->status === 'vendu' ? 'opacity-40 line-through' : '' }}">
+                                N°{{ $t->numero }} — {{ $t->dimension->largeur }}×{{ $t->dimension->hauteur }}cm
+                            </a>
+                        @endforeach
+                    </div>
                     {{-- Certificat --}}
                     <div class="flex items-center gap-2 pt-2 border-t border-gray-200">
                         <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -271,7 +280,7 @@
                              x-data="{ avecCadre: true }">
                             <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox"
-                                       x-model="avecCadre"
+                                       x-model="avecCadre" id="avec-cadre"
                                        class="rounded border-gray-300 text-[#E8490F] focus:ring-[#E8490F]">
                                 <span class="text-sm text-gray-600">
                                     Acheter sans cadre
@@ -443,5 +452,6 @@
         </div>
 
     </div>
-
+    
 @endsection
+

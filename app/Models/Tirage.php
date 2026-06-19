@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tirage extends Model
 {
-    //
     protected $fillable = [
         'oeuvre_id',
         'numero',
@@ -36,7 +35,7 @@ class Tirage extends Model
     }
 
     public function oeuvre(){
-        return $this->belongsTo(Oeuvre::class, 'oeuvre_id');
+        return $this->belongsTo(Oeuvre::class);
     }
 
 }

@@ -123,8 +123,8 @@ Route::get('/emploi', function(){
     return view('pages.emploi');
 })->name('emploi');
 
-Route::get('/panier', [PanierController::class, 'index'])->name('panier.index');
-
+Route::post('/panier', [PanierController::class, 'index'])->name('panier.index');
+Route::post('/panier/ajout/{tirage}',[PanierController::class,'add'])->name('panier.ajout');
 Route::get('/compte/favoris/oeuvres', [CompteController::class, 'favorisOeuvres'])->name('compte.favoris.oeuvres');
 Route::get('/compte/favoris/artistes', [CompteController::class, 'favorisArtistes'])->name('compte.favoris.artistes');
 
@@ -172,9 +172,12 @@ Route::get('/artiste/inscription', [ArtisteController::class,'inscription'])->na
 
 Route::post('/artiste/inscription', [ArtisteController::class,'inscrire'])->name('artiste.inscrire');
 
-Route::get('/oeuvres/{id}', [OeuvreController::class, 'show'])->name('oeuvres.show');
+Route::get('/oeuvres/{oeuvre}', [OeuvreController::class, 'show'])->name('oeuvres.show');
+Route::get('/oeuvres/{oeuvre}/tirage/{tirage}',[OeuvreController::class,'showTirage'])->name('oeuvres.show.tirage');
 
 Route::post('/oeuvres/create',[OeuvreController::class,'store'])->name('oeuvres.create');
+
+
 
 Route::middleware(['auth'])->group(function () {
 
@@ -200,4 +203,10 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
+Route::middleware(['auth'])->prefix('panier')->name('panier.')->group(function () {
+    Route::get('/', [PanierController::class, 'index'])->name('index');
+    Route::post('/add/{tirage}', [PanierController::class, 'add'])->name('add');
+    Route::delete('/remove/{tirage}', [PanierController::class, 'remove'])->name('remove');
+    Route::delete('/clear', [PanierController::class, 'clear'])->name('clear');
+});
 

@@ -26,7 +26,7 @@
                                    hover:border-[#E8490F] transition-colors
                                    {{ $categorie_id ? 'border-[#E8490F] bg-orange-50 text-[#E8490F] font-semibold' : 'border-gray-300 text-gray-700' }}">
                         Catégorie
-                        <x-mini-fleche/>
+                        <x-mini-fleche-dropdown/>
                     </button>
                     <div x-show="open" @click.outside="open = false" x-transition
                          class="absolute top-full left-0 mt-1 bg-white border border-gray-200

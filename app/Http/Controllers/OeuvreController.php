@@ -134,11 +134,33 @@ class OeuvreController extends Controller
     {
         $this->authorizeOeuvre($oeuvre);
 
-        $oeuvre->load(['tirages.dimension', 'categorie', 'support', 'themes', 'couleurs']);
+        $oeuvre->load(['tirages.dimension', 'categorie', 'support', 'themes', 'couleurs', 'artiste.localisation.ville.pays', 'artiste.user']);
 
-        return view('oeuvres.index', compact('oeuvre'));
+        $tirage = $oeuvre->tirages->firstWhere('status', 'disponible') ?? $oeuvre->tirages->first();
+
+        abort_if(is_null($tirage), 404, 'Aucun tirage disponible pour cette œuvre');
+
+        return redirect()->route('oeuvres.show.tirage',[$oeuvre,$tirage]);
     }
 
+    public function showTirage(Oeuvre $oeuvre, Tirage $tirage)
+    {
+        $this->authorizeOeuvre($oeuvre);
+
+        // Sécurité : vérifier que ce tirage appartient bien à cette œuvre
+        abort_if($tirage->oeuvre_id !== $oeuvre->id, 404);
+
+        $tirage->load(['dimension', 'oeuvre.categorie', 'oeuvre.support', 'oeuvre.artiste.localisation.ville.pays', 'oeuvre.artiste.user']);
+
+        $autresOeuvres = Oeuvre::where('artiste_id', $oeuvre->artiste_id)
+            ->where('id', '!=', $oeuvre->id)
+            ->where('visible', true)
+            ->with('tirages')
+            ->limit(8)
+            ->get();
+        $tousLesTirages = $oeuvre->tirages()->with('dimension')->orderBy('numero')->get();
+        return view('oeuvres.show', compact('tirage', 'autresOeuvres','tousLesTirages','oeuvre'));
+    }
     /**
      * Formulaire d'édition.
      */
@@ -260,6 +282,7 @@ class OeuvreController extends Controller
      */
     private function authorizeOeuvre(Oeuvre $oeuvre): void
     {
-        abort_if($oeuvre->artiste_id !== Auth::user()->artiste->id, 403);
+        if(Auth::user()->estArtiste())
+            abort_if($oeuvre->artiste_id !== Auth::user()->artiste->id, 403);
     }
 }

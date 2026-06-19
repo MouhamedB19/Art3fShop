@@ -41,6 +41,5 @@ class CatalogueController extends Controller
     
         return view('catalogue.theme', compact('oeuvresCorrespondantes', 'theme', 'tiragesCorrespondants'));
     }
-    
-    
+  
 }

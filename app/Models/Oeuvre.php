@@ -42,7 +42,7 @@ class Oeuvre extends Model
     }
 
     public function tirages(){
-        return $this->hasMany(Tirage::class);
+        return $this->hasMany(Tirage::class,'oeuvre_id');
     }
     public function campagnes(){
         return $this->hasMany(Campagne_pub::class, 'oeuvre_id');
