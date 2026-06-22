@@ -6,18 +6,41 @@ use Illuminate\Http\Request;
 use App\Models\Tirage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use App\Models\Coupon;
 class PanierController extends Controller
 {
     // Afficher le panier
     public function index()
     {
         $client = Auth::user()->client;
-        $tirages = $client->tirages()->with('oeuvre.artiste.user')->get();
+        $tirages = $client->tirages;
 
-        $total = $tirages->sum(fn($t) => $t->prix * $t->pivot->quantite);
+        $total = $tirages->sum('prix');
 
-        return view('panier.index', compact('tirages', 'total'));
+        $reduction = 0;
+        $totalFinal = $total;
+
+        if (session('coupon_id')) {
+            $coupon = Coupon::find(session('coupon_id'));
+
+            if ($coupon) {
+                $reduction = $coupon->type === 'pourcentage'
+                    ? $total * $coupon->valeur / 100
+                    : $coupon->valeur;
+
+                // on évite une réduction qui dépasse le total
+                $reduction = min($reduction, $total);
+
+                $totalFinal = $total - $reduction;
+            }
+        }
+
+        $coupons = Coupon::whereIn('id', session('coupons', []))->get();
+        $reduction = $this->calculerReduction($total, $coupons);
+        $totalFinal = $total - $reduction;
+
+        return view('panier.index', compact('tirages', 'total', 'coupons', 'reduction', 'totalFinal'));
+        
     }
 
     // Ajouter un tirage au panier
@@ -69,4 +92,19 @@ class PanierController extends Controller
 
         return back()->with('success', 'Panier vidé.');
     }
+
+    private function calculerReduction($total, $coupons)
+    {
+        $reduction = 0;
+
+        foreach ($coupons as $coupon) {
+            $reduction += $coupon->type === 'pourcentage'
+                ? $total * $coupon->valeur / 100
+                : $coupon->valeur;
+        }
+
+        return min($reduction, $total); // jamais négatif
+    }
+
+
 }

@@ -18,6 +18,7 @@ use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\CommandeController;
+use App\Http\Controllers\CouponController;
 
 
 
@@ -201,6 +202,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/compte/commandes/{id}',[CommandeController::class,'show'])
         ->name('compte.commandes.show');
 
+   
 });
 
 Route::middleware(['auth'])->prefix('panier')->name('panier.')->group(function () {
@@ -208,5 +210,20 @@ Route::middleware(['auth'])->prefix('panier')->name('panier.')->group(function (
     Route::post('/add/{tirage}', [PanierController::class, 'add'])->name('add');
     Route::delete('/remove/{tirage}', [PanierController::class, 'remove'])->name('remove');
     Route::delete('/clear', [PanierController::class, 'clear'])->name('clear');
+});
+
+Route::middleware(['auth'])->group(function(){
+    Route::post('/coupon/check',[CouponController::class,'appliquer'])
+        ->name('coupon.check');
+
+    Route::delete('/coupon/retirer/{coupon}',[CouponController::class,'retirer'])
+        ->name('coupon.retirer');
+});
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/checkout', [CommandeController::class, 'create'])->name('compte.commandes.checkout');
+    Route::post('/checkout', [CommandeController::class, 'store'])->name('checkout.store');
+    Route::get('/commande/{commande}/confirmation', [CommandeController::class, 'confirmation'])->name('commande.confirmation');
 });
 

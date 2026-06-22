@@ -8,23 +8,23 @@
 
 @section('content')
     
-    @if($tiragesCorrespondants->isEmpty())
+    @if($oeuvresCategorie->isEmpty())
         <h1>Aucune œuvre trouvée pour cette catégorie.</h1>
     @else
         <div class="overflow-hidden mx-4"> 
             <h1 class="text-lg font-bold text-[#1A1A1A] my-4">Toutes les {{$categorie}}s</h1>
             <div class="columns-2 md:columns-3 lg:columns-4 gap-4"> 
-                @foreach($tiragesCorrespondants as $tirage)
+                @foreach($oeuvresCategorie as $oeuvre)
                     @php
-                        $oeuvre = $tirage->oeuvre;
+                        $tirage = $oeuvre->tirages->first();
                         $isNew = $oeuvre->created_at >= now()->subDays(30);
-                        $vendue = $tirage->vendue;
+                        $vendue = $tirage->status === "vendu";
                         $prix = $tirage->prix;
                         $prixAffiche = $oeuvre->taux_reduction ? round($prix * (1 - $oeuvre->taux_reduction), 2) : $prix;
                     @endphp
                     <x-carte-oeuvre
                         :oeuvre="$oeuvre"
-                        :tirage="$oeuvre->tirages->first()"
+                        :tirage="$tirage"
                         :prix="$prix"
                         :prixAffiche="$prixAffiche"
                         :vendue="$vendue"
@@ -32,6 +32,8 @@
                     />
                 @endforeach
             </div>
+
+            {{-- -Section artistes sponsorisés --}}
             <div class="w-full bg-zinc-900 border border-zinc-700 rounded-xl overflow-hidden flex items-center mt-4">
 
                 <!-- Partie gauche : photo -->

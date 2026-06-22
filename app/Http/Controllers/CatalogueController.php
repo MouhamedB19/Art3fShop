@@ -18,12 +18,14 @@ class CatalogueController extends Controller
     {
         return view('catalogue.index');
     }
-    public function categorie($categorie){
+    public function categorie($categorie)
+    {
+        $c = Categorie::where('nom_categorie', $categorie)->firstOrFail();
         $oeuvres = Oeuvre::all();
-        $c = Categorie::where('nom_categorie', $categorie)->first();
-        $oeuvresCategorie = $oeuvres->where('categorie_id', $c->id)->merge($oeuvres->where('id_categorie_parente', $c->id));
+        $oeuvresCategorie = $oeuvres->where('categorie_id',$c->id)->merge($oeuvres->where('categorie.id_categorie_parente',$c->id));
         $tiragesCorrespondants = Tirage::whereIn('oeuvre_id', $oeuvresCategorie->pluck('id'))->get();
-        return view('catalogue.categorie', compact('oeuvresCategorie', 'categorie', 'tiragesCorrespondants'));
+
+        return view('catalogue.categorie', compact('oeuvresCategorie', 'categorie','tiragesCorrespondants'));
     }
 
     public function theme($theme)

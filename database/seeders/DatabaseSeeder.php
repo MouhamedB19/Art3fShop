@@ -47,6 +47,8 @@ class DatabaseSeeder extends Seeder
             // Commandes
             CommandeSeeder::class,
             
+            //Coupons
+            CouponsSeeders::class,
  
         ]);
     }

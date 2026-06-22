@@ -31,5 +31,9 @@ class Commande extends Model
         return $this->hasOne(Conversation::class);
     }
 
+    public function coupons()
+    {
+        return $this->belongsToMany(Coupon::class,'coupon_commande','commande_id','coupon_id')->withTimeStamps();
+    }
     
 }

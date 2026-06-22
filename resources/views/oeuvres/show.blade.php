@@ -5,20 +5,9 @@
 
 @section('breadcrumb')
     <a href="{{ route('home') }}" class="hover:text-[#E8490F] transition-colors">Accueil</a>
-    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-    </svg>
+    <x-mini-fleche/>
     <a href="{{ route('catalogue.index') }}" class="hover:text-[#E8490F] transition-colors">Catalogue</a>
-    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-    </svg>
-    <a href="{{ route('catalogue.categorie', $tirage->oeuvre->categorie->nom_categorie) }}"
-       class="hover:text-[#E8490F] transition-colors">
-        {{ $tirage->oeuvre->categorie->nom_categorie }}
-    </a>
-    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-    </svg>
+    <x-mini-fleche/>
     <span class="text-[#1A1A1A] font-medium truncate max-w-[200px]">{{ $tirage->oeuvre->titre }}</span>
 @endsection
 
@@ -39,6 +28,7 @@
              photoActive: '{{ asset('storage/' . $tirage->oeuvre->photo_principale) }}',
              dedicace: false,
              cadeau: false,
+             
          }">
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -104,19 +94,15 @@
             {{-- ═══════════════════════════════════════
                  COLONNE DROITE — Infos & achat
                  ═══════════════════════════════════════ --}}
-            <div class="space-y-6">
+            <div class="space-y-6" x-data="{avecCadre: true}">
 
                 {{-- Prix + coup de cœur --}}
                 <div class="flex items-start justify-between">
                     <div>
                         @if(!$vendue)
                             <div class="flex items-baseline gap-3">
-                                <span id="prix-text" class="text-3xl font-black text-[#E8490F]">
-                                    @if($tirage->oeuvre->avec_cadre === 1)
-                                        {{ number_format($prixAffiche, 0, ',', ' ') }} €
-                                    @else
-                                        {{ number_format($prixAffiche - 150,0,',',' ') }} €
-                                    @endif
+                                <span class="text-3xl font-black text-[#E8490F]"
+                                      x-text="(avecCadre ? {{ $prixAffiche }} : {{ number_format($prixAffiche - 150,0,',','') }} ).toLocaleString('fr-FR') + ' €'">
                                 </span>
                                 @if($tirage->oeuvre->taux_reduction)
                                     <span class="text-lg text-gray-400 line-through">
@@ -149,7 +135,7 @@
                     <form action="{{ route('panier.ajout',$tirage) }}" method="POST">
                         @csrf
                         <input type="hidden" name="tirage_id" value="{{ $tirage->id }}">
-                        <input type="hidden" name="avec_cadre" x-bind:value="avecCadre ?? 0">
+                        <input type="hidden" name="avec_cadre" x-bind:value="avecCadre ? 1 : 0">
                         <button type="submit"
                                 class="w-full bg-[#1A1A1A] hover:bg-[#E8490F] text-white font-bold
                                        py-4 rounded-xl transition-colors duration-200 text-sm tracking-wide
@@ -276,12 +262,11 @@
 
                     {{-- Option encadrement --}}
                     @if($tirage?->encadrement)
-                        <div class="pt-2 border-t border-gray-200"
-                             x-data="{ avecCadre: true }">
-                            <label class="flex items-center gap-2 cursor-pointer">
+                        <div class="pt-2 border-t border-gray-200">
+                            <label class="flex items-center gap-2 cursor-pointer" @click="avecCadre = !avecCadre">
                                 <input type="checkbox"
-                                       x-model="avecCadre" id="avec-cadre"
-                                       class="rounded border-gray-300 text-[#E8490F] focus:ring-[#E8490F]">
+                                        x-model="avecCadre" 
+                                        class="rounded border-gray-300 text-[#E8490F] focus:ring-[#E8490F]">
                                 <span class="text-sm text-gray-600">
                                     Acheter sans cadre
                                     <span class="text-[#E8490F] font-semibold">(-150 €)</span>
