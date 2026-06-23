@@ -34,6 +34,14 @@ class CouponController extends Controller
         if ($coupon->utilisations_max && $coupon->utilisations_actuelles >= $coupon->utilisations_max) {
             return back()->withErrors(['code' => 'Code épuisé']);
         }
+        if ($coupon->type === 'pourcentage') {
+            $couponsAppliques = Coupon::whereIn('id', $coupons)->get();
+            $aDejaUnPourcentage = $couponsAppliques->contains('type', 'pourcentage');
+
+            if ($aDejaUnPourcentage) {
+                return back()->withErrors(['code' => 'Un seul coupon en pourcentage est autorisé par commande']);
+            }
+        }
 
         $client = Auth::user()->client;
         $total = $client->tirages->sum('prix');

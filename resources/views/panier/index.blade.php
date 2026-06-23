@@ -158,7 +158,7 @@
                         <span>{{ number_format($totalFinal ?? $total, 2, ',', ' ') }} €</span>
                     </div>
 
-                    <a href="{{ route('compte.commandes.checkout') }}"
+                    <a href="{{ route('checkout.resume') }}"
                         class="block w-full text-center bg-[#E8490F] text-white py-3 rounded-xl font-medium hover:bg-orange-700 transition-colors">
                         Passer la commande
                     </a>

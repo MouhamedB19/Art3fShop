@@ -1,14 +1,18 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Calculs\CalculeReduction;
 use Illuminate\Http\Request;
 use App\Models\Tirage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Coupon;
+
+
+
 class PanierController extends Controller
 {
+    use CalculeReduction;
     // Afficher le panier
     public function index()
     {
@@ -93,18 +97,7 @@ class PanierController extends Controller
         return back()->with('success', 'Panier vidé.');
     }
 
-    private function calculerReduction($total, $coupons)
-    {
-        $reduction = 0;
-
-        foreach ($coupons as $coupon) {
-            $reduction += $coupon->type === 'pourcentage'
-                ? $total * $coupon->valeur / 100
-                : $coupon->valeur;
-        }
-
-        return min($reduction, $total); // jamais négatif
-    }
+    
 
 
 }

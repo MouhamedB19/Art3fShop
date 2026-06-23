@@ -18,7 +18,6 @@ class Coupon extends Model
     ];
     public function commandes()
     {
-        return $this->belongsToMany(Commande::class, 'coupon_commande','commande_id','coupon_id')
-        ->withTimestamps();
+        return $this->belongsToMany(Commande::class, 'coupon_commande','commande_id','coupon_id');
     }
 }

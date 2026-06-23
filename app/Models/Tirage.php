@@ -35,7 +35,7 @@ class Tirage extends Model
     }
 
     public function oeuvre(){
-        return $this->belongsTo(Oeuvre::class);
+        return $this->belongsTo(Oeuvre::class,'oeuvre_id');
     }
 
 }

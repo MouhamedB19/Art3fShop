@@ -14,4 +14,15 @@ class Pays extends Model
     public function villes(){
         return $this->hasMany(Ville::class);
     }
+
+    public function estDansUE(string $nomPays): bool
+    {
+        $paysUE = [
+            'France', 'Allemagne', 'Espagne', 'Italie', 'Belgique', 'Pays-Bas',
+            'Portugal', 'Luxembourg', 'Autriche', 'Irlande', 'Pologne',
+            
+        ];
+
+        return in_array($nomPays, $paysUE);
+    }
 }

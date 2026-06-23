@@ -43,7 +43,7 @@ class CommandeController extends Controller
             $reduction = min($reduction, $total);
         }
 
-        return view('compte.commande.checkout', compact('tirages', 'total', 'reduction'));
+        return view('compte.commandes.checkout', compact('tirages', 'total', 'reduction'));
     }
 
     public function store(Request $request)
@@ -65,11 +65,14 @@ class CommandeController extends Controller
 
         Tirage::whereIn('id', $tirages->pluck('id'))->update(['commande_id' => $commande->id]);
 
-        if (session('coupon_id')) {
-            $commande->coupons()->attach(session('coupon_id'));
+        $coupons = Coupon::whereIn('id', session('coupons', []))->get();
 
-            Coupon::find(session('coupon_id'))?->increment('utilisations_actuelles');
+        if ($coupons->isNotEmpty()) {
+            $commande->coupons()->attach($coupons->pluck('id'));
+            Coupon::whereIn('id', $coupons->pluck('id'))->increment('utilisations_actuelles');
         }
+
+        session()->forget('coupons');
 
         $client->tirages()->detach();
         session()->forget('coupon_id');

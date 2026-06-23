@@ -19,7 +19,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\CommandeController;
 use App\Http\Controllers\CouponController;
-
+use App\Http\Controllers\CheckoutController;
 
 
 Route::get('/auth/google', [SocialiteController::class, 'redirect'])->name('auth.google');
@@ -225,5 +225,33 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout', [CommandeController::class, 'create'])->name('compte.commandes.checkout');
     Route::post('/checkout', [CommandeController::class, 'store'])->name('checkout.store');
     Route::get('/commande/{commande}/confirmation', [CommandeController::class, 'confirmation'])->name('commande.confirmation');
+});
+
+Route::middleware('auth')->prefix('checkout')->name('checkout.')->group(function () {
+    Route::get('/resume', [CheckoutController::class, 'resume'])
+        ->name('resume');
+
+    Route::get('/identification', [CheckoutController::class, 'identification'])
+        ->name('identification');
+    Route::post('/identification', [CheckoutController::class, 'storeIdentification'])
+        ->name('identification.store');
+
+    Route::get('/adresse', [CheckoutController::class, 'adresse'])->name('adresse');
+    Route::post('/adresse', [CheckoutController::class, 'storeAdresse'])
+        ->name('adresse.store');
+
+    Route::get('/livraison', [CheckoutController::class, 'livraison'])
+        ->name('livraison');
+    Route::post('/livraison', [CheckoutController::class, 'storeLivraison'])
+        ->name('livraison.store');
+
+    Route::get('/paiement', [CheckoutController::class, 'paiement'])
+        ->name('paiement');
+        
+    Route::post('/paiement', [CheckoutController::class, 'storePaiement'])
+        ->name('paiement.store');
+
+    Route::get('/confirmation/{commande}', [CheckoutController::class, 'confirmation'])
+        ->name('confirmation');
 });
 

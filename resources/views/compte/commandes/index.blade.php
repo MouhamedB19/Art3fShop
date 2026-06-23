@@ -14,7 +14,7 @@
     <div class="max-w-screen-md mx-auto px-4 py-10">
     
         <h1 class="text-2xl font-semibold mb-8">Mes commandes</h1>
-    
+        
         @forelse($commandes as $commande)
             <a href="{{ route('compte.commandes.show', $commande->id) }}"
                class="flex items-center justify-between gap-4 p-5 border border-gray-200 rounded-2xl hover:border-[#E8490F] hover:shadow-md transition-all mb-4">
@@ -23,7 +23,8 @@
                     {{-- Miniature première œuvre --}}
                     @php 
                         $premierTirage = $commande->tirages?->first();
-                        $premiereOeuvre = $premierTirage->oeuvre; 
+                        $premiereOeuvre = $premierTirage?->oeuvre; 
+
                     @endphp
                     @if($premiereOeuvre?->photo)
                         <img src="{{ asset('storage/' . $premiereOeuvre->photo) }}"

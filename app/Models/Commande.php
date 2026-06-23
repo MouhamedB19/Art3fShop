@@ -16,7 +16,7 @@ class Commande extends Model
     ];
 
     public function client(){
-        return $this->belongsTo(Client::class,'user_id');
+        return $this->belongsTo(User::class,'user_id');
     }
 
     public function tirages(){
@@ -33,7 +33,7 @@ class Commande extends Model
 
     public function coupons()
     {
-        return $this->belongsToMany(Coupon::class,'coupon_commande','commande_id','coupon_id')->withTimeStamps();
+        return $this->belongsToMany(Coupon::class,'coupon_commande','commande_id','coupon_id');
     }
     
 }
