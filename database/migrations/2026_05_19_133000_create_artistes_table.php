@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nom_d_artiste')->nullable();
             $table->text('bio')->nullable();
             $table->string('photo')->nullable(); // chemin vers la photo de l'artiste
+            $table->boolean('a_la_une')->default(false);
             $table->boolean('Est_Artiste_Art3f')->default(false);
             $table->string('iban',255)->nullable();
             $table->string('CV')->nullable(); // chemin vers le CV de l'artiste

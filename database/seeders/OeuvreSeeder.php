@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\Artiste;
 
 class OeuvreSeeder extends Seeder
 {
@@ -20,48 +21,67 @@ class OeuvreSeeder extends Seeder
 
         $oeuvres = [
             // Sophie Martin — Peinture
-            ['titre' => 'Éclat de lumière',    'annee' => 2023, 'orientation' => 'carre',    'cat' => $peinture_id,  'support' => 1, 'artiste' => 0, 'reduction' => null, 'visible' => true,  'prix' => 850,  'status' => 'disponible', 'dim' => 4],
-            ['titre' => 'Vague intérieure',     'annee' => 2022, 'orientation' => 'paysage',  'cat' => $peinture_id,  'support' => 1, 'artiste' => 0, 'reduction' => null, 'visible' => true,  'prix' => 1200, 'status' => 'disponible', 'dim' => 9],
-            ['titre' => 'Rouge passion',        'annee' => 2024, 'orientation' => 'portrait', 'cat' => $peinture_id,  'support' => 2, 'artiste' => 0, 'reduction' => 0.20, 'visible' => true,  'prix' => 650,  'status' => 'disponible', 'dim' => 7],
-            ['titre' => 'Silence bleu',         'annee' => 2021, 'orientation' => 'carre',    'cat' => $peinture_id,  'support' => 1, 'artiste' => 0, 'reduction' => null, 'visible' => true,  'prix' => 950,  'status' => 'vendu',      'dim' => 5],
-            ['titre' => 'Horizon doré',         'annee' => 2024, 'orientation' => 'paysage',  'cat' => $peinture_id,  'support' => 1, 'artiste' => 0, 'reduction' => null, 'visible' => true,  'prix' => 1450, 'status' => 'disponible', 'dim' => 10],
+            ['titre' => 'Éclat de lumière',    'annee' => 2023, 'photo_principale' => null,'orientation' => 'carre',    'cat' => $peinture_id,  'support' => 1, 'artiste' => 0, 'reduction' => null, 'visible' => true,  'prix' => 850,  'status' => 'disponible', 'dim' => 4],
+            ['titre' => 'Vague intérieure',     'annee' => 2022,'photo_principale' => null, 'orientation' => 'paysage',  'cat' => $peinture_id,  'support' => 1, 'artiste' => 0, 'reduction' => null, 'visible' => true,  'prix' => 1200, 'status' => 'disponible', 'dim' => 9],
+            ['titre' => 'Rouge passion',        'annee' => 2024,'photo_principale' => null, 'orientation' => 'portrait', 'cat' => $peinture_id,  'support' => 2, 'artiste' => 0, 'reduction' => 0.20, 'visible' => true,  'prix' => 650,  'status' => 'disponible', 'dim' => 7],
+            ['titre' => 'Silence bleu',         'annee' => 2021,'photo_principale' => null, 'orientation' => 'carre',    'cat' => $peinture_id,  'support' => 1, 'artiste' => 0, 'reduction' => null, 'visible' => true,  'prix' => 950,  'status' => 'vendu',      'dim' => 5],
+            ['titre' => 'Horizon doré',         'annee' => 2024,'photo_principale' => null, 'orientation' => 'paysage',  'cat' => $peinture_id,  'support' => 1, 'artiste' => 0, 'reduction' => null, 'visible' => true,  'prix' => 1450, 'status' => 'disponible', 'dim' => 10],
             // Marc Dubois — Sculpture
-            ['titre' => 'L\'éveil',            'annee' => 2022, 'orientation' => 'portrait', 'cat' => $sculpture_id, 'support' => 8, 'artiste' => 1, 'reduction' => null, 'visible' => true,  'prix' => 3200, 'status' => 'disponible', 'dim' => 3],
-            ['titre' => 'Force tranquille',     'annee' => 2023, 'orientation' => 'portrait', 'cat' => $sculpture_id, 'support' => 8, 'artiste' => 1, 'reduction' => null, 'visible' => true,  'prix' => 4500, 'status' => 'disponible', 'dim' => 6],
-            ['titre' => 'Fusion',               'annee' => 2021, 'orientation' => 'carre',    'cat' => $sculpture_id, 'support' => 9, 'artiste' => 1, 'reduction' => 0.15, 'visible' => true,  'prix' => 2100, 'status' => 'disponible', 'dim' => 2],
-            ['titre' => 'Le gardien',           'annee' => 2020, 'orientation' => 'portrait', 'cat' => $sculpture_id, 'support' => 8, 'artiste' => 1, 'reduction' => null, 'visible' => false, 'prix' => 5800, 'status' => 'vendu',      'dim' => 8],
-            // Claire Leroy — Photographie
-            ['titre' => 'Brume matinale',       'annee' => 2023, 'orientation' => 'paysage',  'cat' => $photo_id,     'support' => 5, 'artiste' => 2, 'reduction' => null, 'visible' => true,  'prix' => 480,  'status' => 'disponible', 'dim' => 9],
-            ['titre' => 'Reflets urbains',      'annee' => 2024, 'orientation' => 'portrait', 'cat' => $photo_id,     'support' => 6, 'artiste' => 2, 'reduction' => null, 'visible' => true,  'prix' => 620,  'status' => 'disponible', 'dim' => 7],
-            ['titre' => 'L\'instant suspendu', 'annee' => 2022, 'orientation' => 'carre',    'cat' => $photo_id,     'support' => 5, 'artiste' => 2, 'reduction' => 0.10, 'visible' => true,  'prix' => 390,  'status' => 'disponible', 'dim' => 4],
-            ['titre' => 'Lumière rasante',      'annee' => 2023, 'orientation' => 'paysage',  'cat' => $photo_id,     'support' => 5, 'artiste' => 2, 'reduction' => null, 'visible' => true,  'prix' => 750,  'status' => 'vendu',      'dim' => 11],
-            // Thomas Bernard — Peinture
-            ['titre' => 'Calanque bleue',       'annee' => 2024, 'orientation' => 'paysage',  'cat' => $peinture_id,  'support' => 1, 'artiste' => 3, 'reduction' => null, 'visible' => true,  'prix' => 1100, 'status' => 'disponible', 'dim' => 10],
-            ['titre' => 'Marché provençal',     'annee' => 2023, 'orientation' => 'paysage',  'cat' => $peinture_id,  'support' => 1, 'artiste' => 3, 'reduction' => null, 'visible' => true,  'prix' => 890,  'status' => 'disponible', 'dim' => 9],
-            ['titre' => 'Soleil couchant',      'annee' => 2022, 'orientation' => 'carre',    'cat' => $peinture_id,  'support' => 2, 'artiste' => 3, 'reduction' => 0.25, 'visible' => true,  'prix' => 720,  'status' => 'disponible', 'dim' => 5],
-            ['titre' => 'Mistral',              'annee' => 2024, 'orientation' => 'portrait', 'cat' => $peinture_id,  'support' => 1, 'artiste' => 3, 'reduction' => null, 'visible' => true,  'prix' => 980,  'status' => 'disponible', 'dim' => 8],
-            ['titre' => 'Nuit étoilée du sud',  'annee' => 2021, 'orientation' => 'paysage',  'cat' => $peinture_id,  'support' => 1, 'artiste' => 3, 'reduction' => null, 'visible' => true,  'prix' => 1350, 'status' => 'vendu',      'dim' => 11],
+            ['titre' => 'L\'éveil',            'annee' => 2022, 'photo_principale' => null,'orientation' => 'portrait', 'cat' => $sculpture_id, 'support' => 8, 'artiste' => 1, 'reduction' => null, 'visible' => true,  'prix' => 3200, 'status' => 'disponible', 'dim' => 3],
+            ['titre' => 'Force tranquille',     'annee' => 2023,'photo_principale' => null, 'orientation' => 'portrait', 'cat' => $sculpture_id, 'support' => 8, 'artiste' => 1, 'reduction' => null, 'visible' => true,  'prix' => 4500, 'status' => 'disponible', 'dim' => 6],
+            ['titre' => 'Fusion',               'annee' => 2021,'photo_principale' => null, 'orientation' => 'carre',    'cat' => $sculpture_id, 'support' => 9, 'artiste' => 1, 'reduction' => 0.15, 'visible' => true,  'prix' => 2100, 'status' => 'disponible', 'dim' => 2],
+            ['titre' => 'Le gardien',           'annee' => 2020,'photo_principale' => null, 'orientation' => 'portrait', 'cat' => $sculpture_id, 'support' => 8, 'artiste' => 1, 'reduction' => null, 'visible' => false, 'prix' => 5800, 'status' => 'vendu',      'dim' => 8],
+            // Thomas Bernard — Photographie
+            ['titre' => 'Brume matinale',       'annee' => 2023,'photo_principale' => null, 'orientation' => 'paysage',  'cat' => $photo_id,     'support' => 5, 'artiste' => 2, 'reduction' => null, 'visible' => true,  'prix' => 480,  'status' => 'disponible', 'dim' => 9],
+            ['titre' => 'Reflets urbains',      'annee' => 2024,'photo_principale' => null, 'orientation' => 'portrait', 'cat' => $photo_id,     'support' => 6, 'artiste' => 2, 'reduction' => null, 'visible' => true,  'prix' => 620,  'status' => 'disponible', 'dim' => 7],
+            ['titre' => 'L\'instant suspendu', 'annee' => 2022, 'photo_principale' => null,'orientation' => 'carre',    'cat' => $photo_id,     'support' => 5, 'artiste' => 2, 'reduction' => 0.10, 'visible' => true,  'prix' => 390,  'status' => 'disponible', 'dim' => 4],
+            ['titre' => 'Lumière rasante',      'annee' => 2023,'photo_principale' => null, 'orientation' => 'paysage',  'cat' => $photo_id,     'support' => 5, 'artiste' => 2, 'reduction' => null, 'visible' => true,  'prix' => 750,  'status' => 'vendu',      'dim' => 11],
+            // Claire Leroy — Peinture
+            ['titre' => 'Calanque bleue',       'annee' => 2024, 'photo_principale' => 'oeuvres/calanque_image.img', 'orientation' => 'paysage',  'cat' => $peinture_id,  'support' => 1, 'artiste' => 3, 'reduction' => null, 'visible' => true,  'prix' => 1100, 'status' => 'disponible', 'dim' => 10],
+            ['titre' => 'Marché provençal',     'annee' => 2023, 'photo_principale' => 'oeuvres/marche_image.img', 'orientation' => 'paysage',  'cat' => $peinture_id,  'support' => 1, 'artiste' => 3, 'reduction' => null, 'visible' => true,  'prix' => 890,  'status' => 'disponible', 'dim' => 9],
+            ['titre' => 'Soleil couchant',      'annee' => 2022, 'photo_principale' => 'oeuvres/soleil_couchant.img', 'orientation' => 'carre',    'cat' => $peinture_id,  'support' => 2, 'artiste' => 3, 'reduction' => 0.25, 'visible' => true,  'prix' => 720,  'status' => 'disponible', 'dim' => 5],
+            ['titre' => 'Mistral',              'annee' => 2024, 'photo_principale' => 'oeuvres/Mistral_image.img', 'orientation' => 'portrait', 'cat' => $peinture_id,  'support' => 1, 'artiste' => 3, 'reduction' => null, 'visible' => true,  'prix' => 980,  'status' => 'disponible', 'dim' => 8],
+            ['titre' => 'Nuit étoilée du sud',  'annee' => 2021, 'photo_principale' => null, 'orientation' => 'paysage',  'cat' => $peinture_id,  'support' => 1, 'artiste' => 3, 'reduction' => null, 'visible' => true,  'prix' => 1350, 'status' => 'vendu',      'dim' => 11],
         ];
 
         $oeuvre_ids = [];
 
         foreach ($oeuvres as $o) {
             $created = Carbon::now()->subDays(rand(1, 90));
+            if ($o['photo_principale']) {
+                $oeuvre_id = DB::table('oeuvres')->insertGetId([
+                    'titre'             => $o['titre'],
+                    'annee_de_creation' => $o['annee'],
+                    'taux_reduction'    => $o['reduction'],
+                    'photo_principale'  => $o['photo_principale'],
+                    'orientation'       => $o['orientation'],
+                    'description'       => 'Une œuvre remarquable qui témoigne du talent et de la sensibilité de l\'artiste.',
+                    'categorie_id'      => $o['cat'],
+                    'support_id'        => $o['support'],
+                    'artiste_id'        => $artiste_ids[$o['artiste']],
+                    'visible'           => $o['visible'],
+                    'created_at'        => $created,
+                    'updated_at'        => $created,
+                ]);
+            }
+            else{
+                $oeuvre_id = DB::table('oeuvres')->insertGetId([
+                    'titre'             => $o['titre'],
+                    'annee_de_creation' => $o['annee'],
+                    'taux_reduction'    => $o['reduction'],
+                    'photo_principale'  => 'oeuvres/placeholder.jpg',
+                    'orientation'       => $o['orientation'],
+                    'description'       => 'Une œuvre remarquable qui témoigne du talent et de la sensibilité de l\'artiste.',
+                    'categorie_id'      => $o['cat'],
+                    'support_id'        => $o['support'],
+                    'artiste_id'        => $artiste_ids[$o['artiste']],
+                    'visible'           => $o['visible'],
+                    'created_at'        => $created,
+                    'updated_at'        => $created,
+                ]);
+            }
+            
 
-            $oeuvre_id = DB::table('oeuvres')->insertGetId([
-                'titre'             => $o['titre'],
-                'annee_de_creation' => $o['annee'],
-                'taux_reduction'    => $o['reduction'],
-                'photo_principale'  => 'oeuvres/placeholder.jpg',
-                'orientation'       => $o['orientation'],
-                'description'       => 'Une œuvre remarquable qui témoigne du talent et de la sensibilité de l\'artiste.',
-                'categorie_id'      => $o['cat'],
-                'support_id'        => $o['support'],
-                'artiste_id'        => $artiste_ids[$o['artiste']],
-                'visible'           => $o['visible'],
-                'created_at'        => $created,
-                'updated_at'        => $created,
-            ]);
 
             $oeuvre_ids[] = $oeuvre_id;
 
@@ -87,7 +107,7 @@ class OeuvreSeeder extends Seeder
         foreach ($artiste_cats as [$art, $cat]) {
             DB::table('artiste_categorie')->insert([
                 'artiste_id'  => $artiste_ids[$art],
-                'categorie_id'=> $cat_ids[$cat],
+                'categorie_id' => $cat_ids[$cat],
             ]);
         }
 
@@ -105,7 +125,7 @@ class OeuvreSeeder extends Seeder
             6  => ['themes' => ['Portrait', 'Femme'],      'couleurs' => ['Marron', 'Noir']],
             7  => ['themes' => ['Abstrait'],               'couleurs' => ['Rouge', 'Noir', 'Blanc']],
             8  => ['themes' => ['Portrait'],               'couleurs' => ['Marron', 'Noir']],
-            9  => ['themes' => ['Paysage', 'Nature morte'],'couleurs' => ['Blanc', 'Bleu']],
+            9  => ['themes' => ['Paysage', 'Nature morte'], 'couleurs' => ['Blanc', 'Bleu']],
             10 => ['themes' => ['Urbain'],                 'couleurs' => ['Noir', 'Blanc']],
             11 => ['themes' => ['Portrait', 'Femme'],      'couleurs' => ['Marron', 'Rose']],
             12 => ['themes' => ['Paysage'],                'couleurs' => ['Jaune', 'Orange']],

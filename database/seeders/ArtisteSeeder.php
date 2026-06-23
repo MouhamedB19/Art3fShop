@@ -33,15 +33,7 @@ class ArtisteSeeder extends Seeder
                 'Est_Artiste_Art3f' => true,
                 'localisation_id'   => Localisation::where('code_postal', '69001')->first()->id,
             ],
-            [
-                'nom'               => 'Leroy',
-                'prenom'            => 'Claire',
-                'email'             => 'claire.leroy@art3f.test',
-                'nom_d_artiste'     => 'ClaireL',
-                'bio'               => 'Photographe marseillaise, Claire Leroy capture la lumière naturelle avec une précision et une poésie remarquables.',
-                'Est_Artiste_Art3f' => false,
-                'localisation_id'   => Localisation::where('code_postal', '13001')->first()->id,
-            ],
+            
             [
                 'nom'               => 'Bernard',
                 'prenom'            => 'Thomas',
@@ -77,7 +69,26 @@ class ArtisteSeeder extends Seeder
                 'updated_at'        => now(),
             ]);
         }
- 
+        $userAlaUne = DB::table("users")->insertGetId([
+            'nom'               => 'Leroy',
+            'prenom'            => 'Claire',
+            'email'             => 'claire.leroy@art3f.test',
+            'password'          => Hash::make("password"),
+            'role'              => 'artiste',
+            'created_at'        => now(),
+            'updated_at'        => now(),
+        ]);
+
+        DB::table('artistes')->insertGetId([
+            'user_id'           => $userAlaUne,
+            'nom_d_artiste'     => 'ClaireL',
+            'bio'               => 'Photographe marseillaise, Claire Leroy capture la lumière naturelle avec une précision et une poésie remarquables.',
+            'a_la_une'          => true,
+            'Est_Artiste_Art3f' => false,
+            'localisations_id'   => Localisation::where('code_postal', '13001')->first()->id,
+        ]);
+
+
         $this->command->info('✅ Artistes créés.');
     }
 }

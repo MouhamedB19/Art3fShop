@@ -20,7 +20,7 @@ use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\CommandeController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CheckoutController;
-
+use App\Http\Controllers\HomeController;
 
 Route::get('/auth/google', [SocialiteController::class, 'redirect'])->name('auth.google');
 Route::get('/auth/google/callback', [SocialiteController::class, 'callback'])->name('auth.google.callback');
@@ -28,9 +28,7 @@ Route::get('/auth/google/callback', [SocialiteController::class, 'callback'])->n
 Route::get('/auth/facebook', [SocialiteController::class, 'redirectFacebook'])->name('auth.facebook');
 Route::get('/auth/facebook/callback', [SocialiteController::class, 'callbackFacebook'])->name('auth.facebook.callback');
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [HomeController::class,'index'])->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -247,7 +245,7 @@ Route::middleware('auth')->prefix('checkout')->name('checkout.')->group(function
 
     Route::get('/paiement', [CheckoutController::class, 'paiement'])
         ->name('paiement');
-        
+
     Route::post('/paiement', [CheckoutController::class, 'storePaiement'])
         ->name('paiement.store');
 
