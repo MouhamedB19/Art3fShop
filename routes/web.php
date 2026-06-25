@@ -21,6 +21,7 @@ use App\Http\Controllers\CommandeController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\RechercheController;
 
 Route::get('/auth/google', [SocialiteController::class, 'redirect'])->name('auth.google');
 Route::get('/auth/google/callback', [SocialiteController::class, 'callback'])->name('auth.google.callback');
@@ -234,7 +235,8 @@ Route::middleware('auth')->prefix('checkout')->name('checkout.')->group(function
     Route::post('/identification', [CheckoutController::class, 'storeIdentification'])
         ->name('identification.store');
 
-    Route::get('/adresse', [CheckoutController::class, 'adresse'])->name('adresse');
+    Route::get('/adresse', [CheckoutController::class, 'adresse'])
+        ->name('adresse');
     Route::post('/adresse', [CheckoutController::class, 'storeAdresse'])
         ->name('adresse.store');
 
@@ -252,4 +254,10 @@ Route::middleware('auth')->prefix('checkout')->name('checkout.')->group(function
     Route::get('/confirmation/{commande}', [CheckoutController::class, 'confirmation'])
         ->name('confirmation');
 });
+
+Route::get('api/recherche/',[RechercheController::class, 'suggestions'])
+    ->name('recherche.suggestions');
+
+Route::get('/recherche',[RechercheController::class,'index'])
+    ->name('recherche.index');
 

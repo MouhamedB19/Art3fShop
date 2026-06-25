@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Laravel\Scout\Searchable;
 class Oeuvre extends Model
 {
     protected $fillable = [
@@ -50,6 +50,19 @@ class Oeuvre extends Model
 
     public function selections(){
         return $this->belongsToMany(Selection::class, 'oeuvre_selection', 'oeuvre_id', 'selection_id');
+    }
+    use Searchable;
+
+
+    public function toSearchableArray()
+    {
+        return [
+            'id' => $this->id,
+            'titre' => $this->titre,
+            'description' => $this->description,
+            'artiste_nom' => $this->artiste?->nom_d_artiste ? $this->artiste->nom_d_artiste : $this->artiste->user->prenom . ' ' . $this->artiste->user->nom,
+            'categorie_nom' => $this->categorie?->nom_categorie,
+        ];
     }
 
 }

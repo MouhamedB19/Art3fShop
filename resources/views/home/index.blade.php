@@ -86,9 +86,15 @@
 
                 {{-- Colonne gauche : photo + bio --}}
                 <div class="flex flex-col">
-                    <img src="{{ $artisteUne->photo ? asset('storage/' . $artisteUne->photo) : asset('images/default-artiste.jpg') }}"
-                        alt="{{ $artisteUne->nom }}" class="w-32 h-32 rounded-full object-cover mb-4">
-                    <h3 class="text-xl font-semibold">{{ $artisteUne->nom }}</h3>
+                    <img src="https://thispersondoesnotexist.com"
+                        alt="{{ $artisteUne->nom_d_artiste ? $artisteUne->nom_d_artiste : $artisteUne->user->nom . $artisteUne->user->prenom }}" class="w-32 h-32 rounded-full object-cover mb-4">
+                    <h3 class="text-xl font-semibold">
+                        @if($artisteUne->nom_d_artiste)
+                            {{ $artisteUne->nom_d_artiste }}
+                        @else
+                            {{ $artisteUne->user->nom . " " . $artisteUne->user->prenom }} 
+                        @endif
+                    </h3>
                     <p class="text-gray-600 mt-2 line-clamp-4">{{ $artisteUne->bio }}</p>
 
 

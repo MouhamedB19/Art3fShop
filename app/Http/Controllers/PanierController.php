@@ -50,20 +50,28 @@ class PanierController extends Controller
     // Ajouter un tirage au panier
     public function add(Request $request, Tirage $tirage)
     {
-        $client = Auth::user()->client;
+        if(Auth::user() && Auth::user()->estClient())
+        {
+            $client = Auth::user()->client;
 
-        // Si déjà dans le panier, on incrémente
-        if ($client->tirages()->where('tirage_id', $tirage->id)->exists()) {
-            $client->tirages()->updateExistingPivot($tirage->id, [
-                'quantite' => DB::raw('quantite + ' . ($request->quantite ?? 1))
-            ]);
-        } else {
-            $client->tirages()->attach($tirage->id, [
-                'quantite' => $request->quantite ?? 1
-            ]);
+            // Si déjà dans le panier, on incrémente
+            if ($client->tirages()->where('tirage_id', $tirage->id)->exists()) {
+                $client->tirages()->updateExistingPivot($tirage->id, [
+                    'quantite' => DB::raw('quantite + ' . ($request->quantite ?? 1))
+                ]);
+            } 
+            else {
+                $client->tirages()->attach($tirage->id, [
+                    'quantite' => $request->quantite ?? 1
+                ]);
+            }
+
+            return back()->with('success', 'Tirage ajouté au panier !');
         }
-
-        return back()->with('success', 'Tirage ajouté au panier !');
+        else{
+            return redirect()->route('login')->with('error','Vous devez d\'abord vous connecter avec une compte client');
+        }
+        
     }
 
     // Mettre à jour la quantité

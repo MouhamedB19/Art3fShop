@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-
+use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
 
 class Artiste extends Model
@@ -47,5 +47,16 @@ class Artiste extends Model
 
     public function conversations(){
         return $this->hasMany(Conversation::class,'artiste_id');
+    }
+
+    use Searchable;
+
+    public function toSearchableArray()
+    {
+        return([
+            'id' => $this->id,
+            'nom' => $this->nom_d_artiste ? $this->nom_d_artiste : $this->user->nom . ' ' . $this->user->prenom,
+            'bio' => $this->bio,
+        ]);
     }
 }

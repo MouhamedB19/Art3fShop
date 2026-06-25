@@ -17,16 +17,16 @@
      ═══════════════════════════════════════════════════════════ --}}
 
 @if(isset($promo_message) || config('art3f.promo_message'))
-<div class="bg-[#1A1A1A] text-white text-xs text-center py-2 px-4">
-    <a href="{{ config('art3f.promo_url', '#') }}"
-       class="hover:text-[#F97316] transition-colors duration-200 flex items-center justify-center gap-2">
-        <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                  d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12z"/>
-        </svg>
-        <span>{{ $promo_message ?? config('art3f.promo_message') }}</span>
-    </a>
-</div>
+    <div class="bg-[#1A1A1A] text-white text-xs text-center py-2 px-4">
+        <a href="{{ config('art3f.promo_url', '#') }}"
+           class="hover:text-[#F97316] transition-colors duration-200 flex items-center justify-center gap-2">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                      d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12z"/>
+            </svg>
+            <span>{{ $promo_message ?? config('art3f.promo_message') }}</span>
+        </a>
+    </div>
 @endif
 
 {{-- ═══════════════════════════════════════════════════════════
@@ -118,7 +118,7 @@
                                        0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
                                 />
                             </svg>
-                            
+
                         </x-lien-icone-compteur>
                     </div>
                 @endif
@@ -206,106 +206,89 @@
             </a>
 
             {{-- Barre de recherche --}}
-            <div class="flex-1 max-w-xl"
-                 x-data="{ query: '', results: [], open: false }"
-                 @click.outside="open = false">
-                <div class="relative">
-                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                    <input
-                        type="text"
-                        x-model.debounce.300ms="query"
-                        @input="if(query.length >= 2) {
-                            open = true;
-                            fetch(`/api/recherche?q=${query}`)
-                                .then(r => r.json())
-                                .then(d => results = d)
-                        } else { open = false }"
-                        @keydown.enter="window.location.href = `/recherche?q=${query}`"
-                        placeholder="Artiste, œuvre, mot clé..."
-                        class="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg
-                               focus:outline-none focus:ring-2 focus:ring-[#E8490F] focus:border-transparent
-                               transition-all duration-200"
-                    >
+            <div x-data="{ 
+                query: '', 
+                resultats: { oeuvres: [], artistes: [], categories: [] }, 
+                ouvert: false 
+            }"
+            class="relative w-full max-w-md"
+            @click.outside="ouvert = false"
+            >
+            <input
+                type="text"
+                x-model="query"
+                @input.debounce.300ms="if(query.length >= 2) {
+                    ouvert = true;
+                    fetch(`/api/recherche?q=${query}`)
+                        .then(r => r.json())
+                        .then(d => resultats = d)
+                } else { ouvert = false }"
+                @keydown.enter="window.location.href = `/recherche?q=${query}`"
+                placeholder="Artiste, œuvre, mot clé..."
+                class="w-full border rounded-2xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#E8490F]"
+            >
 
-                    {{-- Dropdown suggestions --}}
-                    <div x-show="open && results.length > 0"
-                         x-transition
-                         class="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200
-                                rounded-lg shadow-xl z-50 overflow-hidden max-h-96 overflow-y-auto">
-
-                        {{-- Œuvres --}}
-                        <template x-if="results.oeuvres?.length > 0">
-                            <div>
-                                <div class="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-50">
-                                    Œuvres (<span x-text="results.oeuvres.length"></span>)
+            <div
+                x-show="ouvert"
+                x-transition
+                class="absolute z-50 w-full bg-white shadow-lg rounded-2xl mt-2 p-4 max-h-96 overflow-y-auto"
+            >
+                <template x-if="resultats.oeuvres.length">
+                    <div class="mb-4">
+                        <p class="text-xs uppercase text-gray-400 font-semibold mb-2">Œuvres</p>
+                        <template x-for="o in resultats.oeuvres" :key="o.id">
+                            <a :href="`/oeuvres/${o.id}`"
+                               class="flex items-center gap-3 px-4 py-2.5 hover:bg-orange-50 transition-colors">
+                                <img :src="o.photo_thumb" class="w-10 h-10 object-cover rounded">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900" x-html="o.titre_highlighted"></p>
+                                    <p class="text-xs text-gray-500" x-text="o.artiste"></p>
                                 </div>
-                                <template x-for="o in results.oeuvres" :key="o.id">
-                                    <a :href="`/oeuvres/${o.slug}`"
-                                       class="flex items-center gap-3 px-4 py-2.5 hover:bg-orange-50 transition-colors">
-                                        <img :src="o.photo_thumb" class="w-10 h-10 object-cover rounded">
-                                        <div>
-                                            <p class="text-sm font-medium text-gray-900" x-html="o.titre_highlighted"></p>
-                                            <p class="text-xs text-gray-500" x-text="o.artiste"></p>
-                                        </div>
-                                        <span class="ml-auto text-sm font-bold text-[#E8490F]"
-                                              x-text="o.prix + ' €'"></span>
-                                    </a>
-                                </template>
-                            </div>
+                                <span class="ml-auto text-sm font-bold"
+                                      :class="o.vendu ? 'text-gray-400' : 'text-[#E8490F]'"
+                                      x-text="o.vendu ? 'Vendu' : (o.prix + ' €')"></span>
+                            </a>
                         </template>
-
-                        {{-- Artistes --}}
-                        <template x-if="results.artistes?.length > 0">
-                            <div>
-                                <div class="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-50">
-                                    Artistes (<span x-text="results.artistes.length"></span>)
-                                </div>
-                                <template x-for="a in results.artistes" :key="a.id">
-                                    <a :href="`/artistes/${a.slug}`"
-                                       class="flex items-center gap-3 px-4 py-2.5 hover:bg-orange-50 transition-colors">
-                                        <img :src="a.photo" class="w-8 h-8 object-cover rounded-full">
-                                        <div>
-                                            <p class="text-sm font-medium text-gray-900" x-html="a.nom_highlighted"></p>
-                                            <p class="text-xs text-gray-500" x-text="a.ville + ' · ' + a.pays"></p>
-                                        </div>
-                                    </a>
-                                </template>
-                            </div>
-                        </template>
-
-                        {{-- Catégories --}}
-                        <template x-if="results.categories?.length > 0">
-                            <div>
-                                <div class="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-50">
-                                    Catégories
-                                </div>
-                                <template x-for="c in results.categories" :key="c.slug">
-                                    <a :href="`/catalogue/${c.slug}`"
-                                       class="flex items-center gap-2 px-4 py-2 hover:bg-orange-50 transition-colors">
-                                        <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-5 5a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 10V5a2 2 0 012-2z"/>
-                                        </svg>
-                                        <span class="text-sm text-gray-700" x-text="c.label"></span>
-                                    </a>
-                                </template>
-                            </div>
-                        </template>
-
-                        {{-- Voir tous les résultats --}}
-                        <a :href="`/recherche?q=${query}`"
-                           class="flex items-center justify-center gap-2 px-4 py-3 bg-[#1A1A1A]
-                                  text-white text-sm font-medium hover:bg-[#E8490F] transition-colors">
-                            Voir tous les résultats pour "<span x-text="query"></span>"
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                            </svg>
-                        </a>
                     </div>
-                </div>
+                </template>
+                    
+                <template x-if="resultats.artistes.length">
+                    <div class="mb-4">
+                        <p class="text-xs uppercase text-gray-400 font-semibold mb-2">Artistes</p>
+                        <template x-for="a in resultats.artistes" :key="a.id">
+                            <a :href="`/artistes/${a.id}`"
+                               class="flex items-center gap-3 px-4 py-2.5 hover:bg-orange-50 transition-colors">
+                                <img :src="a.photo" class="w-8 h-8 object-cover rounded-full">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900" x-html="a.nom_highlighted"></p>
+                                    <p class="text-xs text-gray-500" x-text="a.ville + ' · ' + a.pays"></p>
+                                </div>
+                            </a>
+                        </template>
+                    </div>
+                </template>
+            
+                <template x-if="resultats.categories.length">
+                    <div>
+                        <p class="text-xs uppercase text-gray-400 font-semibold mb-2">Catégories</p>
+                        <template x-for="c in resultats.categories" :key="c.id">
+                            <a :href="`/catalogue/${c.label}`"
+                               class="flex items-center gap-2 px-4 py-2 hover:bg-orange-50 transition-colors">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-5 5a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 10V5a2 2 0 012-2z"/>
+                                </svg>
+                                <span class="text-sm text-gray-700" x-text="c.label"></span>
+                            </a>
+                        </template>
+                    </div>
+                </template>
+            
+                <template x-if="!resultats.oeuvres.length === 0 && !resultats.artistes.length === 0 && !resultats.categories.length === 0">
+                    <p class="text-gray-400 text-sm">Aucun résultat</p>
+                </template>
+                    
+    
+                
             </div>
 
             {{-- Burger mobile --}}
@@ -357,18 +340,18 @@
                                 </p>
                                 <ul class="space-y-1 list-none p-0 m-0">
                                     @foreach([
-                                        ["peinture",     'Peinture'],
-                                        ["sculpture",    'Sculpture'],
-                                        ["photographie", 'Photographie'],
-                                        ["edition",      'Édition'],
-                                        ["dessin",       'Dessin'],
-                                    ] as [$slug, $label])
-                                        <li>
-                                            <x-lien-dropdown 
-                                                destination="{{ route('catalogue.categorie', $slug) }}"
-                                                label="{{$label}}"
-                                            />
-                                        </li>
+                                            ["peinture", 'Peinture'],
+                                            ["sculpture", 'Sculpture'],
+                                            ["photographie", 'Photographie'],
+                                            ["edition", 'Édition'],
+                                            ["dessin", 'Dessin'],
+                                        ] as [$slug, $label])
+                                                    <li>
+                                                        <x-lien-dropdown 
+                                                            destination="{{ route('catalogue.categorie', $slug) }}"
+                                                            label="{{$label}}"
+                                                        />
+                                                    </li>
                                     @endforeach
                                 </ul>
                                 <a href="{{ route('catalogue.index') }}"
@@ -387,7 +370,7 @@
                                     @foreach($themes as $theme)
                                         <li>
                                             <x-lien-dropdown 
-                                            destination="{{ route('catalogue.theme',Str::slug($theme)) }}"
+                                            destination="{{ route('catalogue.theme', Str::slug($theme)) }}"
                                             label="{{ $theme }}"
                                             />
                                         </li>
@@ -423,19 +406,19 @@
 
                 {{-- Catégories directes --}}
                 @foreach([
-                    ['peinture',     'Peinture'],
-                    ['sculpture',    'Sculpture'],
-                    ['photographie', 'Photographie'],
-                    ['edition',      'Édition'],
-                    ['dessin',       'Dessin'],
-                ] as [$slug, $label])
-                    <li>
-                        <a href="{{ route('catalogue.categorie', $slug) }}"
-                           class="px-3 h-11 flex items-center hover:text-[#E8490F] transition-colors
-                                  {{ request()->is("catalogue/{$slug}*") ? 'text-[#E8490F] border-b-2 border-[#E8490F]' : '' }}">
-                            {{ $label }}
-                        </a>
-                    </li>
+                        ['peinture', 'Peinture'],
+                        ['sculpture', 'Sculpture'],
+                        ['photographie', 'Photographie'],
+                        ['edition', 'Édition'],
+                        ['dessin', 'Dessin'],
+                    ] as [$slug, $label])
+                                <li>
+                                    <a href="{{ route('catalogue.categorie', $slug) }}"
+                                       class="px-3 h-11 flex items-center hover:text-[#E8490F] transition-colors
+                                              {{ request()->is("catalogue/{$slug}*") ? 'text-[#E8490F] border-b-2 border-[#E8490F]' : '' }}">
+                                        {{ $label }}
+                                    </a>
+                                </li>
                 @endforeach
 
                 {{-- LES ARTISTES --}}
@@ -466,16 +449,16 @@
             </a>
 
             @foreach([
-                ['peinture',     'Peinture'],
-                ['sculpture',    'Sculpture'],
-                ['photographie', 'Photographie'],
-                ['edition',      'Édition'],
-                ['dessin',       'Dessin'],
-            ] as [$slug, $label])
-                <a href="{{ route('catalogue.categorie', $slug) }}"
-                   class="block px-6 py-2 text-sm text-gray-600 hover:text-[#E8490F] transition-colors">
-                    → {{ $label }}
-                </a>
+                    ['peinture', 'Peinture'],
+                    ['sculpture', 'Sculpture'],
+                    ['photographie', 'Photographie'],
+                    ['edition', 'Édition'],
+                    ['dessin', 'Dessin'],
+                ] as [$slug, $label])
+                            <a href="{{ route('catalogue.categorie', $slug) }}"
+                               class="block px-6 py-2 text-sm text-gray-600 hover:text-[#E8490F] transition-colors">
+                                → {{ $label }}
+                            </a>
             @endforeach
 
             <a href="{{ route('artistes.index') }}"
@@ -488,7 +471,7 @@
                     <a href="{{ route('compte.index') }}"
                        class="block px-3 py-2 text-sm text-gray-600 hover:text-[#E8490F]">Mon compte</a>
                        @if(auth()->user()->estArtiste())
-                            <a href="{{ route('artiste.compte') }}">Mon espace artiste</a>
+                        <a href="{{ route('artiste.compte') }}">Mon espace artiste</a>
                        @endif
                 @else
                     <a href="{{ route('register') }}"

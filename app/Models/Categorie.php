@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-
+use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
 
 class Categorie extends Model
@@ -26,6 +26,13 @@ class Categorie extends Model
     public function artistes(){
         return $this->belongsToMany(Artiste::class, 'artiste_categorie', 'categorie_id','artiste_id');
     }
+    use Searchable;
 
+    public function toSearchableArray(){
+        return([
+            'id' => $this->id,
+            'nom' => $this->nom_categorie,
+        ]);
+    }
     
 }

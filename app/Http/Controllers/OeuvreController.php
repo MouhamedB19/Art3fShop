@@ -145,7 +145,6 @@ class OeuvreController extends Controller
 
     public function showTirage(Oeuvre $oeuvre, Tirage $tirage)
     {
-        $this->authorizeOeuvre($oeuvre);
 
         // Sécurité : vérifier que ce tirage appartient bien à cette œuvre
         abort_if($tirage->oeuvre_id !== $oeuvre->id, 404);
@@ -282,7 +281,7 @@ class OeuvreController extends Controller
      */
     private function authorizeOeuvre(Oeuvre $oeuvre): void
     {
-        if(Auth::user()->estArtiste())
+        if(Auth::user() && Auth::user()->estArtiste())
             abort_if($oeuvre->artiste_id !== Auth::user()->artiste->id, 403);
     }
 }
