@@ -23,7 +23,13 @@
                         <p class="font-medium text-[#1A1A1A]">{{ $tirage->oeuvre->titre }}</p>
                         <p class="text-xs text-gray-400">Tirage n°{{ $tirage->numero }}</p>
                     </div>
-                    <p class="font-semibold text-[#1A1A1A]">{{ number_format($tirage->prix, 2, ',', ' ') }} €</p>
+                    <p class="font-semibold text-[#1A1A1A]">
+                        @if($tirage->oeuvre->taux_reduction)
+                            {{ number_format($tirage->prix * (1 - $tirage->oeuvre->taux_reduction), 2, ',', ' ') }} €
+                        @else
+                            {{ number_format($tirage->prix,2,',',' ') }} €
+                        @endif
+                    </p>
                 </div>
             @endforeach
         </div>

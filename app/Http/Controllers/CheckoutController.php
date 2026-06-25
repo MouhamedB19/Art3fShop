@@ -12,7 +12,8 @@ use App\Models\Ville;
 use App\Models\Localisation;
 use App\Models\Commande;
 use App\Models\Tirage;
-
+use App\Mail\CommandeConfirmee;
+use Illuminate\Support\Facades\Mail;
 class CheckoutController extends Controller
 {
     use CalculeReduction;
@@ -115,7 +116,7 @@ class CheckoutController extends Controller
         // ici tu crées la vraie Commande avec tout ce qu'on a en session
         $client = Auth::user()->client;
         $tirages = $client->tirages;
-
+        
         $commande = Commande::create([
             'user_id' => Auth::id(),
             'date_commande' => now(),
@@ -134,6 +135,7 @@ class CheckoutController extends Controller
         $client->tirages()->detach();
         session()->forget(['coupons', 'checkout.adresse', 'checkout.localisation_id', 'checkout.fdp_offerts', 'checkout.est_cadeau', 'checkout.message_cadeau']);
 
+        Mail::to(Auth::user()->email)->send(new CommandeConfirmee($commande->load('tirages.oeuvre', 'coupons')));
         return redirect()->route('checkout.confirmation', $commande)->with('success', 'Paiement validé !');
     }
 

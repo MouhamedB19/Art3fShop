@@ -42,8 +42,8 @@
 
                             {{-- Image de l'œuvre --}}
                             <div class="w-24 h-24 rounded-xl overflow-hidden bg-gray-100 shrink-0">
-                                @if($tirage->oeuvre->image)
-                                    <img src="{{ Storage::url($tirage->oeuvre->image) }}" alt="{{ $tirage->oeuvre->titre }}"
+                                @if($tirage->oeuvre->photo_principale)
+                                    <img src="{{ Storage::url($tirage->oeuvre->photo_principale) }}" alt="{{ $tirage->oeuvre->titre }}"
                                         class="w-full h-full object-cover">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center text-gray-300">
@@ -76,7 +76,13 @@
 
                             {{-- Prix + Supprimer --}}
                             <div class="flex flex-col items-end justify-between h-full gap-4">
-                                <p class="font-semibold text-[#1A1A1A]">{{ number_format($tirage->prix, 2, ',', ' ') }} €</p>
+                                <p class="font-semibold text-[#1A1A1A]">
+                                    @if($tirage->oeuvre->taux_reduction)
+                                        {{ number_format($tirage->prix * (1 - $tirage->oeuvre->taux_reduction), 2, ',', ' ') }} €
+                                    @else
+                                        {{ number_format($tirage->prix,2,',',' ') }} €
+                                    @endif
+                                </p>
                                 <form action="{{ route('panier.remove', $tirage) }}" method="POST">
                                     @csrf
                                     @method('DELETE')

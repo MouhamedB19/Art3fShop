@@ -18,8 +18,15 @@ class PanierController extends Controller
     {
         $client = Auth::user()->client;
         $tirages = $client->tirages;
+        $total = 0;
 
-        $total = $tirages->sum('prix');
+        foreach($tirages as $t){
+            if($t->oeuvre->taux_reduction)
+                $total += $t->prix * (1 - $t->oeuvre->taux_reduction); 
+            else
+                $total += $t->prix;
+        }
+        
 
         $reduction = 0;
         $totalFinal = $total;
