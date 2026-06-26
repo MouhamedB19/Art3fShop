@@ -9,6 +9,8 @@ class Commande extends Model
     protected $fillable = [
         'date_commande',
         'user_id',
+        'est_cadeau',
+        'message_cadeau',
     ];
 
     protected $casts = [

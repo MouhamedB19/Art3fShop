@@ -30,7 +30,7 @@
                     C'est un cadeau ?
                 </label>
                 <div x-show="cadeau" x-transition class="mt-2">
-                    <textarea form="form-livraison" name="message_cadeau" maxlength="300" rows="3"
+                    <textarea form="form-livraison" id="message_cadeau" name="message_cadeau" maxlength="300" rows="3"
                         placeholder="Votre message..."
                         class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#E8490F]"></textarea>
                 </div>

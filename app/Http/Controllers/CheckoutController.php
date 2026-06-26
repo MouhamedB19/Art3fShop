@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Validator;
 use App\Models\Coupon;
 use App\Calculs\CalculeReduction;
 use Illuminate\Support\Facades\Auth;
@@ -91,6 +92,7 @@ class CheckoutController extends Controller
 
     public function storeLivraison(Request $request)
     {
+        
         session([
             'checkout.est_cadeau' => $request->boolean('est_cadeau'),
             'checkout.message_cadeau' => $request->message_cadeau,
@@ -128,11 +130,14 @@ class CheckoutController extends Controller
         $commande = Commande::create([
             'user_id' => Auth::id(),
             'date_commande' => now(),
-            'est_cadeau' => session('checkout.est_cadeau', false),
+            'est_cadeau' => session('checkout.est_cadeau'),
             'message_cadeau' => session('checkout.message_cadeau'),
         ]);
 
-        Tirage::whereIn('id', $tirages->pluck('id'))->update(['commande_id' => $commande->id]);
+        Tirage::whereIn('id', $tirages->pluck('id'))->update([
+            'commande_id' => $commande->id,
+            'status' => 'vendu',
+        ]);
 
         $coupons = Coupon::whereIn('id', session('coupons', []))->get();
         if ($coupons->isNotEmpty()) {
