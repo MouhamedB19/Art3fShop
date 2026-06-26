@@ -16,7 +16,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'art3f Shop') — Art Contemporain</title>
+    <title>@yield('title', 'art3f Shop') — Art3fShop</title>
     <meta name="description"
           content="@yield('meta_description', 'art3f Shop — Achetez des œuvres d\'art contemporain de peintres, sculpteurs et photographes professionnels.')">
 

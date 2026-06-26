@@ -21,7 +21,13 @@ class CheckoutController extends Controller
     {
         $client = Auth::user()->client;
         $tirages = $client->tirages;
-        $total = $tirages->sum('prix');
+        $total = 0;
+        foreach($tirages as $tirage)
+        {
+            $total += $tirage->oeuvre->taux_reduction ? 
+                    $tirage->prix * (1 - $tirage->oeuvre->taux_reduction) : 
+                    $tirage->prix;
+        }
 
         $coupons = Coupon::whereIn('id', session('coupons', []))->get();
         $reduction = $this->calculerReduction($total, $coupons);
@@ -96,7 +102,9 @@ class CheckoutController extends Controller
     public function paiement()
     {
         $client = Auth::user()->client;
-        $total = $client->tirages->sum('prix');
+        $total = 0;
+        foreach($client->tirages as $tirage)
+            $total += $tirage->oeuvre->taux_reduction ? $tirage->prix * (1 - $tirage->oeuvre->taux_reduction) : $tirage->prix;
         $coupons = Coupon::whereIn('id', session('coupons', []))->get();
         $reduction = $this->calculerReduction($total, $coupons);
         $totalFinal = $total - $reduction;
