@@ -85,10 +85,8 @@ class User extends Authenticatable
         return $this->hasMany(Message::class,'emetteur_id');
     }
 
-    
-
     public function nombreOeuvresFavoris(){
-        return $this->client->oeuvres()->count();
+        return $this->client->tiragesFavoris()->count();
     }
 
     public function nombreArtistesFavoris(){

@@ -9,6 +9,7 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+    // Pour le panier
     public function up(): void
     {
         Schema::create('client_tirage', function (Blueprint $table) {

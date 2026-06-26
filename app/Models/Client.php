@@ -34,5 +34,7 @@ class Client extends Model
         return $this->belongsToMany(Artiste::class, 'artiste_client', 'artiste_id', 'client_id');
     }
 
-    
+    public function tiragesFavoris(){
+        return $this->belongsToMany(Tirage::class, 'tirage_client', 'tirage_favoris_id','client_id');
+    }
 }

@@ -38,5 +38,8 @@ class Tirage extends Model
         return $this->belongsTo(Oeuvre::class,'oeuvre_id');
     }
 
+    public function clientsAyantAime(){
+        return $this->belongsToMany(Client::class, 'tirage_client', 'tirage_favoris_id','client_id');
+    }
 }
 
