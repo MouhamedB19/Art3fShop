@@ -84,7 +84,7 @@ Route::get('/categories/{categorie}/sous-categories', function($categorie_id) {
 })->name('categories.sous-categories');
 require __DIR__.'/auth.php';
 
-Route::get('/categorie',[CatalogueController::class, 'index'])->name('catalogue.index');
+Route::get('/catalogue',[CatalogueController::class, 'index'])->name('catalogue.index');
 
 Route::get('/catalogue/theme/{theme}', [CatalogueController::class, 'theme'])->name('catalogue.theme');
 Route::get('/catalogue/{categorie}', [CatalogueController::class, 'categorie'])->name('catalogue.categorie');

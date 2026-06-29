@@ -37,7 +37,6 @@ class FavorisController extends Controller
             $client->tiragesFavoris()->detach($tirage);
             return back()->with('error','Vous n\'avez le droit qu\'à 5 oeuvres favorites maximum');
         }
-            
         else{
             $client->tiragesFavoris()->attach($tirage);
             return back()->with('success','Oeuvre ajoutée aux favoris');

@@ -22,9 +22,9 @@ class CatalogueController extends Controller
     {
         $c = Categorie::where('nom_categorie', $categorie)->firstOrFail();
         $oeuvres = Oeuvre::all();
-        $oeuvresCategorie = $oeuvres->where('categorie_id',$c->id)->merge($oeuvres->where('categorie.id_categorie_parente',$c->id));
+        $oeuvresCategorie = $oeuvres->where('categorie_id',$c->id)
+                                     ->merge($oeuvres->filter(fn ($oeuvre) => $oeuvre->categorie?->id_categorie_parente == $c->id));
         $tiragesCorrespondants = Tirage::whereIn('oeuvre_id', $oeuvresCategorie->pluck('id'))->get();
-
         return view('catalogue.categorie', compact('oeuvresCategorie', 'categorie','tiragesCorrespondants'));
     }
 
