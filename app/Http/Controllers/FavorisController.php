@@ -24,19 +24,24 @@ class FavorisController extends Controller
     public function handleOeuvre($tirage)
     {
         $client = Auth::user()->client;
-        $oeuvresFavoris = $client->tiragesFavoris();
-        if($oeuvresFavoris->where('tirage_favoris_id',$tirage)->exists())
+        
+        if($client->tiragesFavoris()->where('tirage_favoris_id',$tirage)->exists())
         {
-            $oeuvresFavoris->detach($tirage);
+            $client->tiragesFavoris()->detach($tirage);
             return back()->with('success','Oeuvre retirée des favoris');
            
         }
 
-        if($oeuvresFavoris->count() >= 5)
-            return back()->with('error','Vous n\'avez le droit qu\'à 5 oeuvres favorites maximum'
-            );
-
-        $oeuvresFavoris->attach($tirage);
-        return back()->with('success','Oeuvre ajoutée aux favoris');
+        if($client->tiragesFavoris()->count() >= 5)
+        {
+            $client->tiragesFavoris()->detach($tirage);
+            return back()->with('error','Vous n\'avez le droit qu\'à 5 oeuvres favorites maximum');
+        }
+            
+        else{
+            $client->tiragesFavoris()->attach($tirage);
+            return back()->with('success','Oeuvre ajoutée aux favoris');
+        }
+        
     }
 }

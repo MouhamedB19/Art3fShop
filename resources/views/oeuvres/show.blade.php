@@ -135,9 +135,20 @@
                                 </svg>
                             </button>
                         </form>
-                    @endauth
-                </div>
+                        
 
+                    @endauth
+                    
+                </div>
+                @if(session('error'))
+                    <p class="text-red-500">
+                        {{ session('error') }}
+                    </p>
+                @elseif (session('success'))
+                    <p class="text-green-500">
+                        {{ session('success') }}
+                    </p>
+                @endif
                 {{-- Bouton ajouter au panier --}}
                 @if(!$vendue)
                     <form action="{{ route('panier.ajout',$tirage) }}" method="POST">
