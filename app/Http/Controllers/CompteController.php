@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+
 class CompteController extends Controller
 {
     
@@ -32,4 +33,6 @@ class CompteController extends Controller
             return view('compte.commandes',compact('commandes'));
         }
     }
+
+    
 }

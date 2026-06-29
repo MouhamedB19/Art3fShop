@@ -35,6 +35,6 @@ class Client extends Model
     }
 
     public function tiragesFavoris(){
-        return $this->belongsToMany(Tirage::class, 'tirage_client', 'tirage_favoris_id','client_id');
+        return $this->belongsToMany(Tirage::class, 'tirage_client','client_id', 'tirage_favoris_id');
     }
 }

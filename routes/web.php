@@ -22,6 +22,7 @@ use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RechercheController;
+use App\Http\Controllers\FavorisController;
 
 Route::get('/auth/google', [SocialiteController::class, 'redirect'])->name('auth.google');
 Route::get('/auth/google/callback', [SocialiteController::class, 'callback'])->name('auth.google.callback');
@@ -123,8 +124,10 @@ Route::get('/emploi', function(){
 
 Route::post('/panier', [PanierController::class, 'index'])->name('panier.index');
 Route::post('/panier/ajout/{tirage}',[PanierController::class,'add'])->name('panier.ajout');
-Route::get('/compte/favoris/oeuvres', [CompteController::class, 'favorisOeuvres'])->name('compte.favoris.oeuvres');
-Route::get('/compte/favoris/artistes', [CompteController::class, 'favorisArtistes'])->name('compte.favoris.artistes');
+Route::get('/compte/favoris/oeuvres', [FavorisController::class, 'favorisOeuvres'])->name('compte.favoris.oeuvres');
+Route::get('/compte/favoris/artistes', [FavorisController::class, 'favorisArtistes'])->name('compte.favoris.artistes');
+Route::post('compte/favoris/handle/{tirage}',[FavorisController::class,'handleOeuvre'])->name('compte.favoris.oeuvres.handle');
+
 
 Route::get('/locale/{locale}', [UtilsController::class, 'changeLocale'])->name('locale.switch');
 Route::get('/devise/{devise}', [UtilsController::class, 'changeDevise'])->name('devise.switch');
@@ -188,8 +191,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/conversations/{commande_id}/{artiste_id}', [ConversationController::class, 'store'])
         ->name('conversations.store');
 
-    
-    
     Route::get('/compte/conversations',[ConversationController::class,'index'])
         ->name('compte.conversations.index');
 
