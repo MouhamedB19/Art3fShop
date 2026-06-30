@@ -23,6 +23,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RechercheController;
 use App\Http\Controllers\FavorisController;
+use App\Http\Controllers\CookieController;
 
 Route::get('/auth/google', [SocialiteController::class, 'redirect'])->name('auth.google');
 Route::get('/auth/google/callback', [SocialiteController::class, 'callback'])->name('auth.google.callback');
@@ -133,9 +134,7 @@ Route::get('/locale/{locale}', [UtilsController::class, 'changeLocale'])->name('
 Route::get('/devise/{devise}', [UtilsController::class, 'changeDevise'])->name('devise.switch');
 
 
-Route::get('/cookies', function(){
-    return view('cookies');
-})->name('cookies'); // à vérifier
+Route::view('/cookies', 'cookies.preferences')->name('cookies.preferences');
 Route::get('/carte-cadeaux', function(){
     return view('pages.carte-cadeaux');
 })->name('carte-cadeaux'); // à vérifier
@@ -166,6 +165,7 @@ Route::get('/blog', function(){
     return view('pages.blog');
 })->name('blog.index'); 
 
+Route::get('/cookie/save',[CookieController::class,'save'])->name('cookie.save');
 
 Route::post('/newsletter/subscribe', [UtilsController::class,'newsletterSubscribe'])->name('newsletter.subscribe');
 

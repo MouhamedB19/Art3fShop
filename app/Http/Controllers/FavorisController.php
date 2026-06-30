@@ -11,13 +11,13 @@ class FavorisController extends Controller
 {
     public function favorisOeuvres()
     {
-        $oeuvres = Auth::user()->oeuvresFavoris()->get();
-        return view('compte.favoris.oeuvres', compact('oeuvres'));
+        $tirages = Auth::user()?->client->tiragesFavoris()->get();
+        return view('compte.favoris.oeuvres', compact('tirages'));
     }
 
     public function favorisArtistes()
     {
-        $artistes = Auth::user()->artistesFavoris()->get();
+        $artistes = Auth::user()?->client->artistes()->get();
         return view('compte.favoris.artistes', compact('artistes'));
     }
 

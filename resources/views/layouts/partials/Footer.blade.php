@@ -165,7 +165,7 @@
                         [route('compte.index'),        'Mon compte'],
                         [route('mentions-legales'),    'Mentions légales'],
                         [route('cgv'),                 'CGV'],
-                        [route('cookies'),             'Gestion des cookies'],
+                        [route('cookies.preferences'),             'Gestion des cookies'],
                         ['https://aide.art3f.com',     'FAQ'],
                         [route('carte-cadeaux'),       'Carte cadeaux'],
                         [route('oeuvre-sur-mesure'),   'Votre œuvre sur mesure'],
@@ -325,7 +325,7 @@
                    class="hover:text-gray-300 transition-colors">Mentions légales</a>
                 <a href="{{ route('cgv') }}"
                    class="hover:text-gray-300 transition-colors">CGV</a>
-                <a href="{{ route('cookies') }}"
+                <a href="{{ route('cookies.preferences') }}"
                    class="hover:text-gray-300 transition-colors">Cookies</a>
             </div>
         </div>

@@ -53,5 +53,7 @@
     {{-- Scripts supplémentaires poussés par les vues enfants --}}
     @stack('scripts')
     @livewireScripts
+
+    <x-cookie-banner />
 </body>
 </html>
