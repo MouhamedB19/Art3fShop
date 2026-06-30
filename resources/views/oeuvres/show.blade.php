@@ -399,10 +399,21 @@
                                 Découvrir sa page
                             </a>
                             @auth
-                                <button class="px-4 py-2 border border-white/20 hover:border-white
-                                               text-white text-xs font-bold rounded-lg transition-colors">
-                                    + Suivre cet artiste
-                                </button>
+                                @php
+                                    $client = Auth::user()?->client;
+                                    $suitArtiste = $client->artistes()->where('id',$tirage->oeuvre->artiste_id)->exists();
+                                @endphp
+                                <form action="{{ route('compte.favoris.artistes.handle',$tirage->oeuvre->artiste_id) }}" method="POST">
+                                    @csrf
+                                    <button class="px-4 py-2 border border-white/20 hover:border-white
+                                                   text-white text-xs font-bold rounded-lg transition-colors" type="submit">
+                                        @if($suitArtiste)
+                                            - Ne plus suivre cet artiste
+                                        @else
+                                            + Suivre cet artiste
+                                        @endif
+                                    </button>
+                                </form>
                             @endauth
                         </div>
                     </div>

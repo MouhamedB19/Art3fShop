@@ -126,8 +126,8 @@ Route::post('/panier', [PanierController::class, 'index'])->name('panier.index')
 Route::post('/panier/ajout/{tirage}',[PanierController::class,'add'])->name('panier.ajout');
 Route::get('/compte/favoris/oeuvres', [FavorisController::class, 'favorisOeuvres'])->name('compte.favoris.oeuvres');
 Route::get('/compte/favoris/artistes', [FavorisController::class, 'favorisArtistes'])->name('compte.favoris.artistes');
-Route::post('compte/favoris/handle/{tirage}',[FavorisController::class,'handleOeuvre'])->name('compte.favoris.oeuvres.handle');
-
+Route::post('compte/favoris/handle/{tirage_id}',[FavorisController::class,'handleOeuvre'])->name('compte.favoris.oeuvres.handle');
+Route::post('compte/favoris/artiste/{artiste}',[FavorisController::class,'handleArtiste'])->name('compte.favoris.artistes.handle');
 
 Route::get('/locale/{locale}', [UtilsController::class, 'changeLocale'])->name('locale.switch');
 Route::get('/devise/{devise}', [UtilsController::class, 'changeDevise'])->name('devise.switch');
@@ -191,6 +191,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/conversations/{commande_id}/{artiste_id}', [ConversationController::class, 'store'])
         ->name('conversations.store');
 
+    
+    
     Route::get('/compte/conversations',[ConversationController::class,'index'])
         ->name('compte.conversations.index');
 
@@ -204,7 +206,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth'])->prefix('panier')->name('panier.')->group(function () {
-    Route::get('/', [PanierController::class, 'index'])->name('index');
+    Route::get('/panier', [PanierController::class, 'index'])->name('index');
     Route::post('/add/{tirage}', [PanierController::class, 'add'])->name('add');
     Route::delete('/remove/{tirage}', [PanierController::class, 'remove'])->name('remove');
     Route::delete('/clear', [PanierController::class, 'clear'])->name('clear');

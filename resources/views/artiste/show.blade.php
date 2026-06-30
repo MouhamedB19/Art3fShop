@@ -13,7 +13,7 @@
     <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
     </svg>
-    
+
     <span class="text-[#1A1A1A] font-medium truncate max-w-[200px]">
         @if($artiste->nom_d_artiste)
             {{ $artiste->nom_d_artiste }}
@@ -27,15 +27,15 @@
 @section('content')
     @php
         $nomArtiste = $artiste->nom_d_artiste ?? $artiste->user->nom;
-        $ville      = $artiste->localisation?->ville?->nom_ville;
-        $pays       = $artiste->localisation?->ville?->pays?->nom_pays;
+        $ville = $artiste->localisation?->ville?->nom_ville;
+        $pays = $artiste->localisation?->ville?->pays?->nom_pays;
     @endphp
- 
+
     {{-- ═══════════════════════════════════════════════════
          BANDEAU PHOTO FULL-WIDTH
              ═══════════════════════════════════════════════════ --}}
     <div class="relative w-full h-72 md:h-96 overflow-hidden bg-gray-900">
-    
+
         {{-- Photo de fond --}}
         @if($artiste->photo)
             <img src="{{ asset('storage/' . $artiste->photo) }}"
@@ -44,10 +44,10 @@
         @else
             <div class="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900"></div>
         @endif
-    
+
         {{-- Overlay dégradé --}}
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-    
+
         {{-- Infos sur le bandeau --}}
         <div class="absolute bottom-0 left-0 right-0 p-6 md:p-10">
             <div class="max-w-screen-xl mx-auto flex items-end justify-between gap-4">
@@ -62,19 +62,19 @@
                             @endforeach
                         </div>
                     @endif
-                    
+
                     {{-- Nom --}}
                     <h1 class="text-3xl md:text-5xl font-black text-white uppercase tracking-wide">
                         {{ $nomArtiste }}
                     </h1>
-                
+
                     {{-- Localisation --}}
                     @if($ville || $pays)
                         <p class="text-gray-300 text-sm mt-2">
                             {{ collect([$ville, $pays])->filter()->implode(', ') }}
                         </p>
                     @endif
-                    
+
                     {{-- Picto art3f --}}
                     @if($artiste->Est_Artiste_Art3f)
                         <span class="inline-flex items-center gap-1.5 mt-2 text-xs
@@ -84,7 +84,7 @@
                         </span>
                     @endif
                 </div>
-            
+
                 {{-- Nombre d'œuvres + suivre --}}
                 <div class="shrink-0 text-right hidden md:block">
                     <p class="text-white text-sm">
@@ -92,17 +92,45 @@
                         œuvre{{ $artiste->oeuvres->count() > 1 ? 's' : '' }} en ligne
                     </p>
                     @auth
-                        <button class="mt-2 flex items-center gap-2 text-xs font-bold text-white
-                                       border border-white/30 hover:border-white px-4 py-2 rounded-lg
-                                       transition-colors">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M12 4v16m8-8H4"/>
-                            </svg>
-                            Suivre cet artiste
-                        </button>
+                        @php
+                            $estSuiveur = $artiste->clients()->where('id', Auth::user()->client->id)->exists();
+                        @endphp
+                        <form method="POST" action="{{ route('compte.favoris.artistes.handle', $artiste->id) }}" >
+                            @csrf
+                            <button class="mt-2 flex items-center gap-2 text-xs font-bold text-white
+                                           border border-white/30 hover:border-white px-4 py-2 rounded-lg
+                                           transition-colors" type="submit">
+
+                                @if($estSuiveur)
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"/>
+                                    </svg>
+                                    Ne plus suivre cet artiste
+                                @else
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M12 4v16m8-8H4"/>
+                                    </svg>
+                                    Suivre cet artiste
+                                @endif
+                            </button>
+
+                        </form>
+
                     @endauth
                 </div>
+                
+            </div>
+            <div class="flex justify-end">
+                @if(session('error'))
+                    <p class="text-red-500 py-2">
+                        {{ session('error') }}
+                    </p>
+                @elseif(session('success'))
+                    <p class="text-green-500 py-2">
+                        {{ session('success') }}
+                    </p>
+                @endif
             </div>
         </div>
     </div>
@@ -113,31 +141,32 @@
     <div class="border-b border-gray-200 bg-white">
         <div class="relative max-w-screen-xl mx-auto px-4" x-data="{ onglet: null }">
             <div class="flex items-center justify-between h-12">
-            
+
                 {{-- Onglets accordéon --}}
                 <div class="flex items-center gap-1">
-                    @foreach(['bio' => 'L\'artiste', 
-                            'formation' => 'Formation', 
+                    @foreach([
+                            'bio' => 'L\'artiste',
+                            'formation' => 'Formation',
                             'expositions' => 'Expositions'
-                            ] as $key => $label)
-                        
-                        <button @click="onglet = onglet === '{{ $key }}' ? null : '{{ $key }}'"
-                                class="px-4 py-3 text-sm font-medium transition-colors border-b-2
-                                       :class onglet === '{{ $key }}'
-                                           ? 'border-[#E8490F] text-[#E8490F]'
-                                           : 'border-transparent text-gray-500 hover:text-[#1A1A1A]'">
-                            {{ $label }}
-                            <svg class="inline w-3 h-3 ml-1 transition-transform"
-                                 :class="onglet === '{{ $key }}' ? 'rotate-180' : ''"
-                                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                      stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </button>
-    
+                        ] as $key => $label)
+
+                            <button @click="onglet = onglet === '{{ $key }}' ? null : '{{ $key }}'"
+                                    class="px-4 py-3 text-sm font-medium transition-colors border-b-2
+                                           :class onglet === '{{ $key }}'
+                                               ? 'border-[#E8490F] text-[#E8490F]'
+                                               : 'border-transparent text-gray-500 hover:text-[#1A1A1A]'">
+                                {{ $label }}
+                                <svg class="inline w-3 h-3 ml-1 transition-transform"
+                                     :class="onglet === '{{ $key }}' ? 'rotate-180' : ''"
+                                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+
                     @endforeach    
                 </div>
-  
+
             </div>
             {{-- Contenu accordéon --}}
             <div x-show="onglet !== null"
@@ -149,7 +178,7 @@
                         <p class="text-gray-600 leading-relaxed max-w-3xl">
                             {{ $artiste->bio ?? 'Biographie non renseignée.' }}
                         </p>
-                        
+
                     </div>
                     <div x-show="onglet === 'formation'">
                         @if($artiste->CV)
@@ -192,9 +221,9 @@
                     </div>
                 </div>
             </div>
-                    
-                    
-                    
+
+
+
         </div>
     </div>
 
@@ -202,15 +231,15 @@
      GALERIE DES ŒUVRES
      ═══════════════════════════════════════════════════ --}}
     <div class="max-w-screen-xl mx-auto px-4 py-10">
-    
+
         @if($artiste->oeuvres->count() > 0)
             <div class="columns-2 md:columns-3 lg:columns-4 gap-4">
                 @foreach($artiste->oeuvres as $oeuvre)
                     @php
-                        $tirage  = $oeuvre->tirages->first();
-                        $vendue  = $tirage?->status === 'vendu';
-                        $isNew   = $oeuvre->created_at->diffInDays(now()) <= 30;
-                        $prix    = $tirage?->prix ?? 0;
+                        $tirage = $oeuvre->tirages->first();
+                        $vendue = $tirage?->status === 'vendu';
+                        $isNew = $oeuvre->created_at->diffInDays(now()) <= 30;
+                        $prix = $tirage?->prix ?? 0;
                         $prixAffiche = $oeuvre->taux_reduction
                             ? $prix * (1 - $oeuvre->taux_reduction)
                             : $prix;
@@ -225,12 +254,12 @@
                     />
 
                 @endforeach    
-        
+
         @else
             <div class="text-center py-24">
                 <p class="text-xl font-bold text-gray-300">Aucune œuvre disponible</p>
             </div>
         @endif
-        
+
     </div>
 @endsection
