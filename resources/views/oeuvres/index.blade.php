@@ -47,10 +47,7 @@
                     ['label' => 'Vendus', 'value' => $vendus, 'color' => 'text-[#E8490F]'],
                     ['label' => 'Non visibles', 'value' => $invisibles, 'color' => 'text-gray-400'],
                 ] as $stat)
-                    <div class="bg-white rounded-xl border border-gray-200 px-5 py-4">
-                        <p class="text-xs text-gray-400 mb-1">{{ $stat['label'] }}</p>
-                        <p class="text-2xl font-semibold {{ $stat['color'] }}">{{ $stat['value'] }}</p>
-                    </div>
+                    <x-carte-stats titre="{{ $stat['label'] }}" couleur="{{ $stat['color'] }}" valeur="{{ $stat['value'] }}"/>
                 @endforeach
             </div>
         

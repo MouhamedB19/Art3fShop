@@ -251,6 +251,7 @@
                         :isNew="$isNew"
                         :prix="$prix" 
                         :prixAffiche="$prixAffiche"
+                        routeFavoris="{{route('compte.favoris.oeuvres.handle',$tirage->id)}}"
                     />
 
                 @endforeach    
