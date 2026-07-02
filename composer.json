@@ -10,6 +10,7 @@
         "http-interop/http-factory-guzzle": "^1.2",
         "khsing/world": "^10.0",
         "laravel/framework": "^11.0",
+        "laravel/sanctum": "^4.0",
         "laravel/scout": "^11.3",
         "laravel/socialite": "^5.27",
         "laravel/tinker": "^2.9",

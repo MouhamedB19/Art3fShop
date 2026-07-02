@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title','Ajouter une œuvre')
 @section('content')
 <div class="min-h-screen bg-gray-50 py-8 px-4">
     <div class="max-w-4xl mx-auto">
