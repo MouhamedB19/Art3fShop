@@ -14,6 +14,7 @@ use App\Models\Pays;
 use App\Models\Ville;
 use App\Models\Categorie;
 use App\Models\User;
+use App\Models\Artiste;
 class ProfilArtisteController extends Controller
 {
     public function index()
@@ -56,15 +57,16 @@ class ProfilArtisteController extends Controller
         
 
 
-        Auth::user()->artiste->update([
+        $artiste = Artiste::firstOrCreate([
             'bio'              => $request->bio,
             'photo'            => $photo,
             'iban'             => $request->iban,
             'localisations_id' => $localisation->id,
             'nom_d_artiste'    => $request->nom_d_artiste,
+            'user_id'         => Auth::id(),
             'cv'               => $request->file('cv')->store('cvs/artistes', 'public'),
         ]);
-        Auth::user()->artiste->categories()->attach($request->categories);
+        $artiste->categories()->attach($request->categories);
         return redirect(route('dashboard'));
     }
 

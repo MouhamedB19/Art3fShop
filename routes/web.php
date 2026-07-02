@@ -79,7 +79,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('oeuvres', OeuvreController::class);
 });
 
-Route::get('/categories/{categorie}/sous-categories', function($categorie_id) {
+Route::get('/categories/{categorie_id}/sous-categories', function($categorie_id) {
     $sousCats = Categorie::where('id_categorie_parente', $categorie_id)->get();
     return response()->json($sousCats);
 })->name('categories.sous-categories');
