@@ -38,7 +38,7 @@
 >
 
     {{-- ── BARRE HAUTE (identification + préférences + aide) ────── --}}
-    <div class="border-b border-gray-100">
+    <div class="border-b border-gray-100 hidden lg:block">
         <div class="max-w-screen-xl mx-auto px-4 h-9 flex items-center justify-between text-xs text-gray-600">
 
             {{-- Gauche : connexion --}}
@@ -211,101 +211,103 @@
                 resultats: { oeuvres: [], artistes: [], categories: [] }, 
                 ouvert: false 
             }"
-            class="relative w-full max-w-md"
+            class="relative w-full max-w-md hidden lg:block"
             @click.outside="ouvert = false"
             >
-            <input
-                type="text"
-                x-model="query"
-                @input.debounce.300ms="if(query.length >= 2) {
-                    ouvert = true;
-                    fetch(`/api/recherche?q=${query}`)
-                        .then(r => r.json())
-                        .then(d => resultats = d)
-                } else { ouvert = false }"
-                @keydown.enter="window.location.href = `/recherche?q=${query}`"
-                placeholder="Artiste, œuvre, mot clé..."
-                class="w-full border rounded-2xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#E8490F]"
-            >
+                <input
+                    type="text"
+                    x-model="query"
+                    @input.debounce.300ms="if(query.length >= 2) {
+                        ouvert = true;
+                        fetch(`/api/recherche?q=${query}`)
+                            .then(r => r.json())
+                            .then(d => resultats = d)
+                    } else { ouvert = false }"
+                    @keydown.enter="window.location.href = `/recherche?q=${query}`"
+                    placeholder="Artiste, œuvre, mot clé..."
+                    class="w-full border rounded-2xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#E8490F]"
+                >
 
-            <div
+                <div
                 x-show="ouvert"
                 x-transition
                 class="absolute z-50 w-full bg-white shadow-lg rounded-2xl mt-2 p-4 max-h-96 overflow-y-auto"
-            >
-                <template x-if="resultats.oeuvres.length">
-                    <div class="mb-4">
-                        <p class="text-xs uppercase text-gray-400 font-semibold mb-2">Œuvres</p>
-                        <template x-for="o in resultats.oeuvres" :key="o.id">
-                            <a :href="`/oeuvres/${o.id}`"
-                               class="flex items-center gap-3 px-4 py-2.5 hover:bg-orange-50 transition-colors">
-                                <img :src="o.photo_thumb" class="w-10 h-10 object-cover rounded">
-                                <div>
-                                    <p class="text-sm font-medium text-gray-900" x-html="o.titre_highlighted"></p>
-                                    <p class="text-xs text-gray-500" x-text="o.artiste"></p>
-                                </div>
-                                <span class="ml-auto text-sm font-bold"
-                                      :class="o.vendu ? 'text-gray-400' : 'text-[#E8490F]'"
-                                      x-text="o.vendu ? 'Vendu' : (o.prix + ' €')"></span>
-                            </a>
-                        </template>
-                    </div>
-                </template>
-                    
-                <template x-if="resultats.artistes.length">
-                    <div class="mb-4">
-                        <p class="text-xs uppercase text-gray-400 font-semibold mb-2">Artistes</p>
-                        <template x-for="a in resultats.artistes" :key="a.id">
-                            <a :href="`/artistes/${a.id}`"
-                               class="flex items-center gap-3 px-4 py-2.5 hover:bg-orange-50 transition-colors">
-                                <img :src="a.photo" class="w-8 h-8 object-cover rounded-full">
-                                <div>
-                                    <p class="text-sm font-medium text-gray-900" x-html="a.nom_highlighted"></p>
-                                    <p class="text-xs text-gray-500" x-text="a.ville + ' · ' + a.pays"></p>
-                                </div>
-                            </a>
-                        </template>
-                    </div>
-                </template>
-            
-                <template x-if="resultats.categories.length">
-                    <div>
-                        <p class="text-xs uppercase text-gray-400 font-semibold mb-2">Catégories</p>
-                        <template x-for="c in resultats.categories" :key="c.id">
-                            <a :href="`/catalogue/${c.label}`"
-                               class="flex items-center gap-2 px-4 py-2 hover:bg-orange-50 transition-colors">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-5 5a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 10V5a2 2 0 012-2z"/>
-                                </svg>
-                                <span class="text-sm text-gray-700" x-text="c.label"></span>
-                            </a>
-                        </template>
-                    </div>
-                </template>
-            
-                <template x-if="!resultats.oeuvres.length === 0 && !resultats.artistes.length === 0 && !resultats.categories.length === 0">
-                    <p class="text-gray-400 text-sm">Aucun résultat</p>
-                </template>
-                    
-    
+                >
+                    <template x-if="resultats.oeuvres.length">
+                        <div class="mb-4">
+                            <p class="text-xs uppercase text-gray-400 font-semibold mb-2">Œuvres</p>
+                            <template x-for="o in resultats.oeuvres" :key="o.id">
+                                <a :href="`/oeuvres/${o.id}`"
+                                   class="flex items-center gap-3 px-4 py-2.5 hover:bg-orange-50 transition-colors">
+                                    <img :src="o.photo_thumb" class="w-10 h-10 object-cover rounded">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900" x-html="o.titre_highlighted"></p>
+                                        <p class="text-xs text-gray-500" x-text="o.artiste"></p>
+                                    </div>
+                                    <span class="ml-auto text-sm font-bold"
+                                          :class="o.vendu ? 'text-gray-400' : 'text-[#E8490F]'"
+                                          x-text="o.vendu ? 'Vendu' : (o.prix + ' €')"></span>
+                                </a>
+                            </template>
+                        </div>
+                    </template>
+
+                    <template x-if="resultats.artistes.length">
+                        <div class="mb-4">
+                            <p class="text-xs uppercase text-gray-400 font-semibold mb-2">Artistes</p>
+                            <template x-for="a in resultats.artistes" :key="a.id">
+                                <a :href="`/artistes/${a.id}`"
+                                   class="flex items-center gap-3 px-4 py-2.5 hover:bg-orange-50 transition-colors">
+                                    <img :src="a.photo" class="w-8 h-8 object-cover rounded-full">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900" x-html="a.nom_highlighted"></p>
+                                        <p class="text-xs text-gray-500" x-text="a.ville + ' · ' + a.pays"></p>
+                                    </div>
+                                </a>
+                            </template>
+                        </div>
+                    </template>
+                
+                    <template x-if="resultats.categories.length">
+                        <div>
+                            <p class="text-xs uppercase text-gray-400 font-semibold mb-2">Catégories</p>
+                            <template x-for="c in resultats.categories" :key="c.id">
+                                <a :href="`/catalogue/${c.label}`"
+                                   class="flex items-center gap-2 px-4 py-2 hover:bg-orange-50 transition-colors">
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-5 5a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 10V5a2 2 0 012-2z"/>
+                                    </svg>
+                                    <span class="text-sm text-gray-700" x-text="c.label"></span>
+                                </a>
+                            </template>
+                        </div>
+                    </template>
+                
+                    <template x-if="resultats.oeuvres.length === 0 && resultats.artistes.length === 0 && resultats.categories.length === 0">
+                        <p class="text-gray-400 text-sm">Aucun résultat</p>
+                    </template>
+                </div>        
+                
                 
             </div>
-
             {{-- Burger mobile --}}
             <button @click="mobileOpen = !mobileOpen"
-                    class="lg:hidden ml-auto p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                    aria-label="Menu">
-                <svg x-show="!mobileOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                class="lg:hidden ml-auto p-2 w-6 h-6 rounded-lg hover:bg-gray-100 transition-colors relative"
+                aria-label="Menu">
+                <svg x-show="!mobileOpen" class="absolute top-0 left-0 w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                 </svg>
                 <svg x-show="mobileOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
+            
 
         </div>
+        
+        
     </div>
-
+    
     {{-- ── MENU DE NAVIGATION (desktop) ─────────────────────────── --}}
     <nav class="hidden lg:block border-t border-gray-100">
         <div class="max-w-screen-xl mx-auto px-4">
@@ -442,6 +444,16 @@
          x-transition:enter-end="opacity-100 translate-y-0"
          class="lg:hidden border-t border-gray-100 bg-white">
         <div class="max-w-screen-xl mx-auto px-4 py-4 space-y-1">
+            {{--Où est le bouton ?--}}
+            {{-- Recherche mobile (simple, sans live-search) --}}
+            <form action="{{ route('recherche.index') }}" method="GET" class="mb-3">
+                <input
+                    type="text"
+                    name="q"
+                    placeholder="Artiste, œuvre, mot clé..."
+                    class="w-full border rounded-2xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#E8490F]"
+                >
+            </form>
 
             <a href="{{ route('catalogue.index') }}"
                class="block px-3 py-2.5 text-sm font-semibold rounded-lg hover:bg-orange-50 hover:text-[#E8490F] transition-colors">
