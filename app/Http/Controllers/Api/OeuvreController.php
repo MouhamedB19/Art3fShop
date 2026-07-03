@@ -136,6 +136,10 @@ class OeuvreController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $oeuvre = Oeuvre::findOrFail($id);
+        $oeuvre->delete();
+        return new OeuvreResource(
+            Oeuvre::all()
+        );
     }
 }
