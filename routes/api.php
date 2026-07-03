@@ -8,3 +8,5 @@ Route::get('/oeuvres', [OeuvreController::class, 'index']);
 Route::get('/oeuvres/{id}', [OeuvreController::class, 'show']);
 
 Route::post('/oeuvres', [OeuvreController::class, 'store']);
+
+Route::put('/oeuvres/{id}', [OeuvreController::class, 'update']);
