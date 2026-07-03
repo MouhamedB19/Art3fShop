@@ -14,14 +14,7 @@ class OeuvreController extends Controller
      */
     public function index()
     {
-        return OeuvreResource::collection(Oeuvre::with([
-            'artiste',
-            'categorie',
-            'support',
-            'artiste.user',
-            'themes',
-            'couleurs'
-        ])->get());
+        return OeuvreResource::collection(Oeuvre::paginate(10));
     }
 
     /**
@@ -77,7 +70,7 @@ class OeuvreController extends Controller
      */
     public function show($id)
     {
-        return OeuvreResource::collection(Oeuvre::with(['artiste'])->where('id', $id)->get());
+        return new OeuvreResource(Oeuvre::with(['artiste'])->where('id', $id)->first());
     }
 
     /**
