@@ -1,9 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Models\Oeuvre;
+use App\Http\Controllers\Api\OeuvreController;
 
-Route::get('/oeuvres', function(){
-    $oeuvres = Oeuvre::all();
-    return response()->json($oeuvres);
-});
+Route::get('/oeuvres', [OeuvreController::class, 'index']);
 
