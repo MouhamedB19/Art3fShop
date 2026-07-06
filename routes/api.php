@@ -16,13 +16,14 @@ Route::put('/oeuvres/{id}', [OeuvreController::class, 'update']);
 
 Route::delete('/oeuvres/{id}', [OeuvreController::class, 'destroy']);
 
+
+Route::post('/register/artiste', [AuthController::class, 'registerArtiste']);
+Route::post('register/acheteur', [AuthController::class, 'registerAcheteur']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
 Route::middleware('auth:sanctum')->group(function () {
-
-
     Route::apiResource('oeuvres', OeuvreController::class);
-    Route::post('/login', [AuthController::class, 'login']);
-
     Route::get('/user', [AuthController::class, 'index']);
-
-    Route::post('/logout', [AuthController::class, 'logout']);
+    
 });
