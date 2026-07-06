@@ -131,8 +131,6 @@ class OeuvreController extends Controller
     {
         $oeuvre = Oeuvre::findOrFail($id);
         $oeuvre->delete();
-        return new OeuvreResource(
-            Oeuvre::all()
-        );
+        return response()->json(['message' => 'Oeuvre supprimée avec succès']);
     }
 }

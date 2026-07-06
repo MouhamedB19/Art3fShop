@@ -6,6 +6,7 @@ use App\Models\Oeuvre;
 use App\Http\Controllers\Api\OeuvreController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AdminController; 
+use App\Http\Controllers\Api\TirageController;
 
 Route::get('/oeuvres', [OeuvreController::class, 'index']);
 
@@ -23,9 +24,16 @@ Route::post('register/acheteur', [AuthController::class, 'registerAcheteur']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
+Route::get('/tirages/oeuvre/{oeuvreId}', [TirageController::class, 'listeTiragesDuneOeuvre']);
+Route::post('/tirages/add/oeuvre/{id}', [TirageController::class, 'addToOeuvre']);
+Route::delete('/delete/tirages/{id}', [TirageController::class, 'destroy']);
+Route::get('/tirages/{id}',[TirageController::class, 'show']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('oeuvres', OeuvreController::class);
     Route::get('/user', [AuthController::class, 'index']);
+
+    Route::apiResource('tirages', TirageController::class);
 });
 
 Route::middleware(['auth:sanctum','admin'])->group(function () {
