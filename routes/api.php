@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\TirageController;
 use App\Http\Controllers\Api\PanierController;
+use App\Http\Controllers\Api\FavorisController;
 
 Route::get('/oeuvres', [OeuvreController::class, 'index']);
 
@@ -44,10 +45,19 @@ Route::middleware(['auth:sanctum', 'artiste'])->group(function () {
 
 Route::middleware(['auth:sanctum', 'acheteur'])->group(function () {
     Route::get('/tirages', [TirageController::class, 'index']);
+    Route::get('/tirages/{id}', [TirageController::class, 'show']);
+
+
     Route::get('/panier', [PanierController::class, 'index']);
     Route::post('/panier/add/{tirageId}', [PanierController::class, 'addToPanier']);
     Route::delete('/panier/remove/{tirageId}', [PanierController::class, 'removeFromPanier']);
-    Route::get('/tirages/{id}', [TirageController::class, 'show']);
+
+    
+    Route::get('/favoris/tirages', [FavorisController::class, 'indexTirages']);
+    Route::post('/favoris/tirages/add/{tirageId}', [FavorisController::class, 'addTirageFavoris']);
+    Route::get('/favoris/artistes', [FavorisController::class, 'indexArtistes']);
+    Route::post('/favoris/artistes/add/{artisteId}', [FavorisController::class, 'addArtistes']);
+    
 });
 
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
