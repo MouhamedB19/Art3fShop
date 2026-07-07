@@ -133,4 +133,6 @@ class OeuvreController extends Controller
         $oeuvre->delete();
         return response()->json(['message' => 'Oeuvre supprimée avec succès']);
     }
+
+    
 }

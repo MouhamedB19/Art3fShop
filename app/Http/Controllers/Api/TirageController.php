@@ -37,7 +37,7 @@ class TirageController extends Controller
             'hauteur' => 'required|numeric',
         ]);
 
-        
+
 
         $dim = Dimension::firstOrCreate([
             'largeur' => $tirage['largeur'],
@@ -65,5 +65,39 @@ class TirageController extends Controller
         $tirage->delete();
 
         return response()->json(['message' => 'Tirage supprimé avec succès', 'code' => 200]);
+    }
+
+    public function index(Request $request)
+    {
+        $tirages = Tirage::query()
+            ->with([
+                'oeuvre',
+                'oeuvre.themes',
+                'oeuvre.couleurs',
+                'oeuvre.categorie',
+            ]);
+
+        // Filtre par thème
+        if ($request->filled('themes')) {
+            $tirages->whereHas('oeuvre.themes', function ($query) use ($request) {
+                $query->where('themes.id', $request->themes);
+            });
+        }
+
+        
+        if ($request->filled('categorie')) {
+            $tirages->whereHas('oeuvre.categorie', function ($query) use ($request) {
+                $query->where('categories.id', $request->categorie);
+            });
+        }
+
+        
+        if ($request->filled('couleurs')) {
+            $tirages->whereHas('oeuvre.couleurs', function ($query) use ($request) {
+                $query->where('couleurs.id', $request->couleurs);
+            });
+        }
+
+        return TirageResource::collection($tirages->get());
     }
 }

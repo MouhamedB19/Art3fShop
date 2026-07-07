@@ -5,6 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\ArtisteMiddleware;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\EstAcheteur as AcheteurMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -17,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'artiste' => ArtisteMiddleware::class,
             'admin' => AdminMiddleware::class,
+            'acheteur' => AcheteurMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
