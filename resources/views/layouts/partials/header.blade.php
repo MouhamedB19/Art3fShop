@@ -51,12 +51,15 @@
                             <span class="font-semibold text-[#1A1A1A]">{{ Auth::user()->prenom }}</span>
                         @endif
                     </span>
-                    <x-lien-orange-art3f destination="{{ route('compte.index') }}" label="Mon compte"/>
+                    
                     @if(auth()->user()->estAdmin())
                         <x-lien-orange-art3f destination="{{ route('admin.index') }}" label="Administration"/>
-                    @endif
-                    @if(auth()->user()->estArtiste())
-                        <x-lien-orange-art3f destination="{{ route('artiste.compte') }}" label="Mon espace artiste"/>
+                    @else
+                        <x-lien-orange-art3f destination="{{ route('compte.index') }}" label="Mon compte"/>
+
+                        @if(auth()->user()->estArtiste())
+                            <x-lien-orange-art3f destination="{{ route('artiste.compte') }}" label="Mon espace artiste"/>
+                        @endif
                     @endif
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf

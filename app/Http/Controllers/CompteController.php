@@ -18,8 +18,8 @@ class CompteController extends Controller
         }
         else{
             return view('compte.index', [       // → resources/views/compte/index.blade.php
-                'artistes' => $user->client->artistes()->latest()->take(5)->get(),
-                'oeuvres'   => $user->client->oeuvres()->take(5)->get(),
+                'artistes' => $user->client?->artistes()->latest()->take(5)->get(),
+                'oeuvres'   => $user->client?->oeuvres()->take(5)->get(),
             ]);
         }
     }

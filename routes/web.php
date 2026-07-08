@@ -31,7 +31,7 @@ Route::get('/auth/google/callback', [SocialiteController::class, 'callback'])->n
 Route::get('/auth/facebook', [SocialiteController::class, 'redirectFacebook'])->name('auth.facebook');
 Route::get('/auth/facebook/callback', [SocialiteController::class, 'callbackFacebook'])->name('auth.facebook.callback');
 
-Route::get('/', [HomeController::class,'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/dashboard', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -45,9 +45,9 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/artiste/completer-profil', [ProfilArtisteController::class, 'index'])
-         ->name('artiste.completer-profil');
+        ->name('artiste.completer-profil');
     Route::post('/artiste/completer-profil', [ProfilArtisteController::class, 'store'])
-         ->name('artiste.completer-profil.store');
+        ->name('artiste.completer-profil.store');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -56,22 +56,21 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware('artiste')->group(function () {
         Route::get('/artiste/compte', [ArtisteController::class, 'compte'])->name('artiste.compte');
-        Route::get('/oeuvres/index',[OeuvreController::class,'index'])->name('oeuvres.index');
-        Route::post('/oeuvres/edit/{oeuvre}',[OeuvreController::class,'edit'])->name('oeuvres.edit');
+        Route::get('/oeuvres/index', [OeuvreController::class, 'index'])->name('oeuvres.index');
+        Route::post('/oeuvres/edit/{oeuvre}', [OeuvreController::class, 'edit'])->name('oeuvres.edit');
 
-        Route::get('/artiste/edit/profil',[ProfilArtisteController::class,'edit'])->name('artiste.edit.profil');
-        Route::get('/artiste/index/profil',[ProfilArtisteController::class,'show'])->name('artiste.index.profil');
-        Route::put('/artiste/update/profil',[ProfilArtisteController::class,'update'])->name('artiste.update.profil');
+        Route::get('/artiste/edit/profil', [ProfilArtisteController::class, 'edit'])->name('artiste.edit.profil');
+        Route::get('/artiste/index/profil', [ProfilArtisteController::class, 'show'])->name('artiste.index.profil');
+        Route::put('/artiste/update/profil', [ProfilArtisteController::class, 'update'])->name('artiste.update.profil');
     });
 
     Route::middleware('admin')->group(function () {
         Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
     });
-
 });
 
-Route::get('/villes/{pays}', function($pays_id) {
-    $villes = Ville::where('pays_id', '=',$pays_id)->get();
+Route::get('/villes/{pays}', function ($pays_id) {
+    $villes = Ville::where('pays_id', '=', $pays_id)->get();
     return response()->json($villes);
 })->name('villes.by.pays');
 
@@ -79,13 +78,13 @@ Route::middleware('auth')->group(function () {
     Route::resource('oeuvres', OeuvreController::class);
 });
 
-Route::get('/categories/{categorie_id}/sous-categories', function($categorie_id) {
+Route::get('/categories/{categorie_id}/sous-categories', function ($categorie_id) {
     $sousCats = Categorie::where('id_categorie_parente', $categorie_id)->get();
     return response()->json($sousCats);
 })->name('categories.sous-categories');
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
-Route::get('/catalogue',[CatalogueController::class, 'index'])->name('catalogue.index');
+Route::get('/catalogue', [CatalogueController::class, 'index'])->name('catalogue.index');
 
 Route::get('/catalogue/theme/{theme}', [CatalogueController::class, 'theme'])->name('catalogue.theme');
 Route::get('/catalogue/{categorie}', [CatalogueController::class, 'categorie'])->name('catalogue.categorie');
@@ -95,88 +94,88 @@ Route::get('/artistes', [ArtisteController::class, 'index'])->name('artistes.ind
 Route::get('/recherche', [UtilsController::class, 'recherche'])->name('recherche.index');
 Route::get('/api/recherche', [UtilsController::class, 'rechercheApi'])->name('api.recherche');
 
-Route::get('/a-propos', function(){
+Route::get('/a-propos', function () {
     return view('pages.about');
 })->name('about');
 
-Route::get('/cgv', function(){
+Route::get('/cgv', function () {
     return view('pages.cgv');
 })->name('cgv');
 
-Route::get('/mentions-legales', function(){
+Route::get('/mentions-legales', function () {
     return view('pages.mentions-legales');
 })->name('mentions-legales');
 
-Route::get('/entreprises', function(){
+Route::get('/entreprises', function () {
     return view('pages.entreprises');
 })->name('entreprises');
 
-Route::get('/faq', function(){
+Route::get('/faq', function () {
     return view('faq.index');
 })->name('faq.index');
 
-Route::get('/contact', function(){
+Route::get('/contact', function () {
     return view('pages.contact');
 })->name('contact');
 
-Route::get('/emploi', function(){
+Route::get('/emploi', function () {
     return view('pages.emploi');
 })->name('emploi');
 
 Route::post('/panier', [PanierController::class, 'index'])->name('panier.index');
-Route::post('/panier/ajout/{tirage}',[PanierController::class,'add'])->name('panier.ajout');
+Route::post('/panier/ajout/{tirage}', [PanierController::class, 'add'])->name('panier.ajout');
 Route::get('/compte/favoris/oeuvres', [FavorisController::class, 'favorisOeuvres'])->name('compte.favoris.oeuvres');
 Route::get('/compte/favoris/artistes', [FavorisController::class, 'favorisArtistes'])->name('compte.favoris.artistes');
-Route::post('compte/favoris/handle/{tirage_id}',[FavorisController::class,'handleOeuvre'])->name('compte.favoris.oeuvres.handle');
-Route::post('compte/favoris/artiste/{artiste}',[FavorisController::class,'handleArtiste'])->name('compte.favoris.artistes.handle');
+Route::post('compte/favoris/handle/{tirage_id}', [FavorisController::class, 'handleOeuvre'])->name('compte.favoris.oeuvres.handle');
+Route::post('compte/favoris/artiste/{artiste}', [FavorisController::class, 'handleArtiste'])->name('compte.favoris.artistes.handle');
 
 Route::get('/locale/{locale}', [UtilsController::class, 'changeLocale'])->name('locale.switch');
 Route::get('/devise/{devise}', [UtilsController::class, 'changeDevise'])->name('devise.switch');
 
 
 Route::view('/cookies', 'cookies.preferences')->name('cookies.preferences');
-Route::get('/carte-cadeaux', function(){
+Route::get('/carte-cadeaux', function () {
     return view('pages.carte-cadeaux');
 })->name('carte-cadeaux'); // à vérifier
 
 Route::get('/selections', [SelectionController::class, 'index'])->name('selections.index');
 Route::get('/selections/{slug}', [SelectionController::class, 'show'])->name('selections.show');
-Route::get('/newsletter', function(){
+Route::get('/newsletter', function () {
     return view('pages.newsletter');
 })->name('newsletter.page');
 
-Route::get('/equipe', function(){
+Route::get('/equipe', function () {
     return view('pages.equipe');
 })->name('equipe');
 
-Route::get('/oeuvre-sur-mesure', function(){
+Route::get('/oeuvre-sur-mesure', function () {
     return view('pages.oeuvre-sur-mesure');
 })->name('oeuvre-sur-mesure');
 
-Route::get('/criteres-selection', function(){
+Route::get('/criteres-selection', function () {
     return view('pages.criteres');
 })->name('criteres');
 
-Route::get('/designers-interieurs', function(){
+Route::get('/designers-interieurs', function () {
     return view('pages.designer');
 })->name('designers');
 
-Route::get('/blog', function(){
+Route::get('/blog', function () {
     return view('pages.blog');
-})->name('blog.index'); 
+})->name('blog.index');
 
-Route::get('/cookie/save',[CookieController::class,'save'])->name('cookie.save');
+Route::get('/cookie/save', [CookieController::class, 'save'])->name('cookie.save');
 
-Route::post('/newsletter/subscribe', [UtilsController::class,'newsletterSubscribe'])->name('newsletter.subscribe');
+Route::post('/newsletter/subscribe', [UtilsController::class, 'newsletterSubscribe'])->name('newsletter.subscribe');
 
-Route::get('/artiste/inscription', [ArtisteController::class,'inscription'])->name('artiste.inscription');
+Route::get('/artiste/inscription', [ArtisteController::class, 'inscription'])->name('artiste.inscription');
 
-Route::post('/artiste/inscription', [ArtisteController::class,'inscrire'])->name('artiste.inscrire');
+Route::post('/artiste/inscription', [ArtisteController::class, 'inscrire'])->name('artiste.inscrire');
 
 Route::get('/oeuvres/{oeuvre}', [OeuvreController::class, 'show'])->name('oeuvres.show');
-Route::get('/oeuvres/{oeuvre}/tirage/{tirage}',[OeuvreController::class,'showTirage'])->name('oeuvres.show.tirage');
+Route::get('/oeuvres/{oeuvre}/tirage/{tirage}', [OeuvreController::class, 'showTirage'])->name('oeuvres.show.tirage');
 
-Route::post('/oeuvres/create',[OeuvreController::class,'store'])->name('oeuvres.create');
+Route::post('/oeuvres/create', [OeuvreController::class, 'store'])->name('oeuvres.create');
 
 
 
@@ -184,25 +183,23 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/conversations/{conversation}', [ConversationController::class, 'show'])
         ->name('conversations.show');
-        
+
     Route::post('/conversations/{conversation}/messages', [MessageController::class, 'store'])
         ->name('messages.store');
 
     Route::post('/conversations/{commande_id}/{artiste_id}', [ConversationController::class, 'store'])
         ->name('conversations.store');
 
-    
-    
-    Route::get('/compte/conversations',[ConversationController::class,'index'])
+
+
+    Route::get('/compte/conversations', [ConversationController::class, 'index'])
         ->name('compte.conversations.index');
 
-    Route::get('/compte/commandes',[CommandeController::class,'index'])
+    Route::get('/compte/commandes', [CommandeController::class, 'index'])
         ->name('compte.commandes.index');
-        
-    Route::get('/compte/commandes/{id}',[CommandeController::class,'show'])
-        ->name('compte.commandes.show');
 
-   
+    Route::get('/compte/commandes/{id}', [CommandeController::class, 'show'])
+        ->name('compte.commandes.show');
 });
 
 Route::middleware(['auth'])->prefix('panier')->name('panier.')->group(function () {
@@ -212,11 +209,11 @@ Route::middleware(['auth'])->prefix('panier')->name('panier.')->group(function (
     Route::delete('/clear', [PanierController::class, 'clear'])->name('clear');
 });
 
-Route::middleware(['auth'])->group(function(){
-    Route::post('/coupon/check',[CouponController::class,'appliquer'])
+Route::middleware(['auth'])->group(function () {
+    Route::post('/coupon/check', [CouponController::class, 'appliquer'])
         ->name('coupon.check');
 
-    Route::delete('/coupon/retirer/{coupon}',[CouponController::class,'retirer'])
+    Route::delete('/coupon/retirer/{coupon}', [CouponController::class, 'retirer'])
         ->name('coupon.retirer');
 });
 
@@ -256,9 +253,17 @@ Route::middleware('auth')->prefix('checkout')->name('checkout.')->group(function
         ->name('confirmation');
 });
 
-Route::get('api/recherche/',[RechercheController::class, 'suggestions'])
+Route::get('api/recherche/', [RechercheController::class, 'suggestions'])
     ->name('recherche.suggestions');
 
-Route::get('/recherche',[RechercheController::class,'index'])
+Route::get('/recherche', [RechercheController::class, 'index'])
     ->name('recherche.index');
 
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/users', [AdminController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}', [AdminController::class, 'show'])->name('users.show');
+    Route::delete('/users/{user}', [AdminController::class, 'destroy'])->name('users.destroy');
+    Route::get('/users/create', [AdminController::class, 'create'])->name('users.create');
+    Route::post('/users', [AdminController::class, 'store'])->name('users.store');
+});
