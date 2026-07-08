@@ -50,6 +50,7 @@
                     @csrf
                     <template x-if="!success">
                         <div class="flex gap-2 w-full">
+                            
                             <input
                                 type="email"
                                 x-model="email"
@@ -60,7 +61,7 @@
                                        focus:outline-none focus:ring-2 focus:ring-[#E8490F] focus:border-transparent
                                        transition-all"
                             >
-                            <x-button-art3f label="S'inscrire" />
+                            <x-mini-button-art3f label="S'inscrire" />
                         </div>
                     </template>
                     <template x-if="success">
