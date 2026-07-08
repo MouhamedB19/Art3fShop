@@ -10,7 +10,7 @@ use App\Http\Resources\UserResource;
 
 class AdminController extends Controller
 {
-    public function registerAdmin(Request $request)
+    public function registerAdmin(Request $request) //permet de créer un compte admin pour un tier
     {
         $validated = $request->validate([
             'nom' => 'required|string|max:255',
@@ -35,9 +35,12 @@ class AdminController extends Controller
         ]);
     }
 
+
     public function destroyUser($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::find($id);
+        if(!$user)
+            return response()->json(['message' => 'Utilisateur non trouvé', 'code' => 400]);
         $nomUser = $user->nom . ' ' . $user->prenom;
         $user->delete();
 
@@ -52,7 +55,9 @@ class AdminController extends Controller
 
     public function getUserById($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::find($id);
+        if(!$user)
+            return response()->json(['message' => 'Utilisateur non trouvé', 'code' => 400]);
         return new UserResource($user);
     }
 

@@ -36,7 +36,7 @@ class ProfilArtisteController extends Controller
     {
         $request->validate([
             'bio'          => ['required', 'string'],
-            'nom_d_artiste' => ['string', 'max:255'],
+            'nom_d_artiste' => ['nullable','string', 'max:255'],
             'photo'        => ['required', 'image', 'max:2048'],
             'iban'         => ['required', 'string'],
             'cv'           => ['required', 'file', 'mimes:pdf,doc,docx', 'max:5120'],

@@ -61,7 +61,7 @@ class User extends Authenticatable
         
     public function estArtiste()
     {
-        return $this->role === 'artiste' && $this->artiste() !== null;
+        return $this->role === 'artiste' && $this->artiste !== null;
     }
 
     public function estClient()

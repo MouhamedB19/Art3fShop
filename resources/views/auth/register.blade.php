@@ -13,13 +13,15 @@
             <!-- Prenom -->
             <div class="mt-4">
                 <x-input-label for="prenom" :value="__('Prenom')" />
-                <x-text-input-art3f id="prenom" type="text" name="prenom" value="{{ old('prenom') }}" message="Prénom" autofocus autocomplete="prenom" />
+                <x-text-input-art3f id="prenom" type="text" name="prenom" value="{{ old('prenom') }}" message="Prénom"
+                    autofocus autocomplete="prenom" />
                 <x-input-error :messages="$errors->get('prenom')" class="mt-2" />
             </div>
             <!-- Email Address -->
             <div class="mt-4">
                 <x-input-label for="email" :value="__('Email')" />
-                <x-text-input-art3f id="email" type="email" name="email" value="{{ old('email') }}" message="Email" autocomplete="username" />
+                <x-text-input-art3f id="email" type="email" name="email" value="{{ old('email') }}" message="Email"
+                    autocomplete="username" />
                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
             </div>
 
@@ -27,11 +29,8 @@
             <div class="mt-4">
                 <x-input-label for="password" :value="__('Mot de passe')" />
 
-                <x-text-input-art3f id="password" message="Mot de passe"
-                                type="password"
-                                name="password"
-                                value="{{ old('password') }}"
-                                autocomplete="new-password" />
+                <x-text-input-art3f id="password" message="Mot de passe" type="password" name="password"
+                    value="{{ old('password') }}" autocomplete="new-password" />
 
                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
@@ -40,9 +39,8 @@
             <div class="mt-4">
                 <x-input-label for="password_confirmation" :value="__('Confirmer le mot de passe')" />
 
-                <x-text-input-art3f id="password_confirmation" message="Confirmer le mot de passe"
-                                type="password"
-                                name="password_confirmation"/>
+                <x-text-input-art3f id="password_confirmation" message="Confirmer le mot de passe" type="password"
+                    name="password_confirmation" />
 
                 <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
             </div>
@@ -57,22 +55,28 @@
                 <x-input-error :messages="$errors->get('role')" class="mt-2" />
             </div>
 
-            <div class="flex items-center justify-end mt-4">
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                    {{ __('Déjà inscrit ? Connectez-vous') }}
-                </a>
+            <div class="mt-4">
 
-                <x-primary-button class="ms-4">
-                    {{ __('S\'inscrire') }}
-                </x-primary-button>
+
+                <x-grand-button-art3f label="S'inscrire" />
+                <div class="text-center my-4">
+                    <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+                        href="{{ route('login') }}">
+                        {{ __('Déjà inscrit ? Connectez-vous') }}
+                    </a>
+                </div>
+
             </div>
+
+            <button class="mt-4 w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+                onclick="window.location='{{ route('auth.google') }}'">
+                {{ __('S\'inscrire avec Google') }}
+            </button>
+            <button class="mt-4 w-full bg-blue-600 text-white py-2
+                px-4 rounded-md hover:bg-blue-700" onclick="window.location='{{ route('auth.facebook') }}'">
+                {{ __('S\'inscrire avec Facebook') }}
+            </button>
         </form>
-        <button class="mt-4 w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600" onclick="window.location='{{ route('auth.google') }}'">
-            {{ __('S\'inscrire avec Google') }}
-        </button>
-        <button class="mt-4 w-full bg-blue-600 text-white py-2
-            px-4 rounded-md hover:bg-blue-700" onclick="window.location='{{ route('auth.facebook') }}'">
-            {{ __('S\'inscrire avec Facebook') }}
-        </button>
+
     </x-guest-layout>
 @endsection

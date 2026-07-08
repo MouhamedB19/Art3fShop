@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tirages', function (Blueprint $table) {
-            $table->id(); 
+            $table->id();
             $table->unsignedBigInteger('oeuvre_id');
             $table->integer('numero');
-            $table->unique(['oeuvre_id', 'numero']); 
+            $table->unique(['oeuvre_id', 'numero']);
             $table->foreign('oeuvre_id')->references('id')->on('oeuvres')->onDelete('cascade')->onUpdate('cascade');
             $table->enum('status', ['disponible', 'vendu'])->default('disponible');
             $table->decimal('prix', 10, 2);
@@ -35,6 +35,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::disableForeignKeyConstraints();
+
         Schema::dropIfExists('tirages');
+
+        Schema::enableForeignKeyConstraints();
     }
 };

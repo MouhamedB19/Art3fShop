@@ -26,8 +26,9 @@ class AuthController extends Controller
 
         if (! Auth::attempt($credentials)) {
             return response()->json([
-                'message' => 'Identifiants invalides'
-            ], 401);
+                'message' => 'Identifiants invalides',
+                'code' => 400
+            ]);
         }
 
         $user = Auth::user();

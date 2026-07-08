@@ -17,7 +17,7 @@ class ArtisteMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if(!Auth::user()->estArtiste()) {
-            abort(403);
+            return response()->json(['message' => 'Accès refusé. Vous devez disposer du status d\'artiste pour accéder à cette ressource', 'code' => 403]);
         }
         return $next($request);
     }

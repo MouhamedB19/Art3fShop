@@ -70,7 +70,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 
     Route::get('/users', [AdminController::class, 'getAllUsers']);
 
-    Route::get('/users/{id}', [AdminController::class, 'getUserById']);
+    Route::get('/user/{id}', [AdminController::class, 'getUserById']);
 
     Route::get('/admin/stats', [AdminController::class, 'statsArt3fShop']);
 });

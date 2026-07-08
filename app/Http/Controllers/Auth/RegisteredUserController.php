@@ -51,9 +51,7 @@ class RegisteredUserController extends Controller
 
         if($request->role === 'artiste') 
         {
-            Artiste::create([
-                'user_id' => $user->id,
-            ]);
+            
             Auth::login($user);
             return redirect(route('artiste.completer-profil', absolute: false));
         } 

@@ -14,13 +14,13 @@
                     </h1>
                     <p class="text-sm text-gray-500 mt-1">Votre musée personnel</p>
                 </div>
-                <a href="{{ route('oeuvres.create') }}"
-                   class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#E8490F] text-white text-sm font-medium hover:bg-[#c93d0c] transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Ajouter une œuvre
-                </a>
+                <form action="{{ route('oeuvres.create') }}" method="POST" class="my-auto">
+                    <x-mini-button-art3f label="Ajouter une oeuvre">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                    </x-mini-button-art3f>
+                </form>
             </div>
         
             {{-- Flash success --}}
@@ -53,15 +53,13 @@
         
             {{-- Liste des œuvres --}}
             @if($oeuvres->isEmpty())
-                <div class="bg-white rounded-2xl border border-gray-200 p-16 text-center">
+                <div class="bg-white rounded-2xl border border-gray-200 p-16 flex flex-col items-center">
                     <svg class="w-12 h-12 text-gray-200 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4-4m0 0l4 4m-4-4v8M4 8V6a2 2 0 012-2h12a2 2 0 012 2v10"/>
                     </svg>
                     <p class="text-gray-500 text-sm">Vous n'avez pas encore ajouté d'œuvre.</p>
-                    <a href="{{ route('oeuvres.create') }}"
-                       class="inline-block mt-4 px-5 py-2 rounded-lg bg-[#E8490F] text-white text-sm hover:bg-[#c93d0c] transition">
-                        Ajouter ma première œuvre
-                    </a>
+                    <form action="{{ route('oeuvres.create') }}" method="POST" class="mt-4">
+                        <x-mini-button-art3f label="Ajouter ma première oeuvre"/>
                 </div>
             @else
                 <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">

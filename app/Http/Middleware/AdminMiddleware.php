@@ -16,8 +16,8 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!Auth::user()->estAdmin()) {
-            abort(403);
+        if (!Auth::user()->estAdmin()) {
+            return response()->json(['message' => 'Vous devez disposer du status d\'administrateur pour accéder à cette ressource', 'code' => 403]);
         }
         return $next($request);
     }
