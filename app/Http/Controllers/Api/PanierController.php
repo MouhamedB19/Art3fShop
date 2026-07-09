@@ -32,7 +32,7 @@ class PanierController extends Controller
         $tirage = Tirage::find($tirageId);
 
 
-        if($client->tirages()->count() >=5)
+        if($client->tirages()->count() >= 5)
             return response()->json(['message' => 'Vous ne pouvez pas ajouter plus de 5 tirages à votre panier', 'code' => 405]);
         if (!$tirage)
             return response()->json(['message' => 'Tirage non trouvé', 'code' => 400]);
@@ -40,12 +40,10 @@ class PanierController extends Controller
             return response()->json(['message' => 'Tirage non disponible', 'code' => 400]);
 
         if ($client->tirages()->where('tirage_id', $tirageId)->exists())
-            $client->tirages()->updateExistingPivot($tirage->id, [
-                'quantite' => DB::raw('quantite + ' . ($request->quantite ?? 1))
-            ]);
+            $client->tirages()->detach($tirage->id);
         else 
         {
-            $client->tirages()->attach($tirage->id, ['quantite' => 1]);
+            $client->tirages()->attach($tirage->id);
             return response()->json(['message' => 'Tirage ajouté au panier', 'code' => 200]);
         }
         

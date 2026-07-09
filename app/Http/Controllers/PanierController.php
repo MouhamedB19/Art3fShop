@@ -61,16 +61,12 @@ class PanierController extends Controller
         {
             $client = Auth::user()->client;
 
-            // Si déjà dans le panier, on incrémente
+            // Si déjà dans le panier, on le retire
             if ($client->tirages()->where('tirage_id', $tirage->id)->exists()) {
-                $client->tirages()->updateExistingPivot($tirage->id, [
-                    'quantite' => DB::raw('quantite + ' . ($request->quantite ?? 1))
-                ]);
+                $client->tirages()->detach($tirage->id);
             } 
             else {
-                $client->tirages()->attach($tirage->id, [
-                    'quantite' => $request->quantite ?? 1
-                ]);
+                $client->tirages()->attach($tirage->id);
             }
 
             return back()->with('success', 'Tirage ajouté au panier !');

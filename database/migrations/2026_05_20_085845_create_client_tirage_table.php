@@ -15,7 +15,6 @@ return new class extends Migration
         Schema::create('client_tirage', function (Blueprint $table) {
             $table->foreignId('client_id')->constrained('clients');
             $table->foreignId('tirage_id')->constrained('tirages');
-            $table->integer('quantite');
             $table->primary(['client_id', 'tirage_id']);
         });
     }

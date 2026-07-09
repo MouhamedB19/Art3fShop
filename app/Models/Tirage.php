@@ -31,7 +31,7 @@ class Tirage extends Model
     }
 
     public function clientTirages(){
-        return $this->belongsToMany(Client::class, 'client_tirage', 'tirage_id', 'client_id')->withPivot('quantite');
+        return $this->belongsToMany(Client::class, 'client_tirage', 'tirage_id', 'client_id');
     }
 
     public function oeuvre(){

@@ -19,12 +19,22 @@ class AdminSeeder extends Seeder
                 'nom'        => 'Ba',
                 'prenom'     => 'Mouhamed',
                 'email'      => 'admin@art3f.test',
-                'password'   => Hash::make('Yo Angelo'),
+                'password'   => Hash::make('TheAdmin68'),
                 'role'       => 'admin',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'nom'        => 'Gbantehou',
+                'prenom'     => 'Joseph',
+                'email'      => 'joseph@art3f.fr',
+                'password'   => Hash::make('salonArt3f'),
+                'role'       => 'admin',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            
         ]);
-        $this->command->info('Le compte admin a ete cree');
+        $this->command->info('Les comptes admin sont crees');
     }
 }

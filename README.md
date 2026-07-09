@@ -1,66 +1,86 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Art3fShop
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Plateforme e-commerce permettant à des artistes de vendre leurs œuvres en ligne. Projet réalisé dans le cadre d'un stage chez Art3f (salon d'art contemporain, Mulhouse).
 
-## About Laravel
+## Stack technique
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Backend** : Laravel
+- **Frontend** : Blade, Tailwind CSS, Alpine.js, Livewire
+- **Base de données** : MySQL
+- **Recherche** : Meilisearch (via Laravel Scout)
+- **Environnement local** : XAMPP (Windows)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Installation / Lancement
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. Cloner le repo et se placer dans le dossier du projet
+2. Installer les dépendances :
+   ```bash
+   composer install
+   npm install
+   ```
+3. Copier le fichier d'environnement et générer la clé d'application :
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+4. Configurer la base de données dans `.env` (nom de la base : `art3f`)
+5. Lancer les migrations et les seeders :
+   ```bash
+   php artisan migrate --seed
+   ```
+6. Lancer Meilisearch et importer les index :
+   ```bash
+   php artisan scout:import "App\Models\Oeuvre"
+   php artisan scout:import "App\Models\Artiste"
+   php artisan scout:import "App\Models\Categorie"
+   ```
+7. Compiler les assets et démarrer le serveur :
+   ```bash
+   npm run dev
+   php artisan serve
+   ```
 
-## Learning Laravel
+## Identifiants de test
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+| Rôle    | Email                          | Mot de passe |
+|---------|---------------------------------|---------------|
+| Admin   | admin@art3f.test               | TheAdmin68    |
+| Client  | marie.moreau@example.com       | password      |
+| Artiste | sohpie.martin@art3f.test       | password      |
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Fonctionnalités implémentées
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Authentification (client / artiste, inscription et connexion)
+- Espace artiste (dashboard, gestion de ses œuvres/tirages)
+- Upload d'image pour une œuvre (1 image par œuvre)
+- Catalogue d'œuvres avec filtres dynamiques (Livewire)
+- Recherche dynamique (Meilisearch / Scout)
+- Fiche œuvre / tirage
+- Panier
+- Favoris
+- Coupons / réductions
+- Tunnel de commande (checkout)
+- Paiement simulé
+- Historique des commandes (côté client)
+- Emails transactionnels (driver log)
+- Messagerie / conversations
+- Consentement cookies RGPD (5 catégories)
+- Espace admin (dashboard, gestion des utilisateurs, statistiques, suppression, création d'admin)
+- Header responsive
 
-## Laravel Sponsors
+## Fonctionnalités non implémentées
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- **Paiement réel** (Stripe/PayPal) — volontairement simulé pour la démo
+- **Avis / notes** sur les œuvres ou artistes — non prévu au cahier des charges
+- **Upload multi-images par œuvre** — limité à une seule image par œuvre. Il s'agit d'une limite technique liée au choix de stockage (fichiers locaux plutôt qu'un service cloud adapté), qui pourrait être améliorée par une relation one-to-many `Oeuvre` → `images` couplée à un stockage cloud (type S3).
+- Changement de langues et de devises (problèmes de conversion)
+- Suivi de livraison
+- Modification des informations personnelles
 
-### Premium Partners
+## Structure du projet
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- `role` enum sur `users` : `acheteur`, `artiste`, `admin`
+- Tables de profil séparées : `Client`, `Artiste`
+- Adresses normalisées : `Localisation → Ville → Pays`
+- Tirages : œuvres physiques uniques 
+- Toutes les routes sont définies dans `routes/web.php`
