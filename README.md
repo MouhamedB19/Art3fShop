@@ -46,7 +46,7 @@ Plateforme e-commerce permettant à des artistes de vendre leurs œuvres en lign
 |---------|---------------------------------|---------------|
 | Admin   | admin@art3f.test               | TheAdmin68    |
 | Client  | marie.moreau@example.com       | password      |
-| Artiste | sohpie.martin@art3f.test       | password      |
+| Artiste | sophie.martin@art3f.test       | password      |
 
 ## Fonctionnalités implémentées
 
@@ -62,6 +62,7 @@ Plateforme e-commerce permettant à des artistes de vendre leurs œuvres en lign
 - Tunnel de commande (checkout)
 - Paiement simulé
 - Historique des commandes (côté client)
+-  Conversations entre le client et l'artiste
 - Emails transactionnels (driver log)
 - Messagerie / conversations
 - Consentement cookies RGPD (5 catégories)
@@ -76,6 +77,7 @@ Plateforme e-commerce permettant à des artistes de vendre leurs œuvres en lign
 - Changement de langues et de devises (problèmes de conversion)
 - Suivi de livraison
 - Modification des informations personnelles
+- Connexion avec Google et Facebook simulée (pas de connexion réelle)
 
 ## Structure du projet
 
