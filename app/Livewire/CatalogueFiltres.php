@@ -39,7 +39,7 @@ class CatalogueFiltres extends Component
 
     public function removeAllFiltres(): void
     {
-        $this->reset(['categorie_id', 'theme_ids', 'couleur_ids', 'encadrement', 'prix_min','largeur','longueur', 'prix_max', 'orientation']);
+        $this->reset(['categorie_id', 'theme_ids', 'couleur_ids', 'encadrement', 'prix_min', 'prix_max', 'orientation']);
         $this->prix_max = 5000;
         $this->resetPage();
     }

@@ -77,18 +77,7 @@ class PanierController extends Controller
         
     }
 
-    // Mettre à jour la quantité
-    public function update(Request $request, Tirage $tirage)
-    {
-        $request->validate(['quantite' => 'required|integer|min:1']);
-
-        $client = Auth::user()->client;
-        $client->tirages()->updateExistingPivot($tirage->id, [
-            'quantite' => $request->quantite
-        ]);
-
-        return back()->with('success', 'Quantité mise à jour.');
-    }
+    
 
     // Supprimer un tirage du panier
     public function remove(Tirage $tirage)
