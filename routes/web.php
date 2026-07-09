@@ -64,9 +64,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/artiste/update/profil', [ProfilArtisteController::class, 'update'])->name('artiste.update.profil');
     });
 
-    Route::middleware('admin')->group(function () {
-        Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
-    });
+    
 });
 
 Route::get('/villes/{pays}', function ($pays_id) {
@@ -260,10 +258,11 @@ Route::get('/recherche', [RechercheController::class, 'index'])
     ->name('recherche.index');
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/users/create', [AdminController::class, 'create'])->name('users.create');
     Route::get('/users', [AdminController::class, 'index'])->name('users.index');
     Route::get('/users/{user}', [AdminController::class, 'show'])->name('users.show');
     Route::delete('/users/{user}', [AdminController::class, 'destroy'])->name('users.destroy');
-    Route::get('/users/create', [AdminController::class, 'create'])->name('users.create');
+    
     Route::post('/users', [AdminController::class, 'store'])->name('users.store');
 });

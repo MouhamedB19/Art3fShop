@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Oeuvre;
+use App\Models\Tirage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -11,26 +13,34 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        return view('admin.index');
+        $stats = [
+            'total_users'    => User::count(),
+            'total_clients'  => User::where('role', 'acheteur')->count(),
+            'total_artistes' => User::where('role', 'artiste')->count(),
+            'total_oeuvres'  => Oeuvre::count(),
+            'total_tirages'  => Tirage::count(),
+            'tirages_vendus' => Tirage::where('status', 'vendu')->count(),
+        ];
+        return view('admin.index', compact('stats'));
     }
 
     public function index()
     {
-        $users = User::all();
-        return view('admin.users',compact($users));
+        $users = User::latest()->paginate(15);
+        return view('admin.users', compact('users'));
     }
 
     public function show($id)
     {
         $user = User::findOrFail($id);
-        return view('admin.show', compact($user));
+        return view('admin.show', compact('user'));
     }
 
     public function destroy($id)
     {
         $user = User::findOrFail($id);
         $user->delete();
-        return back()->with('success', 'Utilisateur supprimé');
+        return redirect()->route('admin.users.index')->with('success', 'Utilisateur supprimé');
     }
 
     public function create()
@@ -41,10 +51,10 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         $admin = $request->validate([
-            'nom' => $request->nom,
-            'prenom' => $request->prenom,
-            'email' => $request->email,
-            'password' => $request->password,
+            'nom'      => 'required|string|max:255',
+            'prenom'   => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|min:8|confirmed',
         ]);
 
         User::firstOrCreate([
@@ -55,6 +65,6 @@ class AdminController extends Controller
             'role' => 'admin',
         ]);
 
-        return back()->with('success', 'Nouvel admin créé');
+        return redirect()->route('admin.users.index')->with('success', 'Nouvel admin créé');
     }
 }

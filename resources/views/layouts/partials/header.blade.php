@@ -53,7 +53,7 @@
                     </span>
                     
                     @if(auth()->user()->estAdmin())
-                        <x-lien-orange-art3f destination="{{ route('admin.index') }}" label="Administration"/>
+                        <x-lien-orange-art3f destination="{{ route('admin.dashboard') }}" label="Administration"/>
                     @else
                         <x-lien-orange-art3f destination="{{ route('compte.index') }}" label="Mon compte"/>
 
