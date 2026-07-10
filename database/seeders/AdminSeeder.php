@@ -19,7 +19,7 @@ class AdminSeeder extends Seeder
                 'nom'        => 'Ba',
                 'prenom'     => 'Mouhamed',
                 'email'      => 'admin@art3f.test',
-                'password'   => Hash::make('TheAdmin68'),
+                'password'   => Hash::make('TheChief0'),
                 'role'       => 'admin',
                 'created_at' => now(),
                 'updated_at' => now(),
