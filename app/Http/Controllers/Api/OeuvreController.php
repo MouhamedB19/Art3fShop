@@ -17,6 +17,43 @@ class OeuvreController extends Controller
         return OeuvreResource::collection(Oeuvre::paginate(10));
     }
 
+    public function indexParTheme(Request $request)
+    {
+        $query = Oeuvre::query();
+        if($request->filled('search'))
+        {
+            $query->whereHas('themes', function($q) use ($request){
+                $q->where('nom_theme','like', '%'.$request->search . '%');
+            });
+            return OeuvreResource::collection($query->get());
+        }
+        else
+        {
+            return response()->json([
+                'message' => 'Paramètre de recherche manquant'
+            ], 400);
+        }
+        
+    }
+
+    public function indexParCouleur(Request $request)
+    {
+        $query = Oeuvre::query();
+        if($request->filled('search'))
+        {
+            $query->whereHas('couleurs', function($c) use ($request){
+                $c->where('nom_couleur','like', '%' . $request->search . '%');
+            });
+            return OeuvreResource::collection($query->get());
+        }
+        else
+        {
+            return response()->json([
+                'message' => 'Paramètre de recherche manquant'
+            ], 400);
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -60,9 +97,7 @@ class OeuvreController extends Controller
             $oeuvre->couleurs()->sync($data['couleurs']);
         }
 
-        return new OeuvreResource(
-            $oeuvre
-        );
+        return new OeuvreResource($oeuvre);
     }
 
     /**

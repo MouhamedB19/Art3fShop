@@ -35,16 +35,13 @@ class AuthController extends Controller
 
         $token = $user->createToken('api')->plainTextToken;
 
-        return response()->json([
-            'user' => $user,
-            'token' => $token
-        ]);
+        return (new UserResource($user))->additional(['token' => $token]);
     }
 
     public function index()
     {
         $user = Auth::user();
-        return response()->json($user);
+        return new UserResource($user);
     }
 
     public function logout(Request $request)
@@ -97,9 +94,7 @@ class AuthController extends Controller
         ]);
 
         $token = $user->createToken('api')->plainTextToken;
-        return new UserResource(
-            $user,
-        )->additional([
+        return (new UserResource($user))->additional([
             'token' => $token,
         ]);
     }
@@ -126,14 +121,7 @@ class AuthController extends Controller
             'localisations_id' => $validated['localisations_id'],
         ]);
         $token = $user->createToken('api')->plainTextToken;
-        return new UserResource(
-            $user,
-        )->additional([
-            'token' => $token,
-        ]);
+        return (new UserResource($user))->additional(['token' => $token]);
     }
-
-    
-
 
 }

@@ -226,11 +226,6 @@ Route::middleware('auth')->prefix('checkout')->name('checkout.')->group(function
     Route::get('/resume', [CheckoutController::class, 'resume'])
         ->name('resume');
 
-    Route::get('/identification', [CheckoutController::class, 'identification'])
-        ->name('identification');
-    Route::post('/identification', [CheckoutController::class, 'storeIdentification'])
-        ->name('identification.store');
-
     Route::get('/adresse', [CheckoutController::class, 'adresse'])
         ->name('adresse');
     Route::post('/adresse', [CheckoutController::class, 'storeAdresse'])

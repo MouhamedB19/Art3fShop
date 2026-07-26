@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-
+use App\Http\Resources\ArtisteResource;
 class UserResource extends JsonResource
 {
     /**
@@ -20,7 +20,7 @@ class UserResource extends JsonResource
             'prenom' => $this->prenom,
             'email' => $this->email,
             'role' => $this->role,
-            'artiste' => $this->artiste ? $this->artiste : null,
+            'artiste' => $this->artiste ? new ArtisteResource($this->artiste) : null,
             'client' => $this->client ? $this->client : null,
         ];
     }

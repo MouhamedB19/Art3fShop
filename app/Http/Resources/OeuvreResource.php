@@ -4,7 +4,9 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-
+use App\Http\Resources\TirageResource;
+use App\Http\Resources\CouleurResource;
+use App\Http\Resources\ThemeResource;
 class OeuvreResource extends JsonResource
 {
     /**
@@ -33,20 +35,11 @@ class OeuvreResource extends JsonResource
                     'prenom' => $this->artiste->user->prenom,
                 ],
             ],
+            'tirages' => TirageResource::collection($this->tirages),
 
-            'themes' => $this->themes->map(function ($theme) {
-                return [
-                    'id' => $theme->id,
-                    'nom' => $theme->nom_theme,
-                ];
-            }),
+            'themes' => new ThemeResource($this->themes),
 
-            'couleurs' => $this->couleurs->map(function ($couleur) {
-                return [
-                    'id' => $couleur->id,
-                    'nom' => $couleur->nom_couleur,
-                ];
-            }),
+            'couleurs' => new CouleurResource($this->couleurs),
             'created_at'    => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

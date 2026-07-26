@@ -355,37 +355,3 @@
     </svg>
 </button>
 
-{{--
-    ─────────────────────────────────────────────────────────────
-    ROUTES nécessaires (web.php) :
-    ─────────────────────────────────────────────────────────────
-    Route::post('/newsletter/subscribe', ...)->name('newsletter.subscribe');
-    Route::get('/newsletter', ...)->name('newsletter.page');
-    Route::get('/a-propos', ...)->name('about');
-    Route::get('/equipe', ...)->name('equipe');
-    Route::get('/emploi', ...)->name('emploi');
-    Route::get('/blog', ...)->name('blog.index');
-    Route::get('/criteres-selection', ...)->name('criteres');
-    Route::get('/contact', ...)->name('contact');
-    Route::get('/mentions-legales', ...)->name('mentions-legales');
-    Route::get('/cgv', ...)->name('cgv');
-    Route::get('/cookies', ...)->name('cookies');
-    Route::get('/carte-cadeaux', ...)->name('carte-cadeaux');
-    Route::get('/oeuvre-sur-mesure', ...)->name('oeuvre-sur-mesure');
-    Route::get('/entreprises', ...)->name('entreprises');
-    Route::get('/designers-interieurs', ...)->name('designers');
-    Route::get('/artiste/compte', ...)->name('artiste.compte');
-    Route::get('/artiste/inscription', ...)->name('artiste.inscription');
-    ─────────────────────────────────────────────────────────────
-    CONFIG (config/art3f.php) :
-    ─────────────────────────────────────────────────────────────
-    return [
-        'promo_message' => '15€ offerts sur votre première commande en vous inscrivant à la newsletter !',
-        'promo_url'     => '/register',
-        'telephone'     => '+33 (0)1 XX XX XX XX',
-        'linkedin'      => 'https://linkedin.com/company/art3f',
-        'facebook'      => 'https://facebook.com/art3f',
-        'instagram'     => 'https://instagram.com/art3f',
-    ];
-    ─────────────────────────────────────────────────────────────
---}}

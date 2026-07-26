@@ -19,7 +19,7 @@ class Client extends Model
     }
 
     public function tirages(){
-        return $this->belongsToMany(Tirage::class, 'client_tirage', 'client_id', 'tirage_id')->withPivot('quantite');
+        return $this->belongsToMany(Tirage::class, 'client_tirage', 'client_id', 'tirage_id');
     }
 
     public function conversations(){

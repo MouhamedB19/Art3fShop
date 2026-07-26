@@ -10,31 +10,22 @@ use App\Http\Controllers\Api\TirageController;
 use App\Http\Controllers\Api\PanierController;
 use App\Http\Controllers\Api\FavorisController;
 
-Route::get('/oeuvres', [OeuvreController::class, 'index']);
-
-Route::get('/oeuvres/{id}', [OeuvreController::class, 'show']);
-
-Route::post('/oeuvres', [OeuvreController::class, 'store']);
-
-Route::put('/oeuvres/{id}', [OeuvreController::class, 'update']);
-
-Route::delete('/oeuvres/{id}', [OeuvreController::class, 'destroy']);
-
-Route::get('/tirages', [TirageController::class, 'index']);
 
 
 Route::post('/register/artiste', [AuthController::class, 'registerArtiste']);
 Route::post('register/acheteur', [AuthController::class, 'registerAcheteur']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-Route::get('/tirages/oeuvre/{oeuvreId}', [TirageController::class, 'listeTiragesDuneOeuvre']);
+
+Route::get('/oeuvres/theme', [OeuvreController::class, 'indexParThemes']);
+Route::get('oeuvres/couleur', [OeuvreController::class,'indexParCouleurs']);
 
 Route::get('/tirages/{id}', [TirageController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::get('/user', [AuthController::class, 'index']);
+    Route::get('/me', [AuthController::class, 'index']);
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
 
 Route::middleware(['auth:sanctum', 'artiste'])->group(function () {
@@ -44,7 +35,7 @@ Route::middleware(['auth:sanctum', 'artiste'])->group(function () {
 });
 
 Route::middleware(['auth:sanctum', 'acheteur'])->group(function () {
-    Route::get('/tirages', [TirageController::class, 'index']);
+    
     Route::get('/tirages/{id}', [TirageController::class, 'show']);
 
 
@@ -61,8 +52,6 @@ Route::middleware(['auth:sanctum', 'acheteur'])->group(function () {
 });
 
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
-
-    Route::apiResource('oeuvres', OeuvreController::class);
 
     Route::post('/register/admin', [AdminController::class, 'registerAdmin']);
 

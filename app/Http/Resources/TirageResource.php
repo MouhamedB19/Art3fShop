@@ -18,7 +18,6 @@ class TirageResource extends JsonResource
             'id' => $this->id,
             'numero' => $this->numero,
             'status' => $this->status,
-            'oeuvre' => new OeuvreResource($this->oeuvre),
             'largeur' => $this->dimension->largeur,
             'hauteur' => $this->dimension->hauteur,
             'prix' => $this->prix,

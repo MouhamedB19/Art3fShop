@@ -10,11 +10,11 @@ use App\Models\Dimension;
 
 class TirageController extends Controller
 {
-    public function listeTiragesDuneOeuvre($oeuvreId)
+    /*public function listeTiragesDuneOeuvre($oeuvreId)
     {
         $tirages = Tirage::where('oeuvre_id', $oeuvreId)->get();
         return TirageResource::collection($tirages);
-    }
+    }*/
 
     public function show($id)
     {

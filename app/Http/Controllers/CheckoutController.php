@@ -36,20 +36,7 @@ class CheckoutController extends Controller
         return view('checkout.resume', compact('tirages', 'total', 'coupons', 'reduction'));
     }
 
-    public function identification()
-    {
-        if (!Auth::check()) {
-            return redirect()->route('login')->with('redirect_after', route('checkout.identification'));
-        }
-
-        return view('checkout.identification', ['user' => Auth::user()]);
-    }
-
-    public function storeIdentification(Request $request)
-    {
-        // si rien à valider ici (déjà connecté), juste avancer
-        return redirect()->route('checkout.adresse');
-    }
+    
 
     public function adresse()
     {

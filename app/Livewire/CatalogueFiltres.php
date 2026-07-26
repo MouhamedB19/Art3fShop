@@ -86,7 +86,6 @@ class CatalogueFiltres extends Component
                     $q2->whereBetween('prix', [$this->prix_min, $this->prix_max])
                 )
             )
-            
             ->with(['artiste.user', 'categorie', 'tirages.dimension'])
             ->latest()
             ->paginate(18);

@@ -54,7 +54,7 @@
                 <span>{{ number_format($total - $reduction, 2, ',', ' ') }} €</span>
             </div>
 
-            <a href="{{ route('checkout.identification') }}"
+            <a href="{{ route('checkout.adresse') }}"
                class="block w-full text-center bg-[#E8490F] text-white py-3 rounded-xl font-medium hover:bg-orange-700 transition-colors">
                 Continuer
             </a>
