@@ -39,7 +39,7 @@ class PanierController extends Controller
                     ? $total * $coupon->valeur / 100
                     : $coupon->valeur;
 
-                // on évite une réduction qui dépasse le total
+                
                 $reduction = min($reduction, $total);
 
                 $totalFinal = $total - $reduction;
@@ -61,7 +61,7 @@ class PanierController extends Controller
         {
             $client = Auth::user()->client;
 
-            // Si déjà dans le panier, on le retire
+            
             if ($client->tirages()->where('tirage_id', $tirage->id)->exists()) {
                 $client->tirages()->detach($tirage->id);
             } 

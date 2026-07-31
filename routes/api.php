@@ -17,8 +17,8 @@ Route::post('register/acheteur', [AuthController::class, 'registerAcheteur']);
 Route::post('/login', [AuthController::class, 'login']);
 
 
-Route::get('/oeuvres/theme', [OeuvreController::class, 'indexParThemes']);
-Route::get('oeuvres/couleur', [OeuvreController::class,'indexParCouleurs']);
+
+
 
 Route::get('/tirages/{id}', [TirageController::class, 'show']);
 

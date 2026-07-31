@@ -72,7 +72,7 @@ class CheckoutController extends Controller
         $localisation = Localisation::find(session('checkout.localisation_id'));
         $pays = $localisation->ville->pays;
 
-        $fraisOfferts = $pays->estDansUE($pays->nom_pays) ?? false; // adapte selon le nom réel de ta colonne
+        $fraisOfferts = $pays->estDansUE($pays->nom_pays) ?? false; 
 
         return view('checkout.livraison', compact('fraisOfferts', 'pays'));
     }

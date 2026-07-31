@@ -12,48 +12,40 @@ class OeuvreController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        return OeuvreResource::collection(Oeuvre::paginate(10));
-    }
+   
 
-    public function indexParTheme(Request $request)
+    public function index(Request $request)
     {
         $query = Oeuvre::query();
-        if($request->filled('search'))
+        if($request->filled('theme'))
         {
             $query->whereHas('themes', function($q) use ($request){
-                $q->where('nom_theme','like', '%'.$request->search . '%');
+                $q->where('nom_theme','like', '%' . $request->theme . '%');
+            });
+            return OeuvreResource::collection($query->get());
+        }
+        else if($request->filled('categorie'))
+        {
+            $query->where('id', $request->categorie);
+            return OeuvreResource::collection($query->get());
+        }
+        else if($request->filled('couleur'))
+        {
+            $query->whereHas('couleurs', function($q) use ($request){
+                $q->where('nom_couleur', 'like','%' . $request->couleur . '%');
             });
             return OeuvreResource::collection($query->get());
         }
         else
         {
             return response()->json([
-                'message' => 'Paramètre de recherche manquant'
+                'message' => 'Paramètres de recherche manquants'
             ], 400);
         }
         
     }
 
-    public function indexParCouleur(Request $request)
-    {
-        $query = Oeuvre::query();
-        if($request->filled('search'))
-        {
-            $query->whereHas('couleurs', function($c) use ($request){
-                $c->where('nom_couleur','like', '%' . $request->search . '%');
-            });
-            return OeuvreResource::collection($query->get());
-        }
-        else
-        {
-            return response()->json([
-                'message' => 'Paramètre de recherche manquant'
-            ], 400);
-        }
-    }
-
+    
     /**
      * Store a newly created resource in storage.
      */

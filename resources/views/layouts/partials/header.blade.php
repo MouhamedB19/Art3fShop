@@ -1,15 +1,3 @@
-{{--
-    ┌─────────────────────────────────────────────────────────────┐
-    │  HEADER — art3f Shop                                        │
-    │  resources/views/layouts/partials/header.blade.php          │
-    │                                                             │
-    │  Utilisation dans app.blade.php :                           │
-    │      @include('layouts.partials.header')                    │
-    │                                                             │
-    │  Requis dans app.blade.php (dans <head>) :                  │
-    │      @vite(['resources/css/app.css','resources/js/app.js']) │
-    └─────────────────────────────────────────────────────────────┘
---}}
 
 {{-- ═══════════════════════════════════════════════════════════
      BARRE D'INFO (promotions, offres commerciales)
@@ -203,9 +191,7 @@
                 <img src="{{ asset('images/logo-art3f-shop.png') }}"
                      alt="art3f Shop"
                      class="h-12 w-auto">
-                {{-- Fallback texte si pas encore d'image --}}
-                {{-- <span class="font-black text-2xl tracking-tight">art<span class="text-[#E8490F]">3f</span>
-                    <span class="font-light text-sm ml-1">SHOP</span></span> --}}
+                
             </a>
 
             {{-- Barre de recherche --}}
@@ -500,30 +486,3 @@
 
 </header>
 
-{{--
-    ─────────────────────────────────────────────────────────────
-    ROUTES nécessaires (web.php) :
-    ─────────────────────────────────────────────────────────────
-    Route::get('/', ...)->name('home');
-    Route::get('/catalogue', ...)->name('catalogue.index');
-    Route::get('/catalogue/{categorie}', ...)->name('catalogue.categorie');
-    Route::get('/catalogue/theme/{theme}', ...)->name('catalogue.theme');
-    Route::get('/artistes', ...)->name('artistes.index');
-    Route::get('/recherche', ...)->name('recherche.index');
-    Route::get('/api/recherche', ...)->name('api.recherche');
-    Route::get('/panier', ...)->name('panier.index');
-    Route::get('/compte', ...)->name('compte.index');
-    Route::get('/compte/favoris/oeuvres', ...)->name('compte.favoris.oeuvres');
-    Route::get('/compte/favoris/artistes', ...)->name('compte.favoris.artistes');
-    Route::get('/faq', ...)->name('faq.index');
-    Route::get('/locale/{locale}', ...)->name('locale.switch');
-    Route::get('/devise/{devise}', ...)->name('devise.switch');
-    Route::get('/selections', ...)->name('selections.index');
-    Route::get('/selections/{slug}', ...)->name('selections.show');
-    ─────────────────────────────────────────────────────────────
-    DÉPENDANCES :
-    - Alpine.js (x-data, x-show, x-model...)  → dans app.js via npm
-    - Tailwind CSS                              → dans app.css via npm
-    - @vite(['resources/css/app.css','resources/js/app.js']) dans <head>
-    ─────────────────────────────────────────────────────────────
---}}

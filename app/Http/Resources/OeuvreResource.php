@@ -24,22 +24,14 @@ class OeuvreResource extends JsonResource
             'taux_reduction' => $this->taux_reduction,
             'photo_principale' => $this->photo_principale,
             'orientation'   => $this->orientation,
-            'categorie' => $this->categorie,
+            'categorie' => new CategorieResource($this->categorie),
             'support'    => $this->support,
-            'artiste' => [
-                'id' => $this->artiste->id,
-                'nom_d_artiste' => $this->artiste->nom_d_artiste,
-                'user' => [
-                    'id' => $this->artiste->user->id,
-                    'nom' => $this->artiste->user->nom,
-                    'prenom' => $this->artiste->user->prenom,
-                ],
-            ],
+            'artiste' => new ArtisteResource($this->artiste),
             'tirages' => TirageResource::collection($this->tirages),
 
-            'themes' => new ThemeResource($this->themes),
+            'themes' => ThemeResource::collection($this->themes),
 
-            'couleurs' => new CouleurResource($this->couleurs),
+            'couleurs' => CouleurResource::collection($this->couleurs),
             'created_at'    => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
