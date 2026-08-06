@@ -15,6 +15,7 @@ class VilleResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'nom_ville' => $this->nom_ville,
             'pays' => new PaysResource($this->pays)
         ];

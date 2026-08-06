@@ -9,18 +9,16 @@ use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\TirageController;
 use App\Http\Controllers\Api\PanierController;
 use App\Http\Controllers\Api\FavorisController;
+use App\Http\Controllers\Api\ThemeController;
+use App\Http\Controllers\Api\CouleurController;
 
-
-
-Route::post('/register/artiste', [AuthController::class, 'registerArtiste']);
-Route::post('register/acheteur', [AuthController::class, 'registerAcheteur']);
+Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-
-
-
-
 Route::get('/tirages/{id}', [TirageController::class, 'show']);
+
+Route::get('/themes', [ThemeController::class, 'index']);
+Route::get('couleurs', [CouleurController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -30,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::middleware(['auth:sanctum', 'artiste'])->group(function () {
     Route::apiResource('oeuvres', OeuvreController::class);
+    
     Route::post('/tirages/add/oeuvre/{id}', [TirageController::class, 'addToOeuvre']);
     Route::delete('/delete/tirages/{id}', [TirageController::class, 'destroy']);
 });
@@ -53,8 +52,12 @@ Route::middleware(['auth:sanctum', 'acheteur'])->group(function () {
 
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 
-    Route::post('/register/admin', [AdminController::class, 'registerAdmin']);
+    Route::apiResource('couleurs', CouleurController::class);
+    Route::apiResource('themes', ThemeController::class);
 
+
+    Route::post('/create/admin', [AdminController::class, 'createAdmin']);
+    
     Route::delete('/destroy/user/{id}', [AdminController::class, 'destroyUser']);
 
     Route::get('/users', [AdminController::class, 'getAllUsers']);

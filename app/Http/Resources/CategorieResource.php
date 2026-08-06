@@ -15,6 +15,7 @@ class CategorieResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'nom_categorie' => $this->nom_categorie,
             'nom_technique' => $this->nom_technique,
             'description_courte' => $this->description_courte,

@@ -16,6 +16,7 @@ class ArtisteResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'bio' => $this->bio,
             'nom_d_artiste' => $this->nom_d_artiste,
             'Est_Artiste_Art3f' => $this->Est_Artiste_Art3f ? "Affilié à Art3f": "Non affilié à Art3f",

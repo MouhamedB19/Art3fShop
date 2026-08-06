@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Artiste;
 use App\Models\Client;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rules;
 
 class AuthController extends Controller
 {
@@ -53,75 +54,65 @@ class AuthController extends Controller
         ]);
     }
 
-    public function registerArtiste(Request $request)
+    
+    public function register(Request $request)
     {
-
-        $validated = $request->validate([
-            'nom' => 'required|string|max:255',
-            'prenom' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'nom_d_artiste' => 'nullable|string|max:255',
-            'bio'   => 'nullable|string',
-            'photo' => 'nullable|string|max:255',
-            'iban' => 'nullable|string|max:255',
-            'a_la_une' => 'required|boolean',
-            'Est_Artiste_Art3f' => 'required|boolean',
-            'CV' => 'nullable|string|max:255',
-            'localisations_id' => 'nullable|exists:localisations,id',
+        
+        $dataUser = $request->validate([
+            'nom' => ['required', 'string', 'max:255'],
+            'prenom' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', 'in:artiste,acheteur'],
         ]);
 
-
-
+        
         $user = User::create([
-            'nom' => $validated['nom'],
-            'prenom' => $validated['prenom'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'role' => 'artiste',
+            'nom' => $dataUser['nom'],
+            'prenom' => $dataUser['prenom'],
+            'email' => $dataUser['email'],
+            'password' => Hash::make($dataUser['password']),
+            'role' => $dataUser['role'],
         ]);
-
-        Artiste::create([
-            'user_id' => $user->id,
-            'nom_d_artiste' => $validated['nom_d_artiste'],
-            'bio' => $validated['bio'],
-            'photo' => $validated['photo'],
-            'iban' => $validated['iban'],
-            'a_la_une' => $validated['a_la_une'],
-            'Est_Artiste_Art3f' => $validated['Est_Artiste_Art3f'],
-            'CV' => $validated['CV'],
-            'localisations_id' => $validated['localisations_id'],
-        ]);
-
+        
+        if($user->role === 'acheteur')
+        {
+            $client = Client::create([
+                'user_id' => $user->id
+            ]);
+            
+        }
+        else if($user->role === 'artiste')
+        {
+            $dataArtiste = $request->validate([
+                'nom_d_artiste' => 'nullable|string|max:255',
+                'bio'   => 'nullable|string',
+                'photo' => 'nullable|string|max:255',
+                'iban' => 'nullable|string|max:255',
+                'a_la_une' => 'required|boolean',
+                'Est_Artiste_Art3f' => 'required|boolean',
+                'CV' => 'nullable|string|max:255',
+                'localisations_id' => 'nullable|exists:localisations,id',
+            ]);
+            
+            $artiste = Artiste::create([
+                'user_id' => $user->id,
+                'nom_d_artiste' => $dataArtiste['nom_d_artiste'],
+                'bio' => $dataArtiste['bio'],
+                'photo' => $dataArtiste['photo'],
+                'iban' => $dataArtiste['iban'],
+                'a_la_une' => $dataArtiste['a_la_une'],
+                'Est_Artiste_Art3f' => $dataArtiste['Est_Artiste_Art3f'],
+                'CV' => $dataArtiste['CV'],
+                'localisations_id' => $dataArtiste['localisations_id'],
+            ]);
+            
+        }
+        
         $token = $user->createToken('api')->plainTextToken;
         return (new UserResource($user))->additional([
             'token' => $token,
         ]);
-    }
-
-    public function registerAcheteur(Request $request)
-    {
-        $validated = $request->validate([
-            'nom' => 'required|string|max:255',
-            'prenom' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'localisations_id' => 'nullable|exists:localisations,id',
-        ]);
-
-        $user = User::create([
-            'nom' => $validated['nom'],
-            'prenom' => $validated['prenom'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'role' => 'acheteur',
-        ]);
-        Client::create([
-            'user_id' => $user->id,
-            'localisations_id' => $validated['localisations_id'],
-        ]);
-        $token = $user->createToken('api')->plainTextToken;
-        return (new UserResource($user))->additional(['token' => $token]);
     }
 
 }

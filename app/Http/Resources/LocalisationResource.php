@@ -15,6 +15,7 @@ class LocalisationResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'code_postal' => $this->code_postal,
             'adresse' => $this->adresse,
             'ville' => new VilleResource($this->ville)

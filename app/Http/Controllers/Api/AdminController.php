@@ -10,7 +10,7 @@ use App\Http\Resources\UserResource;
 
 class AdminController extends Controller
 {
-    public function registerAdmin(Request $request) //permet de créer un compte admin pour un tier
+    public function createAdmin(Request $request) //permet de créer un compte admin pour un tier
     {
         $validated = $request->validate([
             'nom' => 'required|string|max:255',
@@ -36,7 +36,7 @@ class AdminController extends Controller
     }
 
 
-    public function destroyUser($id)
+    public function destroyUser($id) // permet de supprimer un utilisateur par son id
     {
         $user = User::find($id);
         if(!$user)
@@ -46,6 +46,7 @@ class AdminController extends Controller
 
         return response()->json(['message' => "Utilisateur $nomUser n'existe plus désormais"]);
     }
+    
 
     public function getAllUsers()
     {
@@ -61,7 +62,7 @@ class AdminController extends Controller
         return new UserResource($user);
     }
 
-    public function statsArt3fShop()
+    public function statsArt3fShop() // retourne les statistiques de la plateforme Art3fShop (nombre total d'utilisateurs, nombre d'artistes, nombre d'acheteurs, nombre d'administrateurs)
     {
         $totalUsers = User::count();
         $totalArtistes = User::where('role', 'artiste')->count();

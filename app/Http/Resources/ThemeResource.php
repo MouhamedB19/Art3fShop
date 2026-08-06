@@ -15,7 +15,8 @@ class ThemeResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'nom' => $this->nom_theme,
+            'id' => $this->id,
+            'nom' => $this->nom_theme
         ];
     }
 }
