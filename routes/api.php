@@ -20,10 +20,13 @@ Route::get('/tirages/{id}', [TirageController::class, 'show']);
 Route::get('/themes', [ThemeController::class, 'index']);
 Route::get('couleurs', [CouleurController::class, 'index']);
 
+Route::get('/tirages', [TirageController::class,'index']);
+
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/me', [AuthController::class, 'index']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::put('/update/user/{id}', [AuthController::class, 'update']);
 });
 
 Route::middleware(['auth:sanctum', 'artiste'])->group(function () {

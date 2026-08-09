@@ -80,20 +80,44 @@ class TirageController extends Controller
             });
         }
 
-        
+        //filtre par catégorie
         if ($request->filled('categorie')) {
             $tirages->whereHas('oeuvre.categorie', function ($query) use ($request) {
                 $query->where('categories.id', $request->categorie);
             });
         }
 
-        
+        // filtre par couleurs
         if ($request->filled('couleurs')) {
             $tirages->whereHas('oeuvre.couleurs', function ($query) use ($request) {
                 $query->where('couleurs.id', $request->couleurs);
             });
         }
 
+        // filtre par prix
+        if($request->filled('prix_min'))
+        {
+            if($request->filled('prix_max'))
+            {
+                $tirages->whereBetween('prix',[$request->prix_min, $request->prix_max]);
+            }
+            else
+            {
+                $tirages->where('prix','>=',$request->prix_min);
+            }
+        }
+        else if($request->filled('prix_max'))
+        {
+            $tirages->where('prix','<=',$request->prix_max);
+        }
+
+        // filtre par orientation
+        if($request->filled('orientation'))
+        {
+            $tirages->whereHas('oeuvre', function ($query) use ($request){
+                $query->where('orientation', $request->orientation);
+            });
+        }
         return TirageResource::collection($tirages->get());
     }
 }
