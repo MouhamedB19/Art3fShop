@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\PanierController;
 use App\Http\Controllers\Api\FavorisController;
 use App\Http\Controllers\Api\ThemeController;
 use App\Http\Controllers\Api\CouleurController;
+use App\Http\Controllers\Api\CommandeController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -45,7 +46,7 @@ Route::middleware(['auth:sanctum', 'acheteur'])->group(function () {
     Route::post('/panier/add/{tirageId}', [PanierController::class, 'addToPanier']);
     Route::delete('/panier/remove/{tirageId}', [PanierController::class, 'removeFromPanier']);
 
-    
+    Route::post('/commandes', [CommandeController::class, 'store']);
     Route::get('/favoris/tirages', [FavorisController::class, 'indexTirages']);
     Route::post('/favoris/tirages/add/{tirageId}', [FavorisController::class, 'addTirageFavoris']);
     Route::get('/favoris/artistes', [FavorisController::class, 'indexArtistes']);
