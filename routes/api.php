@@ -18,8 +18,8 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/tirages/{id}', [TirageController::class, 'show']);
 
-Route::get('/themes', [ThemeController::class, 'index']);
-Route::get('couleurs', [CouleurController::class, 'index']);
+
+
 
 Route::get('/tirages', [TirageController::class,'index']);
 
