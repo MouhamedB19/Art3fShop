@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Categorie extends Model
 {
+    use Searchable;
+
     protected $fillable = [
         'nom_categorie',
         'nom_technique',
@@ -26,7 +28,6 @@ class Categorie extends Model
     public function artistes(){
         return $this->belongsToMany(Artiste::class, 'artiste_categorie', 'categorie_id','artiste_id');
     }
-    use Searchable;
 
     public function toSearchableArray(){
         return([
