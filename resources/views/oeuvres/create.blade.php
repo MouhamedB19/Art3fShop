@@ -77,7 +77,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm text-gray-700 mb-1.5">Catégorie <span class="text-[#E8490F]">*</span></label>
+                        <label class="block text-sm text-gray-700 mb-1.5">Sous-catégorie <span class="text-[#E8490F]">*</span></label>
                         <select name="categorie_id" id="sous_categorie_id"
                                 class="w-full rounded-lg border border-gray-200 px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#E8490F] focus:ring-1 focus:ring-[#E8490F] transition bg-white" required>
                             <option value="">Choisir…</option>
