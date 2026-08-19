@@ -187,12 +187,7 @@
         <div class="flex items-center gap-6 h-16">
 
             {{-- Logo --}}
-            <a href="{{ route('home') }}" class="shrink-0">
-                <img src="{{ asset('images/logo-art3f-shop.png') }}"
-                     alt="art3f Shop"
-                     class="h-12 w-auto">
-                
-            </a>
+            <x-application-logo lien="{route('home')}"/>
 
             {{-- Barre de recherche --}}
             <div x-data="{ 

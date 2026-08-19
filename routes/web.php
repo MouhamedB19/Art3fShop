@@ -120,7 +120,7 @@ Route::get('/emploi', function () {
     return view('pages.emploi');
 })->name('emploi');
 
-Route::post('/panier', [PanierController::class, 'index'])->name('panier.index');
+Route::get('/panier', [PanierController::class, 'index'])->name('panier.index');
 Route::post('/panier/ajout/{tirage}', [PanierController::class, 'add'])->name('panier.ajout');
 Route::get('/compte/favoris/oeuvres', [FavorisController::class, 'favorisOeuvres'])->name('compte.favoris.oeuvres');
 Route::get('/compte/favoris/artistes', [FavorisController::class, 'favorisArtistes'])->name('compte.favoris.artistes');
