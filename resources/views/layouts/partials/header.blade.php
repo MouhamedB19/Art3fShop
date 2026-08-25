@@ -187,7 +187,7 @@
         <div class="flex items-center gap-6 h-16">
 
             {{-- Logo --}}
-            <x-application-logo lien="{route('home')}"/>
+            <x-application-logo :lien="route('home')"/>
 
             {{-- Barre de recherche --}}
             <div x-data="{ 
