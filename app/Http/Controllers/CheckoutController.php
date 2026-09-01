@@ -141,7 +141,7 @@ class CheckoutController extends Controller
 
     public function confirmation(Commande $commande)
     {
-        // sécurité : on vérifie que c'est bien la commande de l'utilisateur connecté
+        
         if ($commande->user_id !== Auth::id()) {
             abort(403);
         }
