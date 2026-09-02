@@ -134,8 +134,7 @@ class AuthController extends Controller
         
         $token = $user->createToken('api')->plainTextToken;
         return (new UserResource($user))->additional([
-            'token' => $token,
-            'code' => 200
+            'token' => $token,    
         ]);
     }
 
