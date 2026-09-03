@@ -95,4 +95,28 @@ class RegisterTest extends TestCase
         $responseNonConfirme->assertStatus(422);
 
     }
+
+    public function test_register_email_invalide():void
+    {
+        $response = $this->postJson('api/register',[
+            'nom' => "Winchester",
+            'prenom' => "Dean",
+            'email' => "dean.winchesterexample.com",
+            'password' => "password123",
+            'password_confirmation' => "password123",
+            'role' => "acheteur"
+        ]);
+        $response->assertStatus(422);
+    }
+
+    public function test_register_champ_manquant():void
+    {
+        $response = $this->postJson('api/register',[
+            'prenom' => "Dean",
+            'email' => "dean.winchester@example.com",
+            'password' => "password123",
+            'password_confirmation' => "password123"
+        ]);
+        $response->assertStatus(422);
+    }
 }
