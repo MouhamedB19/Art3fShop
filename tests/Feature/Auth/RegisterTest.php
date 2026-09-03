@@ -11,7 +11,7 @@ class RegisterTest extends TestCase
     /**
      * A basic feature test example.
      */
-    public function test_register_client(): void
+    public function test_register_correcte(): void
     {
         $responseClient = $this->postJson('/api/register',[
             'nom' => 'Doe',
@@ -22,12 +22,6 @@ class RegisterTest extends TestCase
             'role' => 'acheteur'
         ]);
 
-        
-        $responseClient->assertStatus(201);
-    }
-
-    public function test_register_artiste(): void
-    {
         $responseArtiste = $this->postJson('/api/register',[
             'nom' => 'Smith',
             'prenom' => 'Jane',
@@ -49,5 +43,56 @@ class RegisterTest extends TestCase
         ]);
 
         $responseArtiste->assertStatus(201);
+        $responseClient->assertStatus(201);
+    }
+
+
+    public function test_register_mail_deja_utilise(): void
+    {
+        $responseClient = $this->postJson('/api/register',[
+            'nom' => 'Doe',
+            'prenom' => 'John',
+            'email' => 'john.doe@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+            'role' => 'acheteur'
+        ]);
+        $responseClient->assertStatus(422);
+    }
+
+    public function test_register_password_court():void
+    {
+        $response = $this->postJson('api/register',[
+            'nom' => "Winchester",
+            'prenom' => "Dean",
+            'email' => "dean.winchester@example.com",
+            'password' => "123",
+            'password_confirmation' => "123",
+            'role' => "acheteur"
+        ]);
+        $response->assertStatus(422);
+    }
+
+    public function test_register_password_mal_confirme():void
+    {
+        $responseMalConfirme = $this->postJson('api/register',[
+            'nom' => "Winchester",
+            'prenom' => "Dean",
+            'email' => "dean.winchester@example.com",
+            'password' => "password123",
+            'password_confirmation' => "password",
+            'role' => "acheteur"
+        ]);
+
+        $responseNonConfirme = $this->postJson('api/register',[
+            'nom' => "Winchester",
+            'prenom' => "Dean",
+            'email' => "dean.winchester@example.com",
+            'password' => "password123",
+            'role' => "acheteur"
+        ]);
+        $responseMalConfirme->assertStatus(422);
+        $responseNonConfirme->assertStatus(422);
+
     }
 }
