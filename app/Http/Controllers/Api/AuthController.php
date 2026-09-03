@@ -15,7 +15,7 @@ use App\Models\Ville;
 use App\Models\Pays;
 use App\Models\Localisation;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Validation\Rules;
 
 class AuthController extends Controller
@@ -32,15 +32,21 @@ class AuthController extends Controller
         if (! Auth::attempt($credentials)) {
             return response()->json([
                 'message' => 'Identifiants invalides',
-                'code' => 400
-            ]);
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        if(!$credentials['email'] || !$credentials['password'])
+        {
+            return response()->json([
+                'message' => 'Au moins un identifiant manquant',
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $user = Auth::user();
 
         $token = $user->createToken('api')->plainTextToken;
 
-        return (new UserResource($user))->additional(['token' => $token, 'code' => 200]);
+        return (new UserResource($user))->additional(['token' => $token]);
     }
 
     public function index()
@@ -55,8 +61,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Déconnexion réussie',
-            'code' => 200
-        ]);
+        ], Response::HTTP_OK);
     }
 
 
