@@ -3,7 +3,7 @@ namespace App\Calculs;
 
 trait CalculeReduction
 {
-    protected function calculerReduction($total, $coupons)
+    public function calculerReduction($total, $coupons)
     {
         $reduction = 0;
 

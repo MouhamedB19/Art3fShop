@@ -35,9 +35,9 @@ class UtilsController extends Controller
             'id'               => $o->id,
             'slug'             => $o->slug,
             'titre_highlighted'=> str_ireplace($q, "<b>{$q}</b>", $o->titre),
-            'artiste'          => $o->artiste->nom,
-            'photo_thumb'      => $o->photo_thumb_url,
-            'prix'             => number_format($o->prix, 0, ',', ' '),
+            'artiste'          => $o->artiste->nom_d_artiste ? $o->artiste->nom_d_artiste : $o->artiste->user->nom . ' ' . $o->artiste->user->prenom,
+            'photo_thumb'      => $o->photo_principale,
+            'prix'             => number_format($o->tirages->first()->prix, 0, ',', ' '),
         ]);
 
         $artistes = Artiste::where('nom', 'like', "%{$q}%")
@@ -47,9 +47,9 @@ class UtilsController extends Controller
             'id'             => $a->id,
             'slug'           => $a->slug,
             'nom_highlighted'=> str_ireplace($q, "<b>{$q}</b>", $a->nom),
-            'ville'          => $a->ville,
-            'pays'           => $a->pays->nom,
-            'photo'          => $a->photo_url,
+            'ville'          => $a->localisation->ville->nom_ville,
+            'pays'           => $a->localisation->pays->nom,
+            'photo'          => $a->photo,
         ]);
 
         $categories = collect(['Peinture','Sculpture','Photographie','Édition','Dessin'])

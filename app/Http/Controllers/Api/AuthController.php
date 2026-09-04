@@ -6,16 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Artiste;
 use App\Models\Client;
 use App\Models\Ville;
-use App\Models\Pays;
 use App\Models\Localisation;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules;
 
 class AuthController extends Controller
@@ -32,14 +30,8 @@ class AuthController extends Controller
         if (! Auth::attempt($credentials)) {
             return response()->json([
                 'message' => 'Identifiants invalides',
-            ], Response::HTTP_UNAUTHORIZED);
-        }
-
-        if(!$credentials['email'] || !$credentials['password'])
-        {
-            return response()->json([
-                'message' => 'Au moins un identifiant manquant',
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                'code' => 400
+            ]);
         }
 
         $user = Auth::user();
@@ -52,7 +44,7 @@ class AuthController extends Controller
     public function index()
     {
         $user = Auth::user();
-        return new UserResource($user)->additional(['code' => 200]);
+        return new UserResource($user);
     }
 
     public function logout(Request $request)
@@ -60,93 +52,88 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            'message' => 'Déconnexion réussie',
-        ], Response::HTTP_OK);
+            'message' => 'Déconnexion réussie'
+        ]);
     }
 
-
+    
     public function register(Request $request)
     {
+        
         $dataUser = $request->validate([
             'nom' => ['required', 'string', 'max:255'],
             'prenom' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'role' => ['required', 'in:artiste,acheteur'],
         ]);
 
-        // On valide TOUT avant de toucher à la DB, y compris les champs artiste
-        $dataArtiste = null;
-        $dataLocalisation = null;
-        $dataVille = null;
-
-        if ($dataUser['role'] === 'artiste') 
+        
+        $user = User::create([
+            'nom' => $dataUser['nom'],
+            'prenom' => $dataUser['prenom'],
+            'email' => $dataUser['email'],
+            'password' => Hash::make($dataUser['password']),
+            'role' => $dataUser['role'],
+        ]);
+        
+        if($user->role === 'acheteur')
+        {
+            $client = Client::create([
+                'user_id' => $user->id
+            ]);
+            
+        }
+        else if($user->role === 'artiste')
         {
             $dataArtiste = $request->validate([
                 'nom_d_artiste' => 'nullable|string|max:255',
-                'bio' => 'nullable|string',
+                'bio'   => 'nullable|string',
                 'photo' => 'nullable|string|max:255',
                 'iban' => 'nullable|string|max:255',
                 'a_la_une' => 'required|boolean',
                 'Est_Artiste_Art3f' => 'required|boolean',
                 'CV' => 'nullable|string|max:255',
+                'localisations_id' => 'required | exists:localisation, id'
+            ]);
+
+            $dataLocalisation = $request->validate([
                 'code_postal' => 'required|string',
-                'adresse' => 'required|string',
+                'adresse' => 'required | string',
+            ]);
+
+            $dataVille = $request->validate([
                 'nom_ville' => 'required|string',
-                'nom_pays' => 'required|string',
+                'pays' => 'required | exists:pays, id'
             ]);
+
+            $ville = Ville::findOrCreate([
+                'nom_ville' => $dataVille['nom_ville'],
+                'pays' => $dataVille['pays']
+            ]);
+
+            $localisation = Localisation::findOrCreate([
+                'code_postal' => $dataLocalisation['code_postal'],
+                'adresse' => $dataLocalisation['adresse'],
+                'ville_id' => $ville->id
+            ]);
+            $artiste = Artiste::create([
+                'user_id' => $user->id,
+                'nom_d_artiste' => $dataArtiste['nom_d_artiste'],
+                'bio' => $dataArtiste['bio'],
+                'photo' => $dataArtiste['photo'],
+                'iban' => $dataArtiste['iban'],
+                'a_la_une' => $dataArtiste['a_la_une'],
+                'Est_Artiste_Art3f' => $dataArtiste['Est_Artiste_Art3f'],
+                'CV' => $dataArtiste['CV'],
+                'localisations_id' => $localisation->id,
+            ]);
+            
         }
-
-        $user = DB::transaction(function () use ($dataUser, $dataArtiste) {
-            $user = User::create([
-                'nom' => $dataUser['nom'],
-                'prenom' => $dataUser['prenom'],
-                'email' => $dataUser['email'],
-                'password' => Hash::make($dataUser['password']),
-                'role' => $dataUser['role'],
-            ]);
-
-            if ($user->role === 'acheteur') 
-            {
-                Client::create([
-                    'user_id' => $user->id,
-                ]);
-            } 
-            elseif ($user->role === 'artiste') 
-            {
-                $pays = Pays::where('nom_pays', $dataArtiste['nom_pays'])->firstOrFail();
-
-                $ville = Ville::firstOrCreate([
-                    'nom_ville' => $dataArtiste['nom_ville'],
-                    'pays_id' => $pays->id,
-                ]);
-
-                $localisation = Localisation::firstOrCreate([
-                    'code_postal' => $dataArtiste['code_postal'],
-                    'adresse' => $dataArtiste['adresse'],
-                    'ville_id' => $ville->id,
-                ]);
-
-                Artiste::create([
-                    'user_id' => $user->id,
-                    'nom_d_artiste' => $dataArtiste['nom_d_artiste'],
-                    'bio' => $dataArtiste['bio'],
-                    'photo' => $dataArtiste['photo'],
-                    'iban' => $dataArtiste['iban'],
-                    'a_la_une' => $dataArtiste['a_la_une'],
-                    'Est_Artiste_Art3f' => $dataArtiste['Est_Artiste_Art3f'],
-                    'CV' => $dataArtiste['CV'],
-                    'localisations_id' => $localisation->id,
-                ]);
-            }
-
-            return $user;
-        });
-
+        
         $token = $user->createToken('api')->plainTextToken;
-
         return (new UserResource($user))->additional([
-            'token' => $token
+            'token' => $token,
         ]);
     }
 
@@ -157,11 +144,11 @@ class AuthController extends Controller
         $dataUser = $request->validate([
             'nom' => ['sometimes', 'string', 'max:255'],
             'prenom' => ['sometimes', 'string', 'max:255'],
-            'email' => ['sometimes', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class . ',email,' . $user->id],
+            'email' => ['sometimes', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class.',email,'.$user->id],
             'password' => ['sometimes', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        if ($user->role === 'artiste') {
+        if($user->role === 'artiste'){
             $dataArtiste = $request->validate([
                 'nom_d_artiste' => 'sometimes|string|max:255',
                 'bio'   => 'sometimes|string',
@@ -169,13 +156,13 @@ class AuthController extends Controller
                 'iban' => 'sometimes|string|max:255',
                 'a_la_une' => 'sometimes|boolean',
                 'Est_Artiste_Art3f' => 'sometimes|boolean',
-                'CV' => 'sometimes|string|max:255',
+                'CV' => 'sometimes|string|max:255',  
                 'localisations_id' => 'sometimes|exists:localisations,id',
             ]);
 
             $dataLocalisation = $request->validate([
                 'code_postal' => 'sometimes|string',
-                'adresse' => 'sometimes|string',
+                'adresse' => 'sometimes | string',
             ]);
 
             $dataVille = $request->validate([
@@ -183,13 +170,14 @@ class AuthController extends Controller
                 'pays' => 'sometimes | exists:pays, id'
             ]);
 
-            if ($dataVille) {
+            if($dataVille)
+            {
                 $ville = $user->artiste->localisation->ville->update([
                     'nom_ville' => $dataVille['nom_ville'],
                     'pays' => $dataVille['pays']
                 ]);
             }
-            if ($dataLocalisation) 
+            if($dataLocalisation)
             {
                 $localisation = $user->artiste->localisation->update([
                     'code_postal' => $dataLocalisation['code_postal'],
@@ -197,9 +185,9 @@ class AuthController extends Controller
                     'ville_id' => $ville->id
                 ]);
             }
+            
 
-
-
+            
             $user->artiste->update([
                 'nom_d_artiste' => $dataArtiste['nom_d_artiste'] ?? $user->artiste->nom_d_artiste,
                 'bio' => $dataArtiste['bio'] ?? $user->artiste->bio,
@@ -212,6 +200,7 @@ class AuthController extends Controller
             ]);
         }
         $user->update($dataUser);
-        return new UserResource($user)->additional(['code' => 200]);
+        return new UserResource($user);
     }
+
 }
