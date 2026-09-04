@@ -46,7 +46,7 @@ Plateforme e-commerce permettant à des artistes de vendre leurs œuvres en lign
 |---------|---------------------------------|---------------|
 | Admin   | admin@art3f.test               | TheAdmin68    |
 | Client  | marie.moreau@example.com       | password      |
-| Artiste | sophie.martin@art3f.test       | password      |
+| Artiste | sohpie.martin@art3f.test       | password      |
 
 ## Fonctionnalités implémentées
 
@@ -56,16 +56,12 @@ Plateforme e-commerce permettant à des artistes de vendre leurs œuvres en lign
 - Catalogue d'œuvres avec filtres dynamiques (Livewire)
 - Recherche dynamique (Meilisearch / Scout)
 - Fiche œuvre / tirage
-- Index des artistes avec recherche possible
-- Fil d'Ariane
-- Artistes à la une
 - Panier
 - Favoris
 - Coupons / réductions
 - Tunnel de commande (checkout)
 - Paiement simulé
 - Historique des commandes (côté client)
--  Conversations entre le client et l'artiste
 - Emails transactionnels (driver log)
 - Messagerie / conversations
 - Consentement cookies RGPD (5 catégories)
@@ -75,15 +71,11 @@ Plateforme e-commerce permettant à des artistes de vendre leurs œuvres en lign
 ## Fonctionnalités non implémentées
 
 - **Paiement réel** (Stripe/PayPal) — volontairement simulé pour la démo
+- **Avis / notes** sur les œuvres ou artistes — non prévu au cahier des charges
 - **Upload multi-images par œuvre** — limité à une seule image par œuvre. Il s'agit d'une limite technique liée au choix de stockage (fichiers locaux plutôt qu'un service cloud adapté), qui pourrait être améliorée par une relation one-to-many `Oeuvre` → `images` couplée à un stockage cloud (type S3).
 - Changement de langues et de devises (problèmes de conversion)
 - Suivi de livraison
 - Modification des informations personnelles
-- Connexion avec Google et Facebook simulée (pas de connexion réelle)
-- Gestion des abonnements à la newsletter et des sélections
-- Banderole de promotion des salons
-- Pages secondaires dont les liens sont dans le pied de page (ex: page FAQ)
-- Gestion des emplacements publicitaires pour les artistes
 
 ## Structure du projet
 

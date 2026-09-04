@@ -38,13 +38,13 @@ class AuthController extends Controller
 
         $token = $user->createToken('api')->plainTextToken;
 
-        return (new UserResource($user))->additional(['token' => $token, 'code' => 200]);
+        return (new UserResource($user))->additional(['token' => $token]);
     }
 
     public function index()
     {
         $user = Auth::user();
-        return new UserResource($user)->additional(['code'=> 200]);
+        return new UserResource($user);
     }
 
     public function logout(Request $request)
@@ -52,8 +52,7 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            'message' => 'Déconnexion réussie',
-            'code' => 200
+            'message' => 'Déconnexion réussie'
         ]);
     }
 
@@ -135,7 +134,6 @@ class AuthController extends Controller
         $token = $user->createToken('api')->plainTextToken;
         return (new UserResource($user))->additional([
             'token' => $token,
-            'code' => 200
         ]);
     }
 
@@ -202,7 +200,7 @@ class AuthController extends Controller
             ]);
         }
         $user->update($dataUser);
-        return new UserResource($user)->additional(['code' => 200]);
+        return new UserResource($user);
     }
 
 }
