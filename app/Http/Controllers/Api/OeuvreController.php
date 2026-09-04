@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\OeuvreResource;
 use App\Models\Oeuvre;
+use Symfony\Component\HttpFoundation\Response;
 
 class OeuvreController extends Controller
 {
@@ -40,7 +41,7 @@ class OeuvreController extends Controller
         {
             return response()->json([
                 'message' => 'Paramètres de recherche manquants'
-            ], 400);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         
     }
