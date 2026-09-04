@@ -23,7 +23,7 @@ class Tirage extends Model
     }
 
     public function commandes(){
-        return $this->hasMany(Commande::class, 'commande_id');
+        return $this->belongsTo(Commande::class, 'commande_id');
     }
 
     public function clients(){

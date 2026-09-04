@@ -19,4 +19,9 @@ class Livraison extends Model
     {
         return $this->belongsTo(Localisation::class, 'localisation_id');
     }
+
+    public function commandes()
+    {
+        return $this->belongsToMany(Commande::class, 'commande_livraison', 'livraison_id', 'commande_id');
+    }
 }

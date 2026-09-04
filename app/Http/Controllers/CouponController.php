@@ -9,8 +9,7 @@ use Illuminate\Support\Facades\auth;
 use Carbon\Carbon;
 class CouponController extends Controller
 {
-    // CouponController
-    // CouponController@appliquer
+    
     public function appliquer(Request $request)
     {
         $request->validate(['code' => 'required|string']);
@@ -21,7 +20,7 @@ class CouponController extends Controller
             return back()->withErrors(['code' => 'Code invalide']);
         }
 
-        $coupons = session('coupons', []); // tableau d'ids
+        $coupons = session('coupons', []); 
 
         if (in_array($coupon->id, $coupons)) {
             return back()->withErrors(['code' => 'Coupon déjà appliqué']);

@@ -332,7 +332,8 @@
             <div class="columns-2 md:columns-3 lg:columns-4 gap-4">
                 @foreach($oeuvres as $oeuvre)
                     @php
-                        $tirage      = $oeuvre->tirages->first();
+                        
+                        $tirage      = $oeuvre?->tirages->first();
                         $isNew       = $oeuvre->created_at->diffInDays(now()) <= 30;
                         $vendue      = $tirage?->status === 'vendu';
                         $prix        = $tirage?->prix ?? 0;
