@@ -159,7 +159,7 @@ class OeuvreController extends Controller
     {
         $oeuvre = Oeuvre::findOrFail($id);
         $oeuvre->delete();
-        return response()->json(['message' => 'Oeuvre supprimée avec succès']);
+        return response()->json(['message' => 'Oeuvre supprimée avec succès'], Response::HTTP_NO_CONTENT);
     }
 
     
