@@ -101,7 +101,7 @@ class OeuvreController extends Controller
         return new OeuvreResource(Oeuvre::with(['artiste'])->where('id', $id)->first());
     }
 
-    /**
+    /**tes
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
