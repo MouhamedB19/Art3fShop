@@ -15,6 +15,7 @@ use App\Models\Localisation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
@@ -30,8 +31,7 @@ class AuthController extends Controller
         if (! Auth::attempt($credentials)) {
             return response()->json([
                 'message' => 'Identifiants invalides',
-                'code' => 400
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $user = Auth::user();
