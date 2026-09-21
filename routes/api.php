@@ -22,6 +22,9 @@ Route::get('couleurs', [CouleurController::class, 'index']);
 
 Route::get('/tirages', [TirageController::class,'index']);
 
+Route::get('oeuvres/{id}', [OeuvreController::class, 'show']);
+Route::get('/oeuvres/{oeuvre}',[OeuvreController::class, 'showOeuvre']);
+
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/me', [AuthController::class, 'index']);
@@ -30,8 +33,9 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::middleware(['auth:sanctum', 'artiste'])->group(function () {
-    Route::apiResource('oeuvres', OeuvreController::class);
-    
+    Route::post('/oeuvres', [OeuvreController::class, 'store']);
+    Route::put('/oeuvres/{id}', [OeuvreController::class, 'update']);
+    Route::delete('/oeuvres/{id}', [OeuvreController::class, 'destroy']);
     Route::post('/tirages/add/oeuvre/{id}', [TirageController::class, 'addToOeuvre']);
     Route::delete('/delete/tirages/{id}', [TirageController::class, 'destroy']);
 });
