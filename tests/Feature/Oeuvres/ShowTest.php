@@ -19,9 +19,10 @@ class ShowTest extends TestCase
             'email' => 'claire.leroy@art3f.test',
             'password' => 'password'
         ]);
-        $token = $responseArtiste->json('token');
-        $id = $responseArtiste->json('id');
-        $response = $this->withToken($token)->getJson("api/oeuvres/{$id}");
+        $response = $responseArtiste->json();
+        $token = $response['token'];
+        $artisteId = $response['data']['artiste']['id'];
+        $response = $this->withToken($token)->getJson("api/oeuvres/{$artisteId}");
         $response->assertStatus(200);
     }
 }
