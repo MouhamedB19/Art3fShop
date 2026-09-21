@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 class OeuvreController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Méthode de recherche d'oeuvres par filtrage.
      */
    
 
@@ -48,7 +48,7 @@ class OeuvreController extends Controller
 
     
     /**
-     * Store a newly created resource in storage.
+     * Créé une oeuvre (sans les tirages).
      */
     public function store(Request $request)
     {
@@ -94,7 +94,16 @@ class OeuvreController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Affiche l'oeuvre passé en paramètre.
+     */
+
+    public function showOeuvre($oeuvre)
+    {
+        return new OeuvreResource(Oeuvre::with(['artiste'])->where('id', $eouvre)->first());
+    }
+
+    /**
+     * Affiche les oeuvres de l'artiste passé en paramètre.
      */
     public function show($id)
     {
