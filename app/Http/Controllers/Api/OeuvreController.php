@@ -99,15 +99,15 @@ class OeuvreController extends Controller
 
     public function showOeuvre($oeuvre)
     {
-        return new OeuvreResource(Oeuvre::with(['artiste'])->where('id', $eouvre)->first());
+        return new OeuvreResource(Oeuvre::with(['artiste'])->where('id', $oeuvre)->first());
     }
 
     /**
      * Affiche les oeuvres de l'artiste passé en paramètre.
      */
-    public function show($id)
+    public function showArtiste($artiste)
     {
-        return new OeuvreResource(Oeuvre::with(['artiste'])->where('id', $id)->first());
+        return new OeuvreResource(Oeuvre::with(['artiste'])->where('id', $artiste)->first());
     }
 
     /**tes

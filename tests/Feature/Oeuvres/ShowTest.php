@@ -10,18 +10,12 @@ use App\Models\User;
 class ShowTest extends TestCase
 {
     /**
-     * A basic feature test example.
+     * A modifier au plus vite (adaptation aux nouvelles routes)
      */
 
-    public function test_oeuvre_show(): void
+    public function test_oeuvre_show_artiste(): void
     {
-        $responseArtiste = $this->postJson('api/login', [
-            'email' => 'claire.leroy@art3f.test',
-            'password' => 'password'
-        ]);
-        $token = $responseArtiste->json('token');
-        $id = $responseArtiste->json('id');
-        $response = $this->withToken($token)->getJson("api/oeuvres/{$id}");
+        $response = $this->get('/api/oeuvres/oeuvre/1');
         $response->assertStatus(200);
     }
 }

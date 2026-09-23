@@ -23,8 +23,8 @@ Route::get('/tirages/{id}', [TirageController::class, 'show']);
 
 Route::get('/tirages', [TirageController::class,'index']);
 
-Route::get('oeuvres/{id}', [OeuvreController::class, 'show']);
-Route::get('/oeuvres/{oeuvre}',[OeuvreController::class, 'showOeuvre']);
+Route::get('oeuvres/artiste/{artiste}', [OeuvreController::class, 'showArtiste']);
+Route::get('/oeuvres/oeuvre/{oeuvre}',[OeuvreController::class, 'showOeuvre']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
